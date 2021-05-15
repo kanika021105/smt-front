@@ -9,17 +9,14 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import {
     Form,
-    // Table,
     Modal,
-    Button,
     InputGroup,
     FormControl,
     DropdownButton,
 } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import classes from './Orders.module.css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../../sass/pages/admin/orders.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 const Orders = () => {
@@ -364,12 +361,12 @@ const Orders = () => {
                     )}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <button variant="secondary" onClick={handleClose}>
                         Close
-                    </Button>
-                    <Button variant="primary" onClick={editingSubmitHandler}>
+                    </button>
+                    <button variant="primary" onClick={editingSubmitHandler}>
                         Submit
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -385,7 +382,7 @@ const Orders = () => {
             {editModal}
 
             <div className="container">
-                <div className={classes.Orders}>
+                <div className="Orders">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
@@ -444,7 +441,16 @@ const Orders = () => {
                                             <td>{order.charge}</td>
                                             <td>{order.quantity}</td>
                                             <td>{order.startCounter}</td>
-                                            <td>{order.status}</td>
+                                            <td>
+                                                <button
+                                                    className={
+                                                        'btn btn-success btn-disabled'
+                                                    }
+                                                    disabled
+                                                >
+                                                    {order.status}
+                                                </button>
+                                            </td>
                                             <td>
                                                 <IconContext.Provider
                                                     value={{
@@ -455,9 +461,7 @@ const Orders = () => {
                                                     }}
                                                 >
                                                     <DropdownButton
-                                                        className={
-                                                            classes.dropdownButton
-                                                        }
+                                                        className="dropdownButton"
                                                         id="dropdown-item-button"
                                                         title={
                                                             <BsThreeDotsVertical />

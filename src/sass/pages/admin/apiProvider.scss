@@ -1,0 +1,56 @@
+@import '../../abstracts/extends';
+@import '../../abstracts/variables';
+
+@import '../../base/base';
+@import '../../base/typography';
+@import '../../base/utilities';
+
+@import '../../components/button';
+
+.apiProvider {
+    min-height: 80vh;
+}
+
+.addButton button {
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    border-radius: 0.5rem;
+    color: #fff;
+    background-color: #3f80ea;
+    padding: 0rem 0.8rem;
+    margin: 0 0 0 1.6rem;
+}
+
+.dropdownButton button::after {
+    content: none !important;
+}
+
+.formControl button {
+    border: none;
+    color: #fff;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    font-size: 1.6rem;
+    border-radius: 0.3rem;
+    align-items: center;
+    /* background-color: #3f80ea; */
+}
+
+.addError {
+    color: rgba(245, 28, 28, 0.794);
+}
+
+.apiActionButton {
+    border: 0.1rem solid #3f80ea;
+    color: #3f80ea;
+    border-radius: 0;
+}
+
+.apiActionButtonFirst {
+    border-radius: 0.4rem 0 0 0.4rem;
+}
+
+.apiActionButtonLast {
+    border-radius: 0 0.4rem 0.4rem 0;
+}

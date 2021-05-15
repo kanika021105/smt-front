@@ -9,7 +9,8 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
-import classes from './Message.module.css';
+import '../../../../../sass/pages/admin/messages.scss';
+// import classes from './Message.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthContext } from '../../../../Context/AuthContext';
 
@@ -71,32 +72,29 @@ const Message = () => {
         ticket &&
         messages.map((message) => {
             return +userId === +message.userId ? (
-                <div
-                    key={keyNum++}
-                    className={[classes.container, classes.darker].join(' ')}
-                >
+                <div key={keyNum++} className="containerMsg darker">
                     <img
                         style={{
                             width: '100%',
                         }}
                         src={supportSVG}
                         alt="Avatar"
-                        className={classes.imageRight}
+                        className="imageRight"
                     />
                     <p>{message.message}</p>
-                    <span className={classes.timeLeft}>
+                    <span className="timeLeft">
                         {new Date(ticket.createdAt).toLocaleString('en-us')}
                     </span>
                 </div>
             ) : (
-                <div key={keyNum++} className={classes.container}>
+                <div key={keyNum++} className="containerMsg">
                     <img
                         style={{ width: '100%' }}
                         src={customerSVG}
                         alt="Avatar"
                     />
                     <p>{message.message}</p>
-                    <span className={classes.timeRight}>
+                    <span className="timeRight">
                         {new Date(ticket.createdAt).toLocaleString('en-us')}
                     </span>
                 </div>
@@ -111,7 +109,7 @@ const Message = () => {
             </Helmet>
 
             <div className="container">
-                <div className={classes.Support}>
+                <div className="Support">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
@@ -132,7 +130,7 @@ const Message = () => {
                             </Card.Title>
                         </Card.Header>
 
-                        <Card.Body className={classes.CardBody}>
+                        <Card.Body className="CardBody">
                             {ticketMessage}
                         </Card.Body>
 

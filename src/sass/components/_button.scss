@@ -1,8 +1,26 @@
+.btn-disabled {
+    &:disabled {
+        opacity: 1;
+    }
+}
+
+button.add-button {
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    border-radius: 0.5rem;
+    color: #fff;
+    background-color: #3f80ea;
+    padding: 0rem 1rem;
+    margin: 0 0 0 1rem;
+}
+
 .btn {
     border: none;
+    outline: none;
+    font-size: 1.4rem;
     border-radius: 0.5rem;
     text-transform: capitalize;
-    margin: 0.2rem 0;
     padding: 0.5rem 1.4rem;
 }
 
@@ -11,12 +29,7 @@
     background-color: darken($color-green, 6);
 }
 
-.successBtn {
-    border: none;
-    color: white;
-    border-radius: 0.5rem;
-    text-transform: capitalize;
-    margin: 0.2rem 0;
-    padding: 0.5rem 1.4rem;
-    background-color: darken($color-green, 6);
+.btn-danger {
+    color: $color-white;
+    background-color: darken($color-red, 8);
 }

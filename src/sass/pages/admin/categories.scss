@@ -1,0 +1,27 @@
+@import '../../abstracts/mixins';
+@import '../../abstracts/variables';
+
+@import '../../base/base';
+@import '../../base/typography';
+@import '../../base/utilities';
+
+@import '../../components/button';
+
+.categories {
+    min-height: 80vh;
+}
+
+.formControl button {
+    border: none;
+    color: #fff;
+    margin: 0.7rem;
+    padding: 0.7rem;
+    font-size: 1.9rem;
+    border-radius: 0.45rem;
+    align-items: center;
+    background-color: #3f80ea;
+}
+
+.addError {
+    color: rgba(245, 28, 28, 0.794);
+}

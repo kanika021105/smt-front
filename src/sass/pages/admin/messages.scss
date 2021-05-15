@@ -1,3 +1,12 @@
+@import '../../abstracts/mixins';
+@import '../../abstracts/variables';
+
+@import '../../base/base';
+@import '../../base/typography';
+@import '../../base/utilities';
+
+@import '../../components/button';
+
 .Support {
     min-height: 80vh;
 }
@@ -113,7 +122,7 @@
 
 /*  */
 
-.container {
+.containerMsg {
     border: 0.2rem solid #dedede;
     background-color: #f1f1f1;
     border-radius: 0.5rem;
@@ -126,13 +135,13 @@
     background-color: #ddd;
 }
 
-.container::after {
+.containerMsg::after {
     content: '';
     clear: both;
     display: table;
 }
 
-.container img {
+.containerMsg img {
     padding: 0.3rem;
     float: left;
     max-width: 6rem;
@@ -140,7 +149,7 @@
     margin-right: 2rem;
 }
 
-.container .imageRight {
+.containerMsg .imageRight {
     padding: 0.2rem;
     float: right;
     margin-left: 2rem;

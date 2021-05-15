@@ -4,13 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../../sass/pages/admin/categories.scss';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
 
 import {
     Form,
-    // Table,
     Modal,
     Button,
     InputGroup,
@@ -19,7 +18,6 @@ import {
 } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import classes from './Categories.module.css';
 import Card from '../../../../components/UI/Card/Card';
 
 const Categories = () => {
@@ -119,12 +117,11 @@ const Categories = () => {
     };
 
     const addModal = (
-        /* jshint ignore:start */
         <Modal show={showAddModal} onHide={handleBackdropClick}>
             <Modal.Header closeButton>
                 <Modal.Title>
                     {addError ? (
-                        <span className={classes.addError}>{errorMsg}</span>
+                        <span className="addError">{errorMsg}</span>
                     ) : (
                         'Add Category'
                     )}
@@ -191,7 +188,6 @@ const Categories = () => {
                 </Modal.Footer>
             </form>
         </Modal>
-        /* jshint ignore:end */
     );
 
     const editButtonHandler = async (e) => {
@@ -271,7 +267,6 @@ const Categories = () => {
     };
 
     const editModal = (
-        /* jshint ignore:start */
         <Modal show={showEditModal} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Edit Category</Modal.Title>
@@ -334,7 +329,6 @@ const Categories = () => {
                 </Modal.Footer>
             </form>
         </Modal>
-        /* jshint ignore:end */
     );
 
     // Delete
@@ -350,7 +344,6 @@ const Categories = () => {
 
     // TODO Change title to dynamic
     return (
-        /* jshint ignore:start */
         <>
             <Helmet>
                 <title>Categories - SMT Panel</title>
@@ -359,8 +352,8 @@ const Categories = () => {
             {editModal}
             {addModal}
 
-            <div className="container">
-                <div className={classes.Categories}>
+            <main className="categories">
+                <div className="container">
                     <div>
                         <h2 className="pageTitle">
                             <IconContext.Provider
@@ -374,18 +367,18 @@ const Categories = () => {
                             </IconContext.Provider>{' '}
                             Categories
                         </h2>
-                        <span className={classes.addButton}>
-                            <button
-                                className="btn btn-primary font-weight-bold"
-                                onClick={handleAddButtonClick}
-                            >
-                                +
-                            </button>
-                        </span>
+                        {/* <span className="addButton"> */}
+                        <button
+                            className="add-button"
+                            onClick={handleAddButtonClick}
+                        >
+                            +
+                        </button>
+                        {/* </span> */}
                     </div>
 
                     <Card>
-                        <table striped bordered hover responsive size="sm">
+                        <table className="table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -404,7 +397,16 @@ const Categories = () => {
                                             <td>{category.title}</td>
                                             <td>{category.desc}</td>
                                             <td>{category.short}</td>
-                                            <td>{category.status}</td>
+                                            <td>
+                                                <button
+                                                    className={
+                                                        'btn btn-success btn-disabled'
+                                                    }
+                                                    disabled
+                                                >
+                                                    {category.status}
+                                                </button>
+                                            </td>
                                             <td>
                                                 <IconContext.Provider
                                                     value={{
@@ -415,9 +417,7 @@ const Categories = () => {
                                                     }}
                                                 >
                                                     <DropdownButton
-                                                        className={
-                                                            classes.dropdownButton
-                                                        }
+                                                        className="dropdownButton"
                                                         id="dropdown-item-button"
                                                         title={
                                                             <BsThreeDotsVertical />
@@ -464,9 +464,8 @@ const Categories = () => {
                         </table>
                     </Card>
                 </div>
-            </div>
+            </main>
         </>
-        /* jshint ignore:end */
     );
 };
 

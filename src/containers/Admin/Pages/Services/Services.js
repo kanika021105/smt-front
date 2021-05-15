@@ -9,17 +9,14 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import {
     Form,
-    // Table,
     Modal,
-    Button,
     InputGroup,
     FormControl,
     DropdownButton,
 } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import classes from './Services.module.css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../../sass/pages/admin/services.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
@@ -169,7 +166,7 @@ export default function Services() {
             <Modal.Header closeButton>
                 <Modal.Title>
                     {addError ? (
-                        <span className={classes.addError}>{errorMsg}</span>
+                        <span className="addError">{errorMsg}</span>
                     ) : (
                         'Add Service'
                     )}
@@ -303,12 +300,12 @@ export default function Services() {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleBackdropClick}>
+                    <button variant="secondary" onClick={handleBackdropClick}>
                         Close
-                    </Button>
-                    <Button variant="primary" onClick={addFormSubmitHandler}>
+                    </button>
+                    <button variant="primary" onClick={addFormSubmitHandler}>
                         Submit
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -562,12 +559,12 @@ export default function Services() {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <button variant="secondary" onClick={handleClose}>
                         Close
-                    </Button>
-                    <Button variant="primary" onClick={editingSubmitHandler}>
+                    </button>
+                    <button variant="primary" onClick={editingSubmitHandler}>
                         Submit
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -620,7 +617,11 @@ export default function Services() {
                 </td>
                 <td>{service.rate.toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
-                <td>{service.status}</td>
+                <td>
+                    <button className={'btn btn-success btn-disabled'} disabled>
+                        {service.status}
+                    </button>
+                </td>
                 <td>
                     <IconContext.Provider
                         value={{
@@ -631,7 +632,7 @@ export default function Services() {
                         }}
                     >
                         <DropdownButton
-                            className={classes.dropdownButton}
+                            className="dropdownButton"
                             id="dropdown-item-button"
                             title={<BsThreeDotsVertical />}
                         >
@@ -677,7 +678,7 @@ export default function Services() {
             {addModal}
 
             <div className="container">
-                <div className={classes.Services}>
+                <div className="Services">
                     <div>
                         <h2 className="pageTitle">
                             <IconContext.Provider
@@ -691,43 +692,37 @@ export default function Services() {
                             </IconContext.Provider>{' '}
                             Services
                         </h2>
-                        <span className={classes.addButton}>
-                            <button onClick={handleAddButtonClick}>+</button>
-                        </span>
+                        <button
+                            className="add-button"
+                            onClick={handleAddButtonClick}
+                        >
+                            +
+                        </button>
                     </div>
                     {categories &&
                         categories.map((category) => (
-                            <div
-                                key={category.id}
-                                className={classes.serviceListCard}
-                            >
+                            <div key={category.id} className="serviceListCard">
                                 <Card>
-                                    <h3 className={classes.categoryTitle}>
+                                    <h3 className="categoryTitle">
                                         {category.title}
                                     </h3>
-                                    <div className={classes.customTable}>
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Title</th>
-                                                    <th>
-                                                        Provider - Service Id
-                                                    </th>
-                                                    <th>Min / Max</th>
-                                                    <th>Price</th>
-                                                    <th>Drip Feed</th>
-                                                    <th>Status</th>
-                                                    <th>Option</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {getServiceByCategory(
-                                                    category.id
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>Provider - Service Id</th>
+                                                <th>Min / Max</th>
+                                                <th>Price</th>
+                                                <th>Drip Feed</th>
+                                                <th>Status</th>
+                                                <th>Option</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {getServiceByCategory(category.id)}
+                                        </tbody>
+                                    </table>
                                 </Card>
                             </div>
                         ))}

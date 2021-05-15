@@ -8,7 +8,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/dashboard.scss';
+import '../../../../sass/pages/admin/dashboard.scss';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
 const Dashboard = () => {
@@ -324,9 +324,7 @@ const Dashboard = () => {
                                                                 {service.status ===
                                                                     'active' && (
                                                                     <button
-                                                                        className={
-                                                                            'successBtn'
-                                                                        }
+                                                                        className="btn btn-success btn-disabled"
                                                                         disabled
                                                                     >
                                                                         {service.status[0].toUpperCase() +
@@ -340,9 +338,7 @@ const Dashboard = () => {
                                                                 {service.status ===
                                                                     'deactive' && (
                                                                     <button
-                                                                        className={
-                                                                            'dangerBtn'
-                                                                        }
+                                                                        className="btn btn-danger"
                                                                         disabled
                                                                     >
                                                                         {service.status[0].toUpperCase() +
@@ -396,7 +392,7 @@ const Dashboard = () => {
                                                                 'active' && (
                                                                 <button
                                                                     className={
-                                                                        'successBtn'
+                                                                        'btn btn-success btn-disabled'
                                                                     }
                                                                     disabled
                                                                 >
@@ -507,8 +503,9 @@ const Dashboard = () => {
                                                                 <td>
                                                                     <button
                                                                         className={
-                                                                            'successBtn'
+                                                                            'btn btn-success btn-disabled'
                                                                         }
+                                                                        disabled
                                                                     >
                                                                         {
                                                                             order.status
@@ -572,7 +569,7 @@ const Dashboard = () => {
                                                                         'active' && (
                                                                         <button
                                                                             className={
-                                                                                'successBtn'
+                                                                                'btn btn-success btn-disabled'
                                                                             }
                                                                             disabled
                                                                         >

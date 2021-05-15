@@ -3,12 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
 import {
     Form,
-    // Table,
     Modal,
     Button,
     InputGroup,
@@ -17,7 +15,7 @@ import {
 } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import classes from './Clients.module.css';
+import '../../../../sass/pages/admin/clients.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
@@ -246,7 +244,7 @@ export default function Services() {
             {editModal}
 
             <div className="container">
-                <div className={classes.Clients}>
+                <div className="Clients">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
@@ -283,7 +281,16 @@ export default function Services() {
                                             </td>
                                             <td>{user.role}</td>
                                             <td>{user.balance}</td>
-                                            <td>{user.status}</td>
+                                            <td>
+                                                <button
+                                                    className={
+                                                        'btn btn-success btn-disabled'
+                                                    }
+                                                    disabled
+                                                >
+                                                    {user.status}
+                                                </button>
+                                            </td>
                                             <td>
                                                 <IconContext.Provider
                                                     value={{
@@ -293,9 +300,7 @@ export default function Services() {
                                                     }}
                                                 >
                                                     <DropdownButton
-                                                        className={
-                                                            classes.dropdownButton
-                                                        }
+                                                        className="dropdownButton"
                                                         id="dropdown-item-button"
                                                         title={
                                                             <BsThreeDotsVertical />

@@ -12,18 +12,10 @@ import { VscListSelection } from 'react-icons/vsc';
 import { MdAttachMoney } from 'react-icons/md';
 import { AiOutlineUnorderedList } from 'react-icons/ai';
 
-import {
-    Form,
-    // Table,
-    Modal,
-    // Button,
-    OverlayTrigger,
-    Tooltip,
-} from 'react-bootstrap';
+import { Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/apiProvider.scss';
-import classes from './ApiProvider.module.css';
+import '../../../../sass/pages/admin/apiProvider.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 const Services = () => {
@@ -132,7 +124,7 @@ const Services = () => {
             <Modal.Header closeButton>
                 <Modal.Title>
                     {addError ? (
-                        <span className={classes.addError}>{errorMsg}</span>
+                        <span className="addError">{errorMsg}</span>
                     ) : (
                         'Add Service'
                     )}
@@ -205,7 +197,7 @@ const Services = () => {
             <Modal.Header closeButton>
                 <Modal.Title>
                     {addError ? (
-                        <span className={classes.addError}>{errorMsg}</span>
+                        <span className="addError">{errorMsg}</span>
                     ) : (
                         'Add Service'
                     )}
@@ -308,7 +300,7 @@ const Services = () => {
             <Modal.Header closeButton>
                 <Modal.Title>
                     {addError ? (
-                        <span className={classes.addError}>{errorMsg}</span>
+                        <span className="addError">{errorMsg}</span>
                     ) : (
                         'Sync Services'
                     )}
@@ -431,7 +423,7 @@ const Services = () => {
             {syncModal}
 
             <div className="container">
-                <div className={classes.apiProvider}>
+                <div className="apiProvider">
                     <div>
                         <h2 className="pageTitle">
                             <IconContext.Provider
@@ -445,9 +437,12 @@ const Services = () => {
                             </IconContext.Provider>{' '}
                             Api Providers
                         </h2>
-                        <span className={classes.addButton}>
-                            <button onClick={handleAddButtonClick}>+</button>
-                        </span>
+                        <button
+                            className="add-button"
+                            onClick={handleAddButtonClick}
+                        >
+                            +
+                        </button>
                     </div>
                     <Card>
                         <table className="table">
@@ -483,10 +478,7 @@ const Services = () => {
                                                     <button
                                                         value={apiProvider.id}
                                                         variant="none"
-                                                        className={[
-                                                            classes.apiActionButton,
-                                                            classes.apiActionButtonFirst,
-                                                        ].join(' ')}
+                                                        className="apiActionButton apiActionButtonFirst"
                                                         onClick={() =>
                                                             updateBalanceHandler(
                                                                 apiProvider.id
@@ -521,9 +513,7 @@ const Services = () => {
                                                 >
                                                     <button
                                                         variant="none"
-                                                        className={
-                                                            classes.apiActionButton
-                                                        }
+                                                        className="apiActionButton"
                                                         onClick={() =>
                                                             syncHandler(
                                                                 apiProvider.id
@@ -558,9 +548,7 @@ const Services = () => {
                                                 >
                                                     <button
                                                         variant="none"
-                                                        className={
-                                                            classes.apiActionButton
-                                                        }
+                                                        className="apiActionButton"
                                                         onClick={() =>
                                                             serviceListHandler(
                                                                 apiProvider.id
@@ -595,9 +583,7 @@ const Services = () => {
                                                 >
                                                     <button
                                                         variant="none"
-                                                        className={
-                                                            classes.apiActionButton
-                                                        }
+                                                        className="apiActionButton"
                                                     >
                                                         <IconContext.Provider
                                                             value={{
@@ -627,10 +613,8 @@ const Services = () => {
                                                 >
                                                     <button
                                                         variant="none"
-                                                        className={[
-                                                            classes.apiActionButton,
-                                                            classes.apiActionButtonLast,
-                                                        ].join(' ')}
+                                                        className="apiActionButton
+                                                            apiActionButtonLast"
                                                         onClick={() =>
                                                             deleteHandler(
                                                                 apiProvider.id

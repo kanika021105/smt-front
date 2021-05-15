@@ -7,11 +7,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { Helmet } from 'react-helmet';
 
-import { Button } from 'react-bootstrap';
-
-import Axios from '../../../../axiosIns';
-import classes from './Settings.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../../sass/pages/admin/settings/main.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 const General = lazy(() => import('./General/General'));
@@ -31,7 +27,7 @@ const Settings = () => {
             </Helmet>
 
             <div className="container">
-                <div className={classes.Orders}>
+                <div className="Settings">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{

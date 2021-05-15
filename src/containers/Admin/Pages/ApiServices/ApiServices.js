@@ -11,7 +11,7 @@ import { VscListSelection } from 'react-icons/vsc';
 import { Form, Modal, Button, DropdownButton } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import classes from './ApiServices.module.css';
+import '../../../../sass/pages/admin/apiServices.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 const ApiServices = () => {
@@ -139,7 +139,7 @@ const ApiServices = () => {
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label className={classes.label}>Title</Form.Label>
+                        <Form.Label className="label">Title</Form.Label>
                         <Form.Control
                             placeholder="Title"
                             value={selectedService.title || ''}
@@ -148,9 +148,7 @@ const ApiServices = () => {
                     </Form.Group>
 
                     <Form.Group>
-                        <Form.Label className={classes.label}>
-                            Category
-                        </Form.Label>
+                        <Form.Label className="label">Category</Form.Label>
                         <Form.Control
                             as="select"
                             onChange={categoryChangeHandler}
@@ -171,9 +169,7 @@ const ApiServices = () => {
                     <div className="row">
                         <div className="col-md-6 col-sm-12">
                             <Form.Group>
-                                <Form.Label className={classes.label}>
-                                    Min
-                                </Form.Label>
+                                <Form.Label className="label">Min</Form.Label>
                                 <Form.Control
                                     value={selectedService.min || 0}
                                     onChange={minChangeHandler}
@@ -183,9 +179,7 @@ const ApiServices = () => {
 
                         <div className="col-md-6 col-sm-12">
                             <Form.Group>
-                                <Form.Label className={classes.label}>
-                                    Max
-                                </Form.Label>
+                                <Form.Label className="label">Max</Form.Label>
                                 <Form.Control
                                     value={selectedService.max || 0}
                                     onChange={maxChangeHandler}
@@ -197,9 +191,7 @@ const ApiServices = () => {
                     <div className="row">
                         <div className="col-md-6 col-sm-12">
                             <Form.Group>
-                                <Form.Label className={classes.label}>
-                                    Price
-                                </Form.Label>
+                                <Form.Label className="label">Price</Form.Label>
                                 <Form.Control
                                     placeholder="Price"
                                     type="number"
@@ -211,7 +203,7 @@ const ApiServices = () => {
 
                         <div className="col-md-6 col-sm-12">
                             <Form.Group>
-                                <Form.Label className={classes.label}>
+                                <Form.Label className="label">
                                     Price increase in (%)
                                 </Form.Label>
                                 <Form.Control
@@ -231,9 +223,7 @@ const ApiServices = () => {
                     </div>
 
                     <Form.Group>
-                        <Form.Label className={classes.label}>
-                            Description
-                        </Form.Label>
+                        <Form.Label className="label">Description</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows="5"
@@ -264,7 +254,7 @@ const ApiServices = () => {
             {editModal}
 
             <div className="container">
-                <div className={classes.Clients}>
+                <div className="apiServices">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
@@ -307,9 +297,7 @@ const ApiServices = () => {
                                                     }}
                                                 >
                                                     <DropdownButton
-                                                        className={
-                                                            classes.dropdownButton
-                                                        }
+                                                        className="dropdownButton"
                                                         id="dropdown-item-button"
                                                         title={
                                                             <BsThreeDotsVertical />

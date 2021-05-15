@@ -8,7 +8,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import axios from '../../../../axiosIns';
-import classes from './Support.module.css';
+import '../../../../sass/pages/admin/support.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 const Support = () => {
@@ -67,7 +67,7 @@ const Support = () => {
             </Helmet>
 
             <div className="container">
-                <div className={classes.Support}>
+                <div className="Support">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{

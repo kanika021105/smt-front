@@ -5,6 +5,7 @@ import { Form } from 'react-bootstrap';
 
 import { Helmet } from 'react-helmet';
 import { Button } from 'react-bootstrap';
+import '../../../../../sass/pages/admin/settings/general.scss';
 
 const General = () => {
     const [websiteName, setWebsiteName] = useState('');

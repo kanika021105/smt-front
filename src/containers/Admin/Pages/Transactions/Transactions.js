@@ -7,7 +7,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import axios from '../../../../axiosIns';
-import classes from './Transactions.module.css';
+import '../../../../sass/pages/admin/transactions.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
@@ -30,7 +30,7 @@ export default function Services() {
             </Helmet>
 
             <div className="container">
-                <div className={classes.Transactions}>
+                <div className="Transactions">
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
@@ -64,7 +64,16 @@ export default function Services() {
                                             <td>{transaction.transactionId}</td>
                                             <td>{transaction.amount}</td>
                                             <td>{transaction.paymentMethod}</td>
-                                            <td>{transaction.status}</td>
+                                            <td>
+                                                <button
+                                                    className={
+                                                        'btn btn-success btn-disabled'
+                                                    }
+                                                    disabled
+                                                >
+                                                    {transaction.status}
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                             </tbody>

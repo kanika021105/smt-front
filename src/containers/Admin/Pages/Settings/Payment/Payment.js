@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 import Axios from '../../../../../axiosIns';
+import '../../../../../sass/pages/admin/settings/payment.scss';
 
 const Payment = () => {
     const [secretKey, setSecretKey] = useState('');
