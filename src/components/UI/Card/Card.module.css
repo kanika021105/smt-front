@@ -1,0 +1,17 @@
+.Card {
+    padding: 1.8rem;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+
+    overflow-x: scroll;
+}
+
+.Card::-webkit-scrollbar {
+    display: none;
+}
+
+.Card::-webkit-scrollbar-track {
+    visibility: hidden;
+}

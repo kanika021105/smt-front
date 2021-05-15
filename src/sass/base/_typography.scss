@@ -1,0 +1,24 @@
+@import '../abstracts/extends';
+
+body {
+    line-height: 1.5;
+    color: $color-grey !important;
+    font-family: 'Mulish', sans-serif !important;
+    font-size: 1.6rem !important;
+}
+
+h2 {
+    &.pageTitle {
+        margin: 5rem 0 2.5rem 0;
+        display: inline-block;
+        font-size: 2.6rem;
+        font-weight: 500;
+        color: $color-primary;
+        height: 100%;
+    }
+}
+
+.tableTitle {
+    @extend %titleStyle;
+    padding: 0 0 0.5rem 0;
+}

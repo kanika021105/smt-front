@@ -1,0 +1,54 @@
+.SignUp {
+    margin-top: 2rem;
+    padding: 10px;
+    font-size: 1.6rem;
+    text-align: center;
+    max-width: 90%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.formControl {
+    padding: 4px 4px;
+}
+
+.formControl label {
+    display: block;
+    text-align: left;
+}
+
+.loginButton {
+    color: white;
+    margin: 1rem;
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    background-color: rgb(255, 102, 47);
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    transition: all ease;
+}
+
+.loginButton:hover,
+.loginButton:active,
+.loginButton.active {
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.26);
+}
+
+.primaryButton button {
+    font-size: 1.8rem !important;
+    padding: 0.4rem 1.6rem;
+    margin-top: 1rem;
+    border-radius: 0.4rem;
+    color: #fff;
+}
+
+.errorMsg {
+    font-size: 1.5rem;
+    color: red;
+    padding: 4px;
+    border: 1px solid red;
+    border-radius: 4px;
+}

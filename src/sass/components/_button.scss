@@ -1,0 +1,22 @@
+.btn {
+    border: none;
+    border-radius: 0.5rem;
+    text-transform: capitalize;
+    margin: 0.2rem 0;
+    padding: 0.5rem 1.4rem;
+}
+
+.btn-success {
+    color: $color-white;
+    background-color: darken($color-green, 6);
+}
+
+.successBtn {
+    border: none;
+    color: white;
+    border-radius: 0.5rem;
+    text-transform: capitalize;
+    margin: 0.2rem 0;
+    padding: 0.5rem 1.4rem;
+    background-color: darken($color-green, 6);
+}

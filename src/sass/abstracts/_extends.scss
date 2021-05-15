@@ -1,0 +1,7 @@
+@import './variables';
+
+%titleStyle {
+    font-size: 2.3rem;
+    font-weight: 500;
+    color: lighten($color-primary, 10%);
+}

@@ -1,0 +1,24 @@
+.Footer {
+    height: 4rem;
+    width: 100%;
+    font-size: 1.6rem;
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 1rem 4rem;
+    background-color: #fff;
+
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%);
+}
+
+.Footer a {
+    color: #6c757d;
+    padding: 0 0.5rem;
+    text-decoration: none;
+}
+
+.Footer .copyright {
+    margin-left: auto;
+    padding: 0 40px;
+    display: inline-block;
+    height: 100%;
+}

@@ -1,0 +1,13 @@
+nav {
+    height: 8rem;
+    width: 100%;
+    background-color: $color-white !important;
+
+    box-shadow: 0 0 3rem 0 rgba($color-grey, 0.25);
+
+    & ul {
+        & a {
+            font-size: 1.8rem;
+        }
+    }
+}
