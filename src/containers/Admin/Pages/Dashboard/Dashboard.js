@@ -7,7 +7,10 @@ import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
+import {} from 'react-bootstrap';
+
 import Axios from '../../../../axiosIns';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../../sass/pages/admin/dashboard.scss';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
@@ -68,6 +71,86 @@ const Dashboard = () => {
         return null;
     };
 
+    const getStatus = (status) => {
+        switch (status) {
+            case 'pending':
+                return (
+                    <button className={'btn btn-pending btn-disabled'} disabled>
+                        {status}
+                    </button>
+                );
+            case 'processing':
+                return (
+                    <button
+                        className={'btn btn-processing btn-disabled'}
+                        disabled
+                    >
+                        {status}
+                    </button>
+                );
+
+            case 'inprogress':
+                return (
+                    <button
+                        className={'btn btn-inprogress btn-disabled'}
+                        disabled
+                    >
+                        {status}
+                    </button>
+                );
+
+            case 'completed':
+                return (
+                    <button
+                        className={'btn btn-completed btn-disabled'}
+                        disabled
+                    >
+                        {status}
+                    </button>
+                );
+
+            case 'cancelled':
+                return (
+                    <button
+                        className={'btn btn-cancelled btn-disabled'}
+                        disabled
+                    >
+                        {status}
+                    </button>
+                );
+
+            case 'partial':
+                return (
+                    <button className={'btn btn-partial btn-disabled'} disabled>
+                        {status}
+                    </button>
+                );
+
+            default:
+                break;
+        }
+    };
+
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return (
+                    <button className="btn btn-active btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+
+            case 'disable':
+                return (
+                    <button className="btn btn-inactive btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+            default:
+                break;
+        }
+    };
+
     // TODO Change title to dynamic
     return (
         <>
@@ -91,7 +174,7 @@ const Dashboard = () => {
 
                 <section className="section__one">
                     <div className="row">
-                        <div className="col-1-of-4">
+                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <span className={'section__one__dataTitle'}>
                                     Total Amount
@@ -104,7 +187,7 @@ const Dashboard = () => {
                             </DashboardCard>
                         </div>
 
-                        <div className="col-1-of-4">
+                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <span className={'section__one__dataTitle'}>
                                     Total User
@@ -115,7 +198,7 @@ const Dashboard = () => {
                             </DashboardCard>
                         </div>
 
-                        <div className="col-1-of-4">
+                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <span className={'section__one__dataTitle'}>
                                     Total Order
@@ -126,7 +209,7 @@ const Dashboard = () => {
                             </DashboardCard>
                         </div>
 
-                        <div className="col-1-of-4">
+                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <span className={'section__one__dataTitle'}>
                                     Total Ticket
@@ -141,7 +224,7 @@ const Dashboard = () => {
 
                 <section className="section__two">
                     <div className="row">
-                        <div className="col-3-of-4">
+                        <div className="col-lg-9 col-md-8 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <span className={'section__two--graphHeight'}>
                                     Graph
@@ -149,14 +232,14 @@ const Dashboard = () => {
                             </DashboardCard>
                         </div>
 
-                        <div className="col-1-of-4">
+                        <div className="col-lg-3 col-md-4 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <div className={'section__two--summaryTitle'}>
                                     Orders
                                 </div>
                                 <div className={'section__two--summaryData'}>
                                     <div className="row">
-                                        <div className="col-1-of-2">
+                                        <div className="col-6">
                                             <span
                                                 className={
                                                     'section__two--statusTitle pendingColor'
@@ -214,7 +297,7 @@ const Dashboard = () => {
                                             </span>
                                         </div>
 
-                                        <div className="col-1-of-2">
+                                        <div className="col-6">
                                             <span
                                                 className={
                                                     'section__two--statusData pendingColor'
@@ -288,7 +371,7 @@ const Dashboard = () => {
 
                 <section className="section__third">
                     <div className="row">
-                        <div className="col-1-of-2">
+                        <div className="col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <div className={'tableTitle'}>
                                     Top 10 best selling services
@@ -321,33 +404,8 @@ const Dashboard = () => {
                                                                     : service.title}
                                                             </td>
                                                             <td>
-                                                                {service.status ===
-                                                                    'active' && (
-                                                                    <button
-                                                                        className="btn btn-success btn-disabled"
-                                                                        disabled
-                                                                    >
-                                                                        {service.status[0].toUpperCase() +
-                                                                            service.status
-                                                                                .substring(
-                                                                                    1
-                                                                                )
-                                                                                .toLowerCase()}
-                                                                    </button>
-                                                                )}
-                                                                {service.status ===
-                                                                    'deactive' && (
-                                                                    <button
-                                                                        className="btn btn-danger"
-                                                                        disabled
-                                                                    >
-                                                                        {service.status[0].toUpperCase() +
-                                                                            service.status
-                                                                                .substring(
-                                                                                    1
-                                                                                )
-                                                                                .toLowerCase()}
-                                                                    </button>
+                                                                {checkStatus(
+                                                                    service.status
                                                                 )}
                                                             </td>
                                                         </tr>
@@ -359,7 +417,7 @@ const Dashboard = () => {
                             </DashboardCard>
                         </div>
 
-                        <div className="col-1-of-2">
+                        <div className="col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
                                 <div className={'tableTitle'}>
                                     Last 10 Account created
@@ -433,7 +491,7 @@ const Dashboard = () => {
 
                 <section className="section__forth">
                     <div className="row">
-                        <div className="col-md-12">
+                        <div className="col-md-12 u-mb-2 u-sm-mb-1">
                             <div className="m-1">
                                 <DashboardCard>
                                     <div className={'tableTitle'}>
@@ -501,16 +559,9 @@ const Dashboard = () => {
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    <button
-                                                                        className={
-                                                                            'btn btn-success btn-disabled'
-                                                                        }
-                                                                        disabled
-                                                                    >
-                                                                        {
-                                                                            order.status
-                                                                        }
-                                                                    </button>
+                                                                    {getStatus(
+                                                                        order.status
+                                                                    )}
                                                                 </td>
                                                             </tr>
                                                         )
@@ -526,7 +577,7 @@ const Dashboard = () => {
 
                 <section className="section__fifth">
                     <div className="row">
-                        <div className="col-md-12">
+                        <div className="col-md-12 u-mb-2 u-sm-mb-1">
                             <div className="m-1">
                                 <DashboardCard>
                                     <div className={'tableTitle'}>

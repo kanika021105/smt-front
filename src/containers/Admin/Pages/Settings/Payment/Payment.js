@@ -5,6 +5,7 @@ import { Form, Button } from 'react-bootstrap';
 
 import Axios from '../../../../../axiosIns';
 import '../../../../../sass/pages/admin/settings/payment.scss';
+import classes from '../../../../../sass/pages/admin/settings/payment.scss';
 
 const Payment = () => {
     const [secretKey, setSecretKey] = useState('');
@@ -52,29 +53,34 @@ const Payment = () => {
         <>
             <div className="border p-4">
                 <form onSubmit={formSubmitHandler}>
-                    <Form.Group>
-                        <Form.Label>RazorPay Details</Form.Label>
-                        <div>
-                            <div className="pb-2">
-                                <Form.Label>Secret Key</Form.Label>
-                                <Form.Control
-                                    value={secretKey}
-                                    placeholder={'Key Secret'}
-                                    onChange={secretChangeHandler}
-                                />
-                            </div>
-
-                            <div>
-                                <Form.Label>Key Id</Form.Label>
-                                <Form.Control
-                                    value={keyId}
-                                    placeholder={'Key Id'}
-                                    onChange={keyIdChangeHandler}
-                                />
-                            </div>
+                    <div>
+                        <h3 className="payment__heading">RazorPay Details</h3>
+                        <div className="mt-2">
+                            <label className="input__label">Secret Key</label>
+                            <input
+                                className="input"
+                                type="text"
+                                value={secretKey}
+                                placeholder={'Key Secret'}
+                                onChange={secretChangeHandler}
+                            />
                         </div>
-                    </Form.Group>
-                    <Button type="submit">Submit</Button>
+
+                        <div className="mt-2">
+                            <label className="input__label">Key Id</label>
+                            <input
+                                className="input"
+                                type="text"
+                                value={keyId}
+                                placeholder={'Key Id'}
+                                onChange={keyIdChangeHandler}
+                            />
+                        </div>
+                    </div>
+
+                    <button className="mt-4 btn btn-primary" type="submit">
+                        Save
+                    </button>
                 </form>
             </div>
         </>

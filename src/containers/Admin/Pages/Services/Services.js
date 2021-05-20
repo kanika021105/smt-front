@@ -17,6 +17,7 @@ import {
 
 import Axios from '../../../../axiosIns';
 import '../../../../sass/pages/admin/services.scss';
+import 'bootstrap/js/dist/dropdown';
 import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
@@ -163,147 +164,155 @@ export default function Services() {
 
     const addModal = (
         <Modal show={showAddModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    {addError ? (
-                        <span className="addError">{errorMsg}</span>
-                    ) : (
-                        'Add Service'
-                    )}
-                </Modal.Title>
+            <Modal.Header closeButton closeLabel="">
+                <Modal.Title>Add Service</Modal.Title>
             </Modal.Header>
+
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
-                    <div className="pr-2">
-                        <label>Category</label>
-                        <Form.Group>
-                            <Form.Control
-                                as="select"
-                                value={cateId}
-                                onChange={addCategoryChangeHandler}
+                    <div>
+                        <label className="input__label">Category</label>
+                        <select
+                            className="select"
+                            value={cateId}
+                            onChange={addCategoryChangeHandler}
+                        >
+                            <option key={0} value={null}>
+                                Choose a service
+                            </option>
+                            {categories &&
+                                categories.map((category) => (
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
+                                        {category.title}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+
+                    <div className="pt-3">
+                        <label className="input__label">Title</label>
+                        <input
+                            className="input"
+                            placeholder="Title"
+                            type="text"
+                            value={title}
+                            onChange={addTitleChangeHandler}
+                        />
+                    </div>
+
+                    <div className="row pt-3">
+                        <div className="col-md-6">
+                            <label className="input__label">Api Provider</label>
+                            <input
+                                placeholder="Api Provider"
+                                className="input"
+                                value={provider}
+                                onChange={addApiProviderChange}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+                            <label className="input__label">
+                                Api Service Id
+                            </label>
+                            <input
+                                className="input"
+                                placeholder="Api Service Id"
+                                type="number"
+                                value={apiServiceId}
+                                onChange={addApiServiceIdChangeHandler}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row pt-3">
+                        <div className="col-md-6">
+                            <label className="input__label">Min</label>
+                            <input
+                                className="input"
+                                placeholder="Min"
+                                type="number"
+                                value={min}
+                                onChange={addMinChangeHandler}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+                            <label className="input__label">Max</label>
+                            <input
+                                className="input"
+                                placeholder="Max"
+                                type="number"
+                                value={max}
+                                onChange={addMaxChangeHandler}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row pt-3">
+                        <div className="col-md-4">
+                            <label className="input__label">Price</label>
+                            <input
+                                className="input"
+                                value={price}
+                                type="number"
+                                onChange={addPriceChangeHandler}
+                            />
+                        </div>
+
+                        <div className="col-md-4">
+                            <label className="input__label">Status</label>
+                            <select
+                                className="select"
+                                value={status}
+                                onChange={addStatusChangeHandler}
                             >
-                                <option key={0} value={null}>
-                                    Choose a service
-                                </option>
-                                {categories &&
-                                    categories.map((category) => (
-                                        <option
-                                            key={category.id}
-                                            value={category.id}
-                                        >
-                                            {category.title}
-                                        </option>
-                                    ))}
-                            </Form.Control>
-                        </Form.Group>
-                    </div>
+                                <option value="disable">Disable</option>
+                                <option value="active">Active</option>
+                            </select>
+                        </div>
 
-                    <div className="pr-2">
-                        <label>Title</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                value={title}
-                                onChange={addTitleChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                        <div className="col-md-4">
+                            <label className="input__label">Drip Feed</label>
+                            <select
+                                className="select"
+                                value={dripFeed}
+                                onChange={addDripFeedChangeHandler}
+                            >
+                                <option value="disable">Disable</option>
+                                <option value="active">Active</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Api Provider</label>
-                                <FormControl
-                                    value={provider}
-                                    onChange={addApiProviderChange}
-                                />
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Api Service Id</label>
-                                <FormControl
-                                    value={apiServiceId}
-                                    onChange={addApiServiceIdChangeHandler}
-                                />
-                            </div>
-                        </InputGroup>
-                    </div>
-
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Min</label>
-                                <FormControl
-                                    value={min}
-                                    onChange={addMinChangeHandler}
-                                />
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Max</label>
-                                <FormControl
-                                    value={max}
-                                    onChange={addMaxChangeHandler}
-                                />
-                            </div>
-                        </InputGroup>
-                    </div>
-
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Price</label>
-                                <FormControl
-                                    value={price}
-                                    onChange={addPriceChangeHandler}
-                                />
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Status</label>
-                                <Form.Group>
-                                    <Form.Control
-                                        as="select"
-                                        value={status}
-                                        onChange={addStatusChangeHandler}
-                                    >
-                                        <option value="disable">Disable</option>
-                                        <option value="active">Active</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Drip Feed</label>
-                                <Form.Group>
-                                    <Form.Control
-                                        as="select"
-                                        value={dripFeed}
-                                        onChange={addDripFeedChangeHandler}
-                                    >
-                                        <option value="disable">Disable</option>
-                                        <option value="active">Active</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
-                        </InputGroup>
-                    </div>
-
-                    <div>
-                        <label>Desc</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                as="textarea"
-                                value={desc}
-                                onChange={addDescChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                        <label className="input__label">Desc</label>
+                        <textarea
+                            className="input"
+                            placeholder="Description..."
+                            value={desc}
+                            rows={3}
+                            onChange={addDescChangeHandler}
+                        />
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <button variant="secondary" onClick={handleBackdropClick}>
+                    <div style={{ margin: '0 auto 0 0' }}></div>
+
+                    <button
+                        className="btn btn-secondary"
+                        onClick={handleBackdropClick}
+                    >
                         Close
                     </button>
-                    <button variant="primary" onClick={addFormSubmitHandler}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={addFormSubmitHandler}
+                    >
                         Submit
                     </button>
                 </Modal.Footer>
@@ -429,140 +438,148 @@ export default function Services() {
     // Edit
     const editModal = editingService && (
         <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Edit Service</Modal.Title>
             </Modal.Header>
+
             <form onSubmit={editingSubmitHandler}>
                 <Modal.Body>
-                    <div className="pr-2">
-                        <label>Category</label>
-                        <Form.Group>
-                            <Form.Control
-                                as="select"
-                                value={editedCateId}
-                                onChange={categoryChangeHandler}
+                    <div>
+                        <label className="input__label">Category</label>
+                        <select
+                            className="select"
+                            value={editedCateId}
+                            onChange={categoryChangeHandler}
+                        >
+                            {categories &&
+                                categories.map((category) => (
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
+                                        {category.title}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+
+                    <div className="pt-2">
+                        <label className="input__label">Title</label>
+                        <input
+                            placeholder="Title"
+                            className="input"
+                            type="text"
+                            value={editedTitle}
+                            onChange={titleChangeHandler}
+                        />
+                    </div>
+
+                    <div className="row pt-2">
+                        <div className="col-md-6">
+                            <label className="input__label">Api Provider</label>
+                            <input
+                                className="input"
+                                placeholder="Api Provider"
+                                value={editedApi}
+                                onChange={providerChangeHandler}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+                            <label className="input__label">
+                                Api Service Id
+                            </label>
+                            <input
+                                className="input"
+                                placeholder="Api Service Id"
+                                type="number"
+                                value={editedApiServiceId}
+                                onChange={apiServiceChangeHandler}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row pt-2">
+                        <div className="col-md-6">
+                            <label className="input__label">Min</label>
+                            <input
+                                className="input"
+                                placeholder="Min"
+                                type="number"
+                                value={editedMin}
+                                onChange={minChangeHandler}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+                            <label className="input__label">Max</label>
+                            <input
+                                className="input"
+                                placeholder="max"
+                                type="number"
+                                value={editedMax}
+                                onChange={maxChangeHandler}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row pt-2">
+                        <div className="col-md-4">
+                            <label className="input__label">Price</label>
+                            <input
+                                className="input"
+                                placeholder="Price"
+                                type="number"
+                                value={editedPrice || 0}
+                                onChange={priceChangeHandler}
+                            />
+                        </div>
+
+                        <div className="col-md-4">
+                            <label className="input__label">Status</label>
+                            <select
+                                className="select"
+                                value={editedStatus}
+                                onChange={statusChangeHandler}
                             >
-                                {categories &&
-                                    categories.map((category) => (
-                                        <option
-                                            key={category.id}
-                                            value={category.id}
-                                        >
-                                            {category.title}
-                                        </option>
-                                    ))}
-                            </Form.Control>
-                        </Form.Group>
+                                <option value="disable">Disable</option>
+                                <option value="active">Active</option>
+                            </select>
+                        </div>
+
+                        <div className="col-md-4">
+                            <label className="input__label">Drip Feed</label>
+                            <select
+                                className="select"
+                                value={editedDripFeed}
+                                onChange={dripFeedChangeHandler}
+                            >
+                                <option value="deactive">Disable</option>
+                                <option value="active">Active</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="pr-2">
-                        <label>Title</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                value={editedTitle}
-                                onChange={titleChangeHandler}
-                            />
-                        </InputGroup.Prepend>
-                    </div>
-
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Api Provider</label>
-                                <FormControl
-                                    value={editedApi}
-                                    onChange={providerChangeHandler}
-                                />
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Api Service Id</label>
-                                <FormControl
-                                    value={editedApiServiceId}
-                                    onChange={apiServiceChangeHandler}
-                                />
-                            </div>
-                        </InputGroup>
-                    </div>
-
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Min</label>
-                                <FormControl
-                                    value={editedMin}
-                                    onChange={minChangeHandler}
-                                />
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Max</label>
-                                <FormControl
-                                    value={editedMax}
-                                    onChange={maxChangeHandler}
-                                />
-                            </div>
-                        </InputGroup>
-                    </div>
-
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Price</label>
-                                <FormControl
-                                    value={editedPrice}
-                                    onChange={priceChangeHandler}
-                                />
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Status</label>
-                                <Form.Group>
-                                    <Form.Control
-                                        as="select"
-                                        value={editedStatus}
-                                        onChange={statusChangeHandler}
-                                    >
-                                        <option value="disable">Disable</option>
-                                        <option value="active">Active</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
-
-                            <div className="pl-1">
-                                <label>Drip Feed</label>
-                                <Form.Group>
-                                    <Form.Control
-                                        as="select"
-                                        value={editedDripFeed}
-                                        onChange={dripFeedChangeHandler}
-                                    >
-                                        <option value="deactive">
-                                            Disable
-                                        </option>
-                                        <option value="active">Active</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
-                        </InputGroup>
-                    </div>
-
-                    <div>
-                        <label>Desc</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                as="textarea"
-                                value={editedDesc}
-                                onChange={descChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div className="pt-2">
+                        <label className="input__label">Desc</label>
+                        <textarea
+                            className="input"
+                            placeholder="Description..."
+                            value={editedDesc}
+                            rows="3"
+                            onChange={descChangeHandler}
+                        />
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <button variant="secondary" onClick={handleClose}>
+                    <button className="btn btn-secondary" onClick={handleClose}>
                         Close
                     </button>
-                    <button variant="primary" onClick={editingSubmitHandler}>
+                    <button
+                        className="btn btn-primary"
+                        onClick={editingSubmitHandler}
+                    >
                         Submit
                     </button>
                 </Modal.Footer>
@@ -617,11 +634,7 @@ export default function Services() {
                 </td>
                 <td>{service.rate.toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
-                <td>
-                    <button className={'btn btn-success btn-disabled'} disabled>
-                        {service.status}
-                    </button>
-                </td>
+                <td>{checkStatus(service.status)}</td>
                 <td>
                     <IconContext.Provider
                         value={{
@@ -631,7 +644,46 @@ export default function Services() {
                             },
                         }}
                     >
-                        <DropdownButton
+                        <div className="dropdown">
+                            <span
+                                id="option"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <BsThreeDotsVertical />
+                            </span>
+                            <ul
+                                className="dropdown-menu"
+                                aria-labelledby="option"
+                            >
+                                <li>
+                                    <button
+                                        className="btn btn-edit"
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        value={service.id}
+                                        onClick={editButtonHandler}
+                                    >
+                                        Edit
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        className="btn btn-delete"
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        value={service.id}
+                                        onClick={deleteButtonHandler}
+                                    >
+                                        Delete
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* <DropdownButton
                             className="dropdownButton"
                             id="dropdown-item-button"
                             title={<BsThreeDotsVertical />}
@@ -660,11 +712,31 @@ export default function Services() {
                                     Delete
                                 </button>
                             </div>
-                        </DropdownButton>
+                        </DropdownButton> */}
                     </IconContext.Provider>
                 </td>
             </tr>
         ));
+    };
+
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return (
+                    <button className="btn btn-active btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+
+            case 'disable':
+                return (
+                    <button className="btn btn-inactive btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+            default:
+                break;
+        }
     };
 
     // TODO Change title to dynamic

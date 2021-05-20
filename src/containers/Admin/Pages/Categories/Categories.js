@@ -5,17 +5,11 @@ import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import '../../../../sass/pages/admin/categories.scss';
+import 'bootstrap/js/dist/dropdown';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
 
-import {
-    Form,
-    Modal,
-    Button,
-    InputGroup,
-    FormControl,
-    DropdownButton,
-} from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
@@ -118,73 +112,72 @@ const Categories = () => {
 
     const addModal = (
         <Modal show={showAddModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    {addError ? (
-                        <span className="addError">{errorMsg}</span>
-                    ) : (
-                        'Add Category'
-                    )}
-                </Modal.Title>
+            <Modal.Header closeButton closeLabel="">
+                <Modal.Title>Add Category</Modal.Title>
             </Modal.Header>
 
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
-                    <div className="pr-2">
-                        <label>Title</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                placeholder="Enter title..."
-                                value={title || ''}
-                                onChange={addTitleChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div>
+                        <label className="input__label">Title</label>
+                        <input
+                            className="input"
+                            placeholder="Enter title"
+                            type="text"
+                            value={title || ''}
+                            onChange={addTitleChangeHandler}
+                        />
                     </div>
 
-                    <div className="pr-2">
-                        <label>Short</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                type="number"
-                                value={short || ''}
-                                onChange={addShortChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div>
+                        <label className="input__label">Short</label>
+                        <input
+                            placeholder="Enter short number"
+                            className="input"
+                            type="number"
+                            value={short || ''}
+                            onChange={addShortChangeHandler}
+                        />
                     </div>
 
-                    <div className="pr-2">
-                        <label>Desc</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                as="textarea"
-                                value={desc || ''}
-                                onChange={addDescChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div>
+                        <label className="input__label">Desc</label>
+                        <textarea
+                            placeholder="Enter description..."
+                            className="input"
+                            value={desc || ''}
+                            rows={3}
+                            onChange={addDescChangeHandler}
+                        />
                     </div>
 
-                    <div className="pr-2">
-                        <label>Status</label>
-                        <Form.Group>
-                            <Form.Control
-                                as="select"
-                                value={status}
-                                onChange={addStatusChangeHandler}
-                            >
-                                <option value="disable">Disable</option>
-                                <option value="active">Active</option>
-                            </Form.Control>
-                        </Form.Group>
+                    <div>
+                        <label className="input__label">Status</label>
+                        <select
+                            className="select"
+                            value={status}
+                            onChange={addStatusChangeHandler}
+                        >
+                            <option value="disable">Disable</option>
+                            <option value="active">Active</option>
+                        </select>
                     </div>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleBackdropClick}>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={handleBackdropClick}
+                    >
                         Close
-                    </Button>
-                    <Button type="submit" variant="primary">
+                    </button>
+                    <button
+                        className="btn btn-primary"
+                        type="submit"
+                        onClick={formSubmitHandler}
+                    >
                         Create
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -268,64 +261,65 @@ const Categories = () => {
 
     const editModal = (
         <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Edit Category</Modal.Title>
             </Modal.Header>
+
             <form onSubmit={editingSubmitHandler}>
                 <Modal.Body>
-                    <div className="pr-2">
-                        <label>Title</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                value={(editedTitle && editedTitle) || ''}
-                                onChange={titleChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div>
+                        <label className="input__label">Title</label>
+                        <input
+                            className="input"
+                            placeholder="Title"
+                            type="text"
+                            value={editedTitle || ''}
+                            onChange={titleChangeHandler}
+                        />
                     </div>
 
-                    <div className="pr-2">
-                        <label>Desc</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                as="textarea"
-                                row="3"
-                                value={(editedDesc && editedDesc) || ''}
-                                onChange={descChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div className="pt-3">
+                        <label className="input__label">Description</label>
+                        <textarea
+                            rows="3"
+                            className="input"
+                            placeholder="Description..."
+                            value={editedDesc || ''}
+                            onChange={descChangeHandler}
+                        />
                     </div>
 
-                    <div className="pr-2">
-                        <label>Short</label>
-                        <InputGroup.Prepend>
-                            <FormControl
-                                value={(editedShort && editedShort) || ''}
-                                onChange={shortChangeHandler}
-                            />
-                        </InputGroup.Prepend>
+                    <div className="pt-3">
+                        <label className="input__label">Short</label>
+                        <input
+                            className="input"
+                            type="number"
+                            placeholder="short"
+                            value={(editedShort && editedShort) || ''}
+                            onChange={shortChangeHandler}
+                        />
                     </div>
 
-                    <div className="pr-2">
-                        <label>Status</label>
-                        <Form.Group>
-                            <Form.Control
-                                as="select"
-                                value={(editedStatus && editedStatus) || ''}
-                                onChange={statusChangeHandler}
-                            >
-                                <option value="disable">Disable</option>
-                                <option value="active">Active</option>
-                            </Form.Control>
-                        </Form.Group>
+                    <div className="pt-3">
+                        <label className="input__label">Status</label>
+                        <select
+                            className="select"
+                            value={editedStatus || ''}
+                            onChange={statusChangeHandler}
+                        >
+                            <option value="disable">Disable</option>
+                            <option value="active">Active</option>
+                        </select>
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <button className="btn btn-secondary" onClick={handleClose}>
                         Close
-                    </Button>
-                    <Button variant="primary" type="submit">
+                    </button>
+                    <button className="btn btn-primary" type="submit">
                         Submit
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -340,6 +334,26 @@ const Categories = () => {
         await Axios.delete(url, { id });
         setCategories([...newList]);
         return;
+    };
+
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return (
+                    <button className="btn btn-active btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+
+            case 'disable':
+                return (
+                    <button className="btn btn-inactive btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+            default:
+                break;
+        }
     };
 
     // TODO Change title to dynamic
@@ -367,14 +381,12 @@ const Categories = () => {
                             </IconContext.Provider>{' '}
                             Categories
                         </h2>
-                        {/* <span className="addButton"> */}
                         <button
                             className="add-button"
                             onClick={handleAddButtonClick}
                         >
                             +
                         </button>
-                        {/* </span> */}
                     </div>
 
                     <Card>
@@ -398,14 +410,7 @@ const Categories = () => {
                                             <td>{category.desc}</td>
                                             <td>{category.short}</td>
                                             <td>
-                                                <button
-                                                    className={
-                                                        'btn btn-success btn-disabled'
-                                                    }
-                                                    disabled
-                                                >
-                                                    {category.status}
-                                                </button>
+                                                {checkStatus(category.status)}
                                             </td>
                                             <td>
                                                 <IconContext.Provider
@@ -416,46 +421,53 @@ const Categories = () => {
                                                         },
                                                     }}
                                                 >
-                                                    <DropdownButton
-                                                        className="dropdownButton"
-                                                        id="dropdown-item-button"
-                                                        title={
+                                                    <div className="dropdown ">
+                                                        <span
+                                                            id="option"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                        >
                                                             <BsThreeDotsVertical />
-                                                        }
-                                                    >
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-info"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={
-                                                                    category.id
-                                                                }
-                                                                onClick={
-                                                                    editButtonHandler
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </button>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-danger"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={
-                                                                    category.id
-                                                                }
-                                                                onClick={
-                                                                    deleteButtonHandler
-                                                                }
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </div>
-                                                    </DropdownButton>
+                                                        </span>
+                                                        <ul
+                                                            className="dropdown-menu"
+                                                            aria-labelledby="option"
+                                                        >
+                                                            <li>
+                                                                <button
+                                                                    className="btn btn-edit"
+                                                                    style={{
+                                                                        width: '100%',
+                                                                    }}
+                                                                    value={
+                                                                        category.id
+                                                                    }
+                                                                    onClick={
+                                                                        editButtonHandler
+                                                                    }
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            </li>
+
+                                                            <li>
+                                                                <button
+                                                                    className="btn btn-delete"
+                                                                    style={{
+                                                                        width: '100%',
+                                                                    }}
+                                                                    value={
+                                                                        category.id
+                                                                    }
+                                                                    onClick={
+                                                                        deleteButtonHandler
+                                                                    }
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </IconContext.Provider>
                                             </td>
                                         </tr>

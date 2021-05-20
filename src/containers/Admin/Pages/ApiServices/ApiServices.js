@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/js/dist/dropdown';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
-import { Form, Modal, Button, DropdownButton } from 'react-bootstrap';
+import { Form, Modal, Button } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
 import '../../../../sass/pages/admin/apiServices.scss';
@@ -44,7 +44,6 @@ const ApiServices = () => {
             (ser) => ser.service === serviceId
         );
 
-        console.log(service);
         setSelectedService({
             description: service[0].desc,
             dripFeed: +service[0].dripfeed,
@@ -131,27 +130,33 @@ const ApiServices = () => {
     };
 
     const counter = percentageCount();
-    const editModal = (
+    const addUpdateModal = (
         <Modal show={showAddModal} onHide={handleClose}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Add Service</Modal.Title>
             </Modal.Header>
+
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
-                    <Form.Group>
-                        <Form.Label className="label">Title</Form.Label>
-                        <Form.Control
+                    <div>
+                        <label className="input__label">Title</label>
+                        <input
+                            className="input"
+                            type="text"
                             placeholder="Title"
                             value={selectedService.title || ''}
                             onChange={titleChangeHandler}
+                            required
                         />
-                    </Form.Group>
+                    </div>
 
-                    <Form.Group>
-                        <Form.Label className="label">Category</Form.Label>
-                        <Form.Control
-                            as="select"
+                    <div className="mt-2">
+                        <label className="input__label">Category</label>
+                        <select
+                            className="select"
+                            value={selectedService.categoryId}
                             onChange={categoryChangeHandler}
+                            required
                         >
                             <option>Choose a category</option>
                             {categories &&
@@ -163,82 +168,90 @@ const ApiServices = () => {
                                         {category.title}
                                     </option>
                                 ))}
-                        </Form.Control>
-                    </Form.Group>
+                        </select>
+                    </div>
 
-                    <div className="row">
-                        <div className="col-md-6 col-sm-12">
-                            <Form.Group>
-                                <Form.Label className="label">Min</Form.Label>
-                                <Form.Control
-                                    value={selectedService.min || 0}
-                                    onChange={minChangeHandler}
-                                />
-                            </Form.Group>
+                    <div className="row mt-2">
+                        <div className="col-md-6">
+                            <label className="input__label">
+                                Minimum Quantity
+                            </label>
+                            <input
+                                className="input"
+                                type="number"
+                                placeholder="Minimum"
+                                value={selectedService.min || 0}
+                                onChange={minChangeHandler}
+                                required
+                            />
                         </div>
 
-                        <div className="col-md-6 col-sm-12">
-                            <Form.Group>
-                                <Form.Label className="label">Max</Form.Label>
-                                <Form.Control
-                                    value={selectedService.max || 0}
-                                    onChange={maxChangeHandler}
-                                />
-                            </Form.Group>
+                        <div className="col-md-6">
+                            <label className="input__label">
+                                Maximum Quantity
+                            </label>
+                            <input
+                                className="input"
+                                type="number"
+                                placeholder="Maximum"
+                                value={selectedService.max || 0}
+                                onChange={maxChangeHandler}
+                                required
+                            />
                         </div>
                     </div>
 
-                    <div className="row">
-                        <div className="col-md-6 col-sm-12">
-                            <Form.Group>
-                                <Form.Label className="label">Price</Form.Label>
-                                <Form.Control
-                                    placeholder="Price"
-                                    type="number"
-                                    value={selectedService.rate || 0}
-                                    disabled
-                                />
-                            </Form.Group>
+                    <div className="row mt-2">
+                        <div className="col-md-6">
+                            <label className="input__label">Price</label>
+                            <input
+                                className="input input--disabled"
+                                placeholder="Price"
+                                type="number"
+                                value={selectedService.rate || 0}
+                                disabled
+                            />
                         </div>
 
-                        <div className="col-md-6 col-sm-12">
-                            <Form.Group>
-                                <Form.Label className="label">
-                                    Price increase in (%)
-                                </Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={profitMargin}
-                                    onChange={profitMarginChangeHandler}
-                                >
-                                    {counter &&
-                                        counter.map((count) => (
-                                            <option key={count} value={count}>
-                                                {`${count}%`}
-                                            </option>
-                                        ))}
-                                </Form.Control>
-                            </Form.Group>
+                        <div className="col-md-6">
+                            <label className="input__label">
+                                Price increase in (%)
+                            </label>
+                            <select
+                                className="select"
+                                value={profitMargin}
+                                onChange={profitMarginChangeHandler}
+                            >
+                                {counter &&
+                                    counter.map((count) => (
+                                        <option key={count} value={count}>
+                                            {`${count}%`}
+                                        </option>
+                                    ))}
+                            </select>
                         </div>
                     </div>
 
-                    <Form.Group>
-                        <Form.Label className="label">Description</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows="5"
+                    <div className="mt-2">
+                        <label className="input__label">Description</label>
+                        <textarea
+                            className="input"
+                            rows="4"
+                            placeholder="Description..."
                             value={selectedService.description || ''}
                             onChange={descChangeHandler}
                         />
-                    </Form.Group>
+                    </div>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <button className="btn btn-secondary" onClick={handleClose}>
                         Close
-                    </Button>
-                    <Button variant="primary" type="submit">
+                    </button>
+
+                    <button className="btn btn-primary" type="submit">
                         Submit
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -251,7 +264,7 @@ const ApiServices = () => {
                 <title>Api Services - SMT Panel</title>
             </Helmet>
 
-            {editModal}
+            {addUpdateModal}
 
             <div className="container">
                 <div className="apiServices">
@@ -296,30 +309,36 @@ const ApiServices = () => {
                                                         },
                                                     }}
                                                 >
-                                                    <DropdownButton
-                                                        className="dropdownButton"
-                                                        id="dropdown-item-button"
-                                                        title={
+                                                    <div className="dropdown ">
+                                                        <span
+                                                            id="option"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                        >
                                                             <BsThreeDotsVertical />
-                                                        }
-                                                    >
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-info"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={
-                                                                    service.service
-                                                                }
-                                                                onClick={
-                                                                    addButtonHandler
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </button>
-                                                        </div>
-                                                    </DropdownButton>
+                                                        </span>
+                                                        <ul
+                                                            className="dropdown-menu"
+                                                            aria-labelledby="option"
+                                                        >
+                                                            <li>
+                                                                <button
+                                                                    className="btn btn-info"
+                                                                    style={{
+                                                                        width: '100%',
+                                                                    }}
+                                                                    value={
+                                                                        service.service
+                                                                    }
+                                                                    onClick={
+                                                                        addButtonHandler
+                                                                    }
+                                                                >
+                                                                    Add/Update
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </IconContext.Provider>
                                             </td>
                                         </tr>

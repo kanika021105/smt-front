@@ -5,3 +5,124 @@
         clear: both;
     }
 }
+
+// Media query managers
+/*
+300 - 400px: media-3
+400 - 500px: media-4
+500 - 600px: media-5
+600 - 700px: media-6
+700 - 800px: media-7
+800 - 900px: media-8
+900 - 1000px: media-9
+1000 - 1100px: media-10
+1100 - 1200px: media-11
+1200 - 1300px: media-12
+1300 - 1400px: media-13
+1400 -  * : media-14
+
+ */
+
+/*
+$breakpoint argument choices
+- media-3
+- media-4
+- media-5
+- media-6
+- media-7
+- media-8
+- media-9
+- media-10
+- media-11
+- media-12
+- media-13
+- media-14
+
+1em = 16px
+ */
+
+@mixin respond($breakpoint) {
+    // 300px
+    @if $breakpoint == media-3 {
+        @media (min-width: 300px) {
+            @content;
+        }
+    }
+
+    // 400px
+    @if $breakpoint == media-4 {
+        @media (min-width: 400px) {
+            @content;
+        }
+    }
+
+    // 500px
+    @if $breakpoint == media5 {
+        @media (min-width: 500px) {
+            @content;
+        }
+    }
+
+    // 600px
+    @if $breakpoint == media-6 {
+        @media (min-width: 600px) {
+            @content;
+        }
+    }
+
+    // 700px
+    @if $breakpoint == media-7 {
+        @media (min-width: 700px) {
+            @content;
+        }
+    }
+
+    // 800px
+    @if $breakpoint == media-8 {
+        @media (min-width: 800px) {
+            @content;
+        }
+    }
+
+    // 900px
+    @if $breakpoint == media-9 {
+        @media (min-width: 900px) {
+            @content;
+        }
+    }
+
+    // 1000px
+    @if $breakpoint == media-10 {
+        @media (min-width: 1000px) {
+            @content;
+        }
+    }
+
+    // 1100px
+    @if $breakpoint == media-11 {
+        @media (min-width: 1100px) {
+            @content;
+        }
+    }
+
+    // 1200px
+    @if $breakpoint == media-12 {
+        @media (min-width: 1200px) {
+            @content;
+        }
+    }
+
+    // 1300px
+    @if $breakpoint == media-13 {
+        @media (min-width: 1300px) {
+            @content;
+        }
+    }
+
+    // 1400px
+    @if $breakpoint == media-14 {
+        @media (min-width: 1400px) {
+            @content;
+        }
+    }
+}

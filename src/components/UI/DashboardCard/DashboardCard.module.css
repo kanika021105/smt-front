@@ -5,10 +5,19 @@
     border: 1px solid #e0e0e0;
 
     transition: all 0.5s ease;
+    overflow-x: scroll;
 }
 
 .Card:hover {
     border: none;
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+.Card::-webkit-scrollbar {
+    display: none;
+}
+
+.Card::-webkit-scrollbar-track {
+    visibility: hidden;
 }

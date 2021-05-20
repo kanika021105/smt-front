@@ -1,10 +1,8 @@
 // jshint esversion:9
 
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
 
 import { Helmet } from 'react-helmet';
-import { Button } from 'react-bootstrap';
 import '../../../../../sass/pages/admin/settings/general.scss';
 
 const General = () => {
@@ -18,35 +16,40 @@ const General = () => {
     return (
         <>
             <div className=" border p-4">
-                <Form.Group>
-                    <Form.Label>Website Name</Form.Label>
-                    <Form.Control
+                <div>
+                    <label className="input__label">Website Name</label>
+                    <input
+                        className="input"
+                        placeholder="Website Name"
+                        type="text"
                         value={websiteName}
                         onChange={websiteNameChangeHandler}
                     />
-                </Form.Group>
+                </div>
 
-                <Form.Group>
-                    <Form.Label>Website Description</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows="6"
+                <div className="pt-2">
+                    <label className="input__label">Website Description</label>
+                    <textarea
+                        placeholder="Website Description..."
+                        className="input"
+                        rows="5"
                         value={websiteDescription}
                         onChange={websiteNameChangeHandler}
                     />
-                </Form.Group>
+                </div>
 
-                <Form.Group>
-                    <Form.Label>Website Keywords</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows="8"
+                <div className="pt-2">
+                    <label className="input__label">Website Keywords</label>
+                    <textarea
+                        placeholder="Website Keywords..."
+                        className="input"
+                        rows="6"
                         value={websiteName}
                         onChange={websiteNameChangeHandler}
                     />
-                </Form.Group>
+                </div>
 
-                <Button className="ml-auto">Submit</Button>
+                <button className="mt-3 btn btn-primary">Save</button>
             </div>
         </>
     );

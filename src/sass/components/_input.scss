@@ -1,0 +1,27 @@
+.input {
+    display: block;
+    padding: 3px 6px;
+    font-size: 1.4rem;
+    width: 100%;
+    border-radius: 3px;
+    border: 0.5px solid lighten($color-grey, 30);
+
+    &:not(:disabled) {
+        color: darken($color-grey, 10);
+    }
+
+    &--disabled {
+        opacity: 0.8;
+        background-color: lighten($color-grey, 48);
+    }
+
+    &__label {
+        display: block;
+        padding: 2px 0;
+    }
+
+    &:active,
+    &:focus {
+        outline-color: lighten($color-primary, 20);
+    }
+}

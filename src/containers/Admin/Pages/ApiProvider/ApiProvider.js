@@ -121,66 +121,70 @@ const Services = () => {
 
     const addModal = (
         <Modal show={showAddModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    {addError ? (
-                        <span className="addError">{errorMsg}</span>
-                    ) : (
-                        'Add Service'
-                    )}
-                </Modal.Title>
+            <Modal.Header closeButton closeLabel="">
+                <Modal.Title>Add Api Providers</Modal.Title>
             </Modal.Header>
+
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
-                    <Form.Group>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            value={name}
+                    <div>
+                        <label className="input__label">Name</label>
+                        <input
+                            className="input"
                             placeholder="Name"
+                            type="text"
+                            value={name}
                             onChange={nameChangeHandler}
                         />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>URL</Form.Label>
-                        <Form.Control
-                            value={apiUrl}
+                    </div>
+
+                    <div className="mt-2">
+                        <label className="input__label">URL</label>
+                        <input
+                            className="input"
                             placeholder="API URL"
+                            type="url"
+                            value={apiUrl}
                             onChange={urlChangeHandler}
                         />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>API Key</Form.Label>
-                        <Form.Control
-                            value={apiKey}
+                    </div>
+
+                    <div className="mt-2">
+                        <label className="input__label">API Key</label>
+                        <input
+                            className="input"
                             placeholder="API KEY"
+                            type="text"
+                            value={apiKey}
                             onChange={apiKeyChangeHandler}
                         />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Status</Form.Label>
-                        <Form.Group>
-                            <Form.Control
-                                as="select"
-                                value={status}
-                                onChange={statusChangeHandler}
-                            >
-                                <option key="active" value="active">
-                                    Active
-                                </option>
-                                <option key="disabled" value="disabled">
-                                    Disable
-                                </option>
-                            </Form.Control>
-                        </Form.Group>
-                    </Form.Group>
+                    </div>
+
+                    <div className="mt-2">
+                        <label className="input__label">Status</label>
+                        <select
+                            className="select"
+                            value={status}
+                            onChange={statusChangeHandler}
+                        >
+                            <option key="active" value="active">
+                                Active
+                            </option>
+                            <option key="disabled" value="disabled">
+                                Disable
+                            </option>
+                        </select>
+                    </div>
                 </Modal.Body>
+
                 <Modal.Footer>
                     <button
-                        className="btn btn-danger"
+                        className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
                         Close
                     </button>
+
                     <button
                         className="btn btn-primary"
                         onClick={addFormSubmitHandler}
@@ -194,14 +198,8 @@ const Services = () => {
 
     const editModal = (
         <Modal show={false} onHide={handleBackdropClick}>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    {addError ? (
-                        <span className="addError">{errorMsg}</span>
-                    ) : (
-                        'Add Service'
-                    )}
-                </Modal.Title>
+            <Modal.Header closeButton closeLabel="">
+                <Modal.Title>Add Service</Modal.Title>
             </Modal.Header>
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
@@ -297,69 +295,73 @@ const Services = () => {
     const counter = percentageCount();
     const syncModal = (
         <Modal show={showSyncModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    {addError ? (
-                        <span className="addError">{errorMsg}</span>
-                    ) : (
-                        'Sync Services'
-                    )}
-                </Modal.Title>
+            <Modal.Header closeButton closeLabel="">
+                <Modal.Title>Sync Services </Modal.Title>
             </Modal.Header>
+
             <form onSubmit={syncFormSubmitHandler}>
                 <Modal.Body>
-                    <Form.Group>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
+                    <div>
+                        <label className="input__label">Name</label>
+                        <input
+                            className="input input--disabled"
                             value={syncApi.title}
                             placeholder="Name"
                             disabled
                         />
-                    </Form.Group>
+                    </div>
 
-                    <Form.Group>
-                        <Form.Label>URL</Form.Label>
-                        <Form.Control
+                    <div className="mt-2">
+                        <label className="input__label">URL</label>
+                        <input
+                            className="input input--disabled"
                             value={syncApi.url}
                             placeholder="API URL"
                             disabled
                         />
-                    </Form.Group>
+                    </div>
 
-                    <Form.Group>
-                        <Form.Label>API Key</Form.Label>
-                        <Form.Control
+                    <div className="mt-2">
+                        <label className="input__label">API Key</label>
+                        <input
+                            className="input input--disabled"
                             value={syncApi.apiKey}
                             placeholder="API KEY"
                             disabled
                         />
-                    </Form.Group>
+                    </div>
 
-                    <Form.Group>
-                        <Form.Label>
+                    <div className="mt-2">
+                        <label className="input__label">
                             Percentage Increase (Profit Margin)
-                        </Form.Label>
-                        <Form.Group>
-                            <Form.Control
-                                as="select"
-                                value={profitMargin}
-                                onChange={profitMarginChangeHandler}
-                            >
-                                {counter &&
-                                    counter.map((count) => (
-                                        <option key={count} value={count}>
-                                            {`${count}%`}
-                                        </option>
-                                    ))}
-                            </Form.Control>
-                        </Form.Group>
-                    </Form.Group>
+                        </label>
+                        <select
+                            class="select"
+                            value={profitMargin}
+                            onChange={profitMarginChangeHandler}
+                        >
+                            {counter &&
+                                counter.map((count) => (
+                                    <option key={count} value={count}>
+                                        {`${count}%`}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <button variant="secondary" onClick={handleBackdropClick}>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={handleBackdropClick}
+                    >
                         Close
                     </button>
-                    <button variant="primary" onClick={syncFormSubmitHandler}>
+
+                    <button
+                        className="btn btn-primary"
+                        onClick={syncFormSubmitHandler}
+                    >
                         Submit
                     </button>
                 </Modal.Footer>
@@ -408,6 +410,26 @@ const Services = () => {
             return setApiProviders(() => [...newList]);
         } catch (err) {
             return console.log(err.response.data.message);
+        }
+    };
+
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return (
+                    <button className="btn btn-active btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+
+            case 'disable':
+                return (
+                    <button className="btn btn-inactive btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+            default:
+                break;
         }
     };
 
@@ -462,7 +484,11 @@ const Services = () => {
                                             <td>{apiProvider.id}</td>
                                             <td>{apiProvider.name}</td>
                                             <td>{apiProvider.balance}</td>
-                                            <td>{apiProvider.status}</td>
+                                            <td>
+                                                {checkStatus(
+                                                    apiProvider.status
+                                                )}
+                                            </td>
                                             <td>
                                                 <OverlayTrigger
                                                     key="balance"

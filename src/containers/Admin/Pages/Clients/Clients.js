@@ -15,6 +15,7 @@ import {
 } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
+import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/clients.scss';
 import Card from '../../../../components/UI/Card/Card';
 
@@ -126,98 +127,105 @@ export default function Services() {
 
     const editModal = (
         <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton>
+            <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Edit User</Modal.Title>
             </Modal.Header>
+
             <form onSubmit={eSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>First Name</label>
-                                <FormControl
-                                    value={editedFirstName}
-                                    onChange={eFNChangeHandler}
-                                />
-                            </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <label className="input__label">First Name</label>
+                            <input
+                                placeholder="First Name"
+                                type="text"
+                                className="input"
+                                value={editedFirstName}
+                                onChange={eFNChangeHandler}
+                            />
+                        </div>
 
-                            <div className="pl-1">
-                                <label>Last Name</label>
-                                <FormControl
-                                    value={editedLastName}
-                                    onChange={eLNChangeHandler}
-                                />
-                            </div>
-                        </InputGroup>
+                        <div className="col-md-6">
+                            <label className="input__label">Last Name</label>
+                            <input
+                                placeholder="Last Name"
+                                type="text"
+                                className="input"
+                                value={editedLastName}
+                                onChange={eLNChangeHandler}
+                            />
+                        </div>
                     </div>
 
-                    <div className="pr-2">
-                        <label>Email</label>
-                        <FormControl
+                    <div className="pt-2">
+                        <label className="input__label">Email</label>
+                        <input
+                            placeholder="Email"
+                            type="email"
+                            className="input"
                             value={editedEmail}
                             onChange={eEmailChangeHandler}
                         />
                     </div>
 
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Balance</label>
-                                <FormControl
-                                    value={editedBalance}
-                                    onChange={eBalanceChangeHandler}
-                                />
-                            </div>
+                    <div className="row pt-2">
+                        <div className="col-md-6">
+                            <label className="input__label">Balance</label>
+                            <input
+                                placeholder="Balance"
+                                className="input"
+                                type="number"
+                                value={editedBalance}
+                                onChange={eBalanceChangeHandler}
+                            />
+                        </div>
 
-                            <div className="pl-1">
-                                <label>Contact</label>
-                                <FormControl
-                                    value={editedContact}
-                                    onChange={eContactChangeHandler}
-                                />
-                            </div>
-                        </InputGroup>
+                        <div className="col-md-6">
+                            <label className="input__label">Contact</label>
+                            <input
+                                placeholder="Contact"
+                                className="input"
+                                type="number"
+                                value={editedContact}
+                                onChange={eContactChangeHandler}
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <InputGroup>
-                            <div className="pr-1">
-                                <label>Role</label>
-                                <Form.Group>
-                                    <Form.Control
-                                        as="select"
-                                        value={editedRole}
-                                        onChange={eRoleChangeHandler}
-                                    >
-                                        <option value="admin">Admin</option>
-                                        <option value="user">User</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
+                    <div className="row pt-2">
+                        <div className="col-md-6">
+                            <label className="input__label">Role</label>
+                            <select
+                                className="select"
+                                value={editedRole}
+                                onChange={eRoleChangeHandler}
+                            >
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                            </select>
+                        </div>
 
-                            <div className="pl-1">
-                                <label>Status</label>
-                                <Form.Group>
-                                    <Form.Control
-                                        as="select"
-                                        value={editedStatus}
-                                        onChange={eStatusChangeHandler}
-                                    >
-                                        <option value="disable">Disable</option>
-                                        <option value="active">Active</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
-                        </InputGroup>
+                        <div className="col-md-6">
+                            <label className="input__label">Status</label>
+                            <select
+                                className="select"
+                                value={editedStatus}
+                                onChange={eStatusChangeHandler}
+                            >
+                                <option value="disable">Disable</option>
+                                <option value="active">Active</option>
+                            </select>
+                        </div>
                     </div>
                 </Modal.Body>
+
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <button className="btn btn-secondary" onClick={handleClose}>
                         Close
-                    </Button>
-                    <Button variant="primary" type="submit">
+                    </button>
+                    <button className="btn btn-primary" type="submit">
                         Submit
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -232,6 +240,26 @@ export default function Services() {
         await Axios.delete(url);
         setUsers([...newList]);
         return;
+    };
+
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return (
+                    <button className="btn btn-active btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+
+            case 'disable':
+                return (
+                    <button className="btn btn-inactive btn-disabled" disabled>
+                        {status}
+                    </button>
+                );
+            default:
+                break;
+        }
     };
 
     // TODO Change title to dynamic
@@ -281,16 +309,7 @@ export default function Services() {
                                             </td>
                                             <td>{user.role}</td>
                                             <td>{user.balance}</td>
-                                            <td>
-                                                <button
-                                                    className={
-                                                        'btn btn-success btn-disabled'
-                                                    }
-                                                    disabled
-                                                >
-                                                    {user.status}
-                                                </button>
-                                            </td>
+                                            <td>{checkStatus(user.status)}</td>
                                             <td>
                                                 <IconContext.Provider
                                                     value={{
@@ -299,42 +318,52 @@ export default function Services() {
                                                         },
                                                     }}
                                                 >
-                                                    <DropdownButton
-                                                        className="dropdownButton"
-                                                        id="dropdown-item-button"
-                                                        title={
+                                                    <div className="dropdown ">
+                                                        <span
+                                                            id="option"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                        >
                                                             <BsThreeDotsVertical />
-                                                        }
-                                                    >
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-info"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={user.id}
-                                                                onClick={
-                                                                    editButtonHandler
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </button>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-danger"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={user.id}
-                                                                onClick={
-                                                                    deleteButtonHandler
-                                                                }
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </div>
-                                                    </DropdownButton>
+                                                        </span>
+                                                        <ul
+                                                            class="dropdown-menu"
+                                                            aria-labelledby="options"
+                                                        >
+                                                            <li>
+                                                                <button
+                                                                    className="btn btn-edit"
+                                                                    style={{
+                                                                        width: '100%',
+                                                                    }}
+                                                                    value={
+                                                                        user.id
+                                                                    }
+                                                                    onClick={
+                                                                        editButtonHandler
+                                                                    }
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button
+                                                                    className="btn btn-delete"
+                                                                    style={{
+                                                                        width: '100%',
+                                                                    }}
+                                                                    value={
+                                                                        user.id
+                                                                    }
+                                                                    onClick={
+                                                                        deleteButtonHandler
+                                                                    }
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </IconContext.Provider>
                                             </td>
                                         </tr>

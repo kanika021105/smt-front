@@ -1,0 +1,66 @@
+.u-mb-1 {
+    margin-bottom: 10px;
+}
+
+.u-mb-2 {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 767px) {
+    .u-sm-mb-1 {
+        margin-bottom: 10px;
+    }
+}
+
+// .u-container {
+//     width: 100%;
+//     margin: 0 auto;
+
+//     @include respond(media-3) {
+//         max-width: 280px !important;
+//     }
+
+//     @include respond(media-4) {
+//         max-width: 370px !important;
+//     }
+
+//     @include respond(media-5) {
+//         max-width: 470px !important;
+//     }
+
+//     @include respond(media-6) {
+//         max-width: 560px !important;
+//     }
+
+//     @include respond(media-7) {
+//         max-width: 660px !important;
+//     }
+
+//     @include respond(media-8) {
+//         max-width: 720px !important;
+//     }
+
+//     @include respond(media-9) {
+//         max-width: 820px !important;
+//     }
+
+//     @include respond(media-10) {
+//         max-width: 900px !important;
+//     }
+
+//     @include respond(media-11) {
+//         max-width: 1000px !important;
+//     }
+
+//     @include respond(media-12) {
+//         max-width: 1100px !important;
+//     }
+
+//     @include respond(media-13) {
+//         max-width: 1200px !important;
+//     }
+
+//     @include respond(media-14) {
+//         max-width: 1300px !important;
+//     }
+// }

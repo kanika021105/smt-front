@@ -1,7 +1,9 @@
-.btn-disabled {
-    &:disabled {
-        opacity: 1;
-    }
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+.dropdownButton button::after {
+    content: none !important;
 }
 
 button.add-button {
@@ -19,17 +21,92 @@ button.add-button {
     border: none;
     outline: none;
     font-size: 1.4rem;
-    border-radius: 0.5rem;
+    border-radius: 0.4rem;
     text-transform: capitalize;
     padding: 0.5rem 1.4rem;
-}
 
-.btn-success {
-    color: $color-white;
-    background-color: darken($color-green, 6);
-}
+    &-primary {
+        color: $color-white;
+        background-color: lighten($color-primary, 1);
+    }
 
-.btn-danger {
-    color: $color-white;
-    background-color: darken($color-red, 8);
+    &-secondary {
+        color: $color-white;
+        background-color: lighten($color-grey, 5);
+    }
+
+    &-add {
+        font-size: 2rem;
+        border-radius: 0.4rem;
+        color: #fff;
+        background-color: #3f80ea;
+        padding: 0rem 1rem;
+        margin: 0 0 0 1rem;
+    }
+
+    &-disabled {
+        &:disabled {
+            opacity: 1;
+        }
+    }
+
+    &-success {
+        color: $color-white;
+        background-color: darken($color-green, 6);
+    }
+
+    &-danger {
+        color: $color-white;
+        background-color: darken($color-red, 8);
+    }
+
+    &-pending {
+        color: $color-white;
+        background-color: $color-pending;
+    }
+
+    &-processing {
+        color: $color-white;
+        background-color: $color-processing;
+    }
+
+    &-inprogress {
+        color: $color-white;
+        background-color: $color-inprogress;
+    }
+
+    &-completed {
+        color: $color-white;
+        background-color: $color-completed;
+    }
+
+    &-cancelled {
+        color: $color-white;
+        background-color: $color-cancelled;
+    }
+
+    &-partial {
+        color: $color-white;
+        background-color: $color-partial;
+    }
+
+    &-active {
+        color: $color-white;
+        background-color: $color-active;
+    }
+
+    &-inactive {
+        color: $color-white;
+        background-color: $color-inactive;
+    }
+
+    &-edit {
+        color: $color-white;
+        background-color: $color-btn-edit;
+    }
+
+    &-delete {
+        color: $color-white;
+        background-color: $color-btn-delete;
+    }
 }
