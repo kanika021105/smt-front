@@ -242,7 +242,7 @@ const Dashboard = () => {
                                         <div className="col-6">
                                             <span
                                                 className={
-                                                    'section__two--statusTitle pendingColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 Pending:-
@@ -250,7 +250,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusTitle processingColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 Processing:-
@@ -258,7 +258,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusTitle inProgressColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 InProgress:-
@@ -266,7 +266,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusTitle completedColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 Completed:-
@@ -274,7 +274,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusTitle partialColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 Partial:-
@@ -282,7 +282,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusTitle cancelledColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 Cancelled:-
@@ -290,7 +290,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusTitle refundedColor'
+                                                    'section__two--statusTitle'
                                                 }
                                             >
                                                 Refunded:-
@@ -300,7 +300,7 @@ const Dashboard = () => {
                                         <div className="col-6">
                                             <span
                                                 className={
-                                                    'section__two--statusData pendingColor'
+                                                    'section__two--statusData'
                                                 }
                                             >
                                                 {pending ? pending.length : 0}
@@ -308,7 +308,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusData processingColor'
+                                                    'section__two--statusData'
                                                 }
                                             >
                                                 {processing
@@ -318,7 +318,7 @@ const Dashboard = () => {
 
                                             <span
                                                 className={
-                                                    'section__two--statusData inProgressColor'
+                                                    'section__two--statusData'
                                                 }
                                             >
                                                 {inProgress
@@ -373,7 +373,7 @@ const Dashboard = () => {
                     <div className="row">
                         <div className="col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
                             <DashboardCard>
-                                <div className={'tableTitle'}>
+                                <div className="tableTitle">
                                     Top 10 best selling services
                                 </div>
 
@@ -386,6 +386,7 @@ const Dashboard = () => {
                                                 <th>status</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             {topServicesList &&
                                                 topServicesList.map(
@@ -466,7 +467,7 @@ const Dashboard = () => {
                                                                 'deactive' && (
                                                                 <button
                                                                     className={
-                                                                        'dangerBtn'
+                                                                        'btn btn-inactive btn-disabled'
                                                                     }
                                                                     disabled
                                                                 >
@@ -636,7 +637,7 @@ const Dashboard = () => {
                                                                         'deactive' && (
                                                                         <button
                                                                             className={
-                                                                                'dangerBtn'
+                                                                                'btn btn-inactive btn-disabled'
                                                                             }
                                                                             disabled
                                                                         >

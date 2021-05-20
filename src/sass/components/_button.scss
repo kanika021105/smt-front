@@ -17,6 +17,17 @@ button.add-button {
     margin: 0 0 0 1rem;
 }
 
+button.btn-add {
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    border-radius: 0.4rem;
+    color: #fff;
+    background-color: $color-primary;
+    padding: 0rem 1rem;
+    margin: 0 0 0 1rem;
+}
+
 .btn {
     border: none;
     outline: none;
@@ -33,15 +44,6 @@ button.add-button {
     &-secondary {
         color: $color-white;
         background-color: lighten($color-grey, 5);
-    }
-
-    &-add {
-        font-size: 2rem;
-        border-radius: 0.4rem;
-        color: #fff;
-        background-color: #3f80ea;
-        padding: 0rem 1rem;
-        margin: 0 0 0 1rem;
     }
 
     &-disabled {

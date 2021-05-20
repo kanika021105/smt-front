@@ -4,9 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Table } from 'react-bootstrap';
 
+import { IconContext } from 'react-icons';
+import { VscListSelection } from 'react-icons/vsc';
+
 import Axios from '../../../../axiosIns';
-import classes from './Services.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../../sass/pages/user/services.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
@@ -56,7 +58,13 @@ export default function Services() {
                 </td>
                 <td>{service.rate.toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
-                <td>{service.status}</td>
+                <td>
+                    {
+                        <button className="btn btn-active">
+                            {service.status}
+                        </button>
+                    }
+                </td>
             </tr>
         ));
     };
@@ -68,69 +76,63 @@ export default function Services() {
                 <title>Services - SMT Panel</title>
             </Helmet>
 
-            <div className="container">
-                <div className={classes.Services}>
-                    <div>
-                        <h3 className={classes.pageTitle}>Services</h3>
-                    </div>
+            <div className="container Services">
+                <h2 className="pageTitle">
+                    <IconContext.Provider
+                        value={{
+                            style: {
+                                fontSize: '30px',
+                            },
+                        }}
+                    >
+                        <VscListSelection />
+                    </IconContext.Provider>{' '}
+                    Services
+                </h2>
 
-                    {showError && (
-                        <Card>
-                            <div>
-                                <small className={classes.errorMsg}>
-                                    {errorMsg}
-                                </small>
-                            </div>
-                        </Card>
-                    )}
+                {showError && (
+                    <Card>
+                        <div>
+                            <small className="errorMsg">{errorMsg}</small>
+                        </div>
+                    </Card>
+                )}
 
-                    {categories &&
-                        categories.map((category) => (
-                            <div
-                                className={classes.serviceListCard}
-                                key={category.id}
-                            >
-                                <Card>
-                                    <div>
-                                        {showError && (
-                                            <small className={classes.errorMsg}>
-                                                {errorMsg}
-                                            </small>
-                                        )}
-                                    </div>
+                {categories &&
+                    categories.map((category) => (
+                        <div className="serviceListCard" key={category.id}>
+                            <Card>
+                                <div>
+                                    {showError && (
+                                        <small className="errorMsg">
+                                            {errorMsg}
+                                        </small>
+                                    )}
+                                </div>
 
-                                    <h3 className={classes.categoryTitle}>
-                                        {category.title}
-                                    </h3>
-                                    <div className={classes.customTable}>
-                                        <Table
-                                            hover
-                                            striped
-                                            bordered
-                                            size="sm"
-                                            responsive
-                                        >
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Title</th>
-                                                    <th>Min / Max</th>
-                                                    <th>Price</th>
-                                                    <th>Drip Feed</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {getServiceByCateId(
-                                                    category.id
-                                                )}
-                                            </tbody>
-                                        </Table>
-                                    </div>
-                                </Card>
-                            </div>
-                        ))}
-                </div>
+                                <h3 className="categoryTitle ">
+                                    {category.title}
+                                </h3>
+
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Title</th>
+                                            <th>Min / Max</th>
+                                            <th>Price</th>
+                                            <th>Drip Feed</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {getServiceByCateId(category.id)}
+                                    </tbody>
+                                </table>
+                            </Card>
+                        </div>
+                    ))}
             </div>
         </>
     );

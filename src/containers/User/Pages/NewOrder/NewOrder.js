@@ -4,9 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Form, FormControl, FormLabel } from 'react-bootstrap';
 
+import { IconContext } from 'react-icons';
+import { VscListSelection } from 'react-icons/vsc';
+
 import Axios from '../../../../axiosIns';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import classes from './NewOrder.module.css';
+import '../../../../sass/pages/user/NewOrder.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 const NewOrder = () => {
@@ -115,118 +117,134 @@ const NewOrder = () => {
     return (
         <>
             <Helmet>
-                <title>
-                    New Order - {websiteName ? websiteName : 'SMT Panel'}
-                </title>
+                <title>New Order - {websiteName || 'SMT Panel'}</title>
             </Helmet>
 
-            <div className="container pb-5">
-                <div className={classes.newOrder}>
-                    <h3 className={classes.pageTitle}>New Order</h3>
+            <div className="container newOrder">
+                <h2 className="pageTitle">
+                    <IconContext.Provider
+                        value={{
+                            style: {
+                                fontSize: '30px',
+                            },
+                        }}
+                    >
+                        <VscListSelection />
+                    </IconContext.Provider>{' '}
+                    New Order
+                </h2>
 
-                    <Card>
-                        {showError && (
-                            <div className={classes.errorMsg}>
-                                <small>{errorMsg}</small>
-                            </div>
-                        )}
+                <Card>
+                    {/* {showError && (
+                        <div className="errorMsg">
+                            <small>{errorMsg}</small>
+                        </div>
+                    )} */}
 
-                        <form onSubmit={orderSubmitHandler}>
-                            <div>
-                                <Form.Label>Category</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={selectedCategory}
-                                    onChange={selectedCategoryHandler}
-                                >
-                                    <option defaultValue>
-                                        Choose a service
-                                    </option>
-                                    {categories &&
-                                        categories.map((category) => {
-                                            return (
-                                                <option
-                                                    key={category.id}
-                                                    value={category.id}
-                                                >
-                                                    {category.title}
-                                                </option>
-                                            );
-                                        })}
-                                </Form.Control>
-                            </div>
+                    <form onSubmit={orderSubmitHandler}>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div>
+                                    <label className="input__label">
+                                        Category
+                                    </label>
+                                    <select
+                                        class="select"
+                                        value={selectedCategory}
+                                        onChange={selectedCategoryHandler}
+                                    >
+                                        <option defaultValue>
+                                            Choose a Category
+                                        </option>
+                                        {categories &&
+                                            categories.map((category) => {
+                                                return (
+                                                    <option
+                                                        key={category.id}
+                                                        value={category.id}
+                                                    >
+                                                        {category.title}
+                                                    </option>
+                                                );
+                                            })}
+                                    </select>
+                                </div>
 
-                            <div>
-                                <Form.Label>Services</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={selectedService}
-                                    onChange={selectedServiceHandler}
-                                >
-                                    <option defaultValue>
-                                        Choose a Service
-                                    </option>
-                                    {servicesByCategory &&
-                                        servicesByCategory.map((service) => {
-                                            return (
-                                                <option
-                                                    key={service.id}
-                                                    value={service.id}
-                                                >
-                                                    {service.title} -{' '}
-                                                    {service.rate}
-                                                </option>
-                                            );
-                                        })}
-                                </Form.Control>
-                            </div>
+                                <div className="pt-2">
+                                    <label className="input__label">
+                                        Services
+                                    </label>
+                                    <select
+                                        class="select"
+                                        value={selectedService}
+                                        onChange={selectedServiceHandler}
+                                    >
+                                        <option defaultValue>
+                                            Choose a Service
+                                        </option>
+                                        {servicesByCategory &&
+                                            servicesByCategory.map(
+                                                (service) => {
+                                                    return (
+                                                        <option
+                                                            key={service.id}
+                                                            value={service.id}
+                                                        >
+                                                            {service.title} -{' '}
+                                                            {service.rate}
+                                                        </option>
+                                                    );
+                                                }
+                                            )}
+                                    </select>
+                                </div>
 
-                            <div>
-                                <FormLabel>Link</FormLabel>
-                                <FormControl
-                                    type="link"
-                                    value={link}
-                                    placeholder="https://..."
-                                    onChange={linkInputHandler}
-                                />
-                            </div>
+                                <div className="pt-2">
+                                    <label className="input__label">Link</label>
+                                    <input
+                                        type="url"
+                                        value={link}
+                                        className="input"
+                                        placeholder="https://..."
+                                        onChange={linkInputHandler}
+                                    />
+                                </div>
 
-                            <div>
-                                <FormLabel>Quantity</FormLabel>
-                                <FormControl
-                                    type="number"
-                                    value={quantity}
-                                    placeholder="1000"
-                                    onChange={quantityInputHandler}
-                                />
-                                <div className="row">
-                                    <div className="col-md-2 col-sm-2">
-                                        <p>Min = {min}</p>
-                                    </div>
-                                    <div className="col-md-3 col-sm-2">
-                                        <p>Max ={max} </p>
-                                    </div>
+                                <div className="pt-2">
+                                    <label className="input__label">
+                                        Quantity
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={quantity}
+                                        className="input"
+                                        placeholder="1000"
+                                        onChange={quantityInputHandler}
+                                    />
+                                </div>
+
+                                <div className="pt-2">
+                                    <FormLabel>Total = </FormLabel>
+                                    <button
+                                        className="btn btn-disabled"
+                                        disabled
+                                    >
+                                        {charge}
+                                    </button>
+                                </div>
+
+                                <div className="mt-2">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                    >
+                                        Place Order
+                                    </button>
                                 </div>
                             </div>
-
-                            <div>
-                                <FormLabel>Total</FormLabel>
-                                <button className="btn btn-secondary" disabled>
-                                    {charge}
-                                </button>
-                            </div>
-
-                            <div className="mt-2">
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    Place Order
-                                </button>
-                            </div>
-                        </form>
-                    </Card>
-                </div>
+                        </div>
+                    </form>
+                </Card>
             </div>
         </>
     );

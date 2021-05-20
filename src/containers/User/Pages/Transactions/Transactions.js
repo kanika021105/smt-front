@@ -1,10 +1,13 @@
+// jshint esversion: 9
+
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Table } from 'react-bootstrap';
+
+import { IconContext } from 'react-icons';
+import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import classes from './Transactions.module.css';
+import '../../../../sass/pages/user/transactions.scss';
 import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
@@ -42,42 +45,54 @@ export default function Services() {
                 <title>Transactions - SMT Panel</title>
             </Helmet>
 
-            <div className="container">
-                <div className={classes.Transactions}>
-                    <h3 className={classes.pageTitle}>Transactions</h3>
-                    <Card>
-                        {showError && (
-                            <small className={classes.errorMsg}>
-                                {errorMsg}
-                            </small>
-                        )}
-                        <Table striped hover bordered responsive size="sm">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Email</th>
-                                    <th>Transaction Id</th>
-                                    <th>Amount</th>
-                                    <th>Method</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transactions &&
-                                    transactions.map((transaction) => (
-                                        <tr key={transaction.id}>
-                                            <td>{transaction.id}</td>
-                                            <td>{transaction.email}</td>
-                                            <td>{transaction.transactionId}</td>
-                                            <td>{transaction.amount}</td>
-                                            <td>{transaction.paymentMethod}</td>
-                                            <td>{transaction.status}</td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </Table>
-                    </Card>
-                </div>
+            <div className="container Transactions">
+                <h2 className="pageTitle">
+                    <IconContext.Provider
+                        value={{
+                            style: {
+                                fontSize: '30px',
+                            },
+                        }}
+                    >
+                        <VscListSelection />
+                    </IconContext.Provider>{' '}
+                    Services
+                </h2>
+
+                <Card>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Transaction Id</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {transactions &&
+                                transactions.map((transaction) => (
+                                    <tr key={transaction.id}>
+                                        <td>{transaction.id}</td>
+                                        <td>{transaction.email}</td>
+                                        <td>{transaction.transactionId}</td>
+                                        <td>{transaction.amount}</td>
+                                        <td>{transaction.paymentMethod}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-success btn-disabled"
+                                                disabled
+                                            >
+                                                {transaction.status}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </Card>
             </div>
         </>
     );
