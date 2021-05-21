@@ -60,7 +60,10 @@ export default function Services() {
                 <td>{service.dripFeed}</td>
                 <td>
                     {
-                        <button className="btn btn-active">
+                        <button
+                            className="btn btn-active btn-disabled"
+                            disabled
+                        >
                             {service.status}
                         </button>
                     }

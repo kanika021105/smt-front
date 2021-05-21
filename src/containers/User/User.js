@@ -4,14 +4,14 @@ import React, { Suspense, lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 const Layout = lazy(() => import('./Layout/UserLayout'));
-const Orders = lazy(() => import('./Pages/Orders/Orders'));
-const Support = lazy(() => import('./Pages/Support/Support'));
-const Services = lazy(() => import('./Pages/Services/Services'));
-const NewOrder = lazy(() => import('./Pages/NewOrder/NewOrder'));
 const Dashboard = lazy(() => import('./Pages/Dashboard/Dashboard'));
-const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
-const RazorPay = lazy(() => import('./Pages/AddFund/RazorPay/Razorpay'));
+const NewOrder = lazy(() => import('./Pages/NewOrder/NewOrder'));
+const Orders = lazy(() => import('./Pages/Orders/Orders'));
+const Services = lazy(() => import('./Pages/Services/Services'));
+const Support = lazy(() => import('./Pages/Support/Support'));
 const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
+const AddFund = lazy(() => import('./Pages/AddFund/AddFund'));
+const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
 
 const Admin = () => {
     return (
@@ -42,8 +42,8 @@ const Admin = () => {
                         <NewOrder />
                     </Route>
 
-                    <Route path="/add-fund" exact>
-                        <RazorPay />
+                    <Route path="/add-fund">
+                        <AddFund />
                     </Route>
 
                     <Route path="/services" exact>

@@ -1,13 +1,9 @@
 // jshint esversion:9
 
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
-import { InputGroup, FormControl } from 'react-bootstrap';
 
 import Axios from '../../../../../axiosIns';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import classes from './RazorPay.module.css';
-import Card from '../../../../../components/UI/Card/Card';
 import { AuthContext } from '../../../../Context/AuthContext';
 
 const Razorpay = () => {
@@ -71,8 +67,6 @@ const Razorpay = () => {
         setAmount(e.target.value);
         return;
     };
-
-    // TODO Change title to dynamic
     return (
         <>
             <Helmet>
@@ -80,35 +74,22 @@ const Razorpay = () => {
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             </Helmet>
 
-            <div className="container">
-                <div className={classes.Razorpay}>
-                    <h2 className="pageTitle">Add Fund</h2>
-                    <Card>
-                        <InputGroup className="mb-3">
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="basic-addon1">
-                                    ₹
-                                </InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                placeholder="Amount"
-                                aria-label="amount"
-                                type="number"
-                                onChange={amountChangeHandler}
-                            />
-                        </InputGroup>
-
-                        <button
-                            className="btn btn-success"
-                            onClick={(e) => {
-                                razorpayHandler(e);
-                            }}
-                        >
-                            Pay
-                        </button>
-                    </Card>
-                </div>
+            <div className="mb-3">
+                <input
+                    placeholder="Amount"
+                    aria-label="amount"
+                    type="number"
+                    onChange={amountChangeHandler}
+                />
             </div>
+            <button
+                className="btn btn-success"
+                onClick={(e) => {
+                    razorpayHandler(e);
+                }}
+            >
+                Pay
+            </button>
         </>
     );
 };

@@ -2,4 +2,41 @@
 
 .newOrder {
     min-height: 90vh;
+
+    &__totalAmount {
+        padding: 0.4rem 0.8rem;
+        border-radius: 5px;
+        display: inline-block;
+        color: $color-white;
+        background-color: lighten($color-secondary, 10);
+    }
+
+    &__checkbox {
+        display: block;
+        position: relative;
+
+        & input {
+            position: absolute;
+            top: 1px;
+            left: 0;
+            height: 2rem;
+            width: 2rem;
+            display: inline-block;
+        }
+
+        & p {
+            display: inline-block;
+            margin-left: 2.6rem;
+        }
+    }
+
+    & .service__details {
+        .service__details__title {
+            display: inline;
+            font-size: 2rem;
+            font-weight: 500;
+            margin: auto 0;
+            color: lighten($color-primary, 5);
+        }
+    }
 }
