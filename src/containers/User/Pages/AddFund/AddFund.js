@@ -1,7 +1,7 @@
 // jshint esversion:9
 
 import React from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Route, NavLink } from 'react-router-dom';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
@@ -30,26 +30,41 @@ const AddFund = () => {
                 </h2>
 
                 <Card>
-                    <div className="addfund__container">
-                        <div className="addfund__container__links">
+                    <div className="addfund__box">
+                        <div className="addfund__links">
                             <ul>
                                 <li>
-                                    <Link to={'/add-fund'}>Razorpay</Link>
+                                    <NavLink
+                                        to={'/add-fund'}
+                                        activeClassName="active"
+                                        exact
+                                    >
+                                        Razorpay
+                                    </NavLink>
                                 </li>
 
                                 <li>
-                                    <Link to={'/add-fund/paytm'}>Paytm</Link>
+                                    <NavLink
+                                        to={'/add-fund/paytm'}
+                                        activeClassName="active"
+                                        exact
+                                    >
+                                        Paytm
+                                    </NavLink>
                                 </li>
                             </ul>
                         </div>
 
-                        <Route path="/add-fund" exact>
-                            <Razorpay />
-                        </Route>
+                        <div className="addfund__gateway">
+                            <Route path="/add-fund" exact>
+                                <Razorpay />
+                            </Route>
 
-                        <Route path="/add-fund/paytm" exact>
-                            {'test'}
-                        </Route>
+                            <Route path="/add-fund/paytm" exact>
+                                {'Coming Soon...'}
+                            </Route>
+                        </div>
+                        <p>*All payment are 100% safe and secure.</p>
                     </div>
                 </Card>
             </div>

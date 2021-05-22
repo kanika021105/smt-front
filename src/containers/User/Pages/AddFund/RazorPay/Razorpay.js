@@ -4,6 +4,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
+import '../../../../../sass/pages/user/Razorpay.scss';
 import { AuthContext } from '../../../../Context/AuthContext';
 
 const Razorpay = () => {
@@ -13,11 +14,11 @@ const Razorpay = () => {
 
     useEffect(() => {
         const url = '';
-        Axios.get(url).then((res) => {
-            const { data } = res;
+        // Axios.get(url).then((res) => {
+        //     const { data } = res;
 
-            setPublicKey(data.publicKey);
-        });
+        //     setPublicKey(data.publicKey);
+        // });
     }, []);
 
     const razorpayHandler = async (e) => {
@@ -74,22 +75,29 @@ const Razorpay = () => {
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             </Helmet>
 
-            <div className="mb-3">
+            <div className="Razorpay">
                 <input
+                    className="Razorpay__input input"
                     placeholder="Amount"
                     aria-label="amount"
                     type="number"
                     onChange={amountChangeHandler}
                 />
+
+                <div className="mt-3 Razorpay__checkbox">
+                    <input type="checkbox" />
+                    <p>I'm paying for services and its non refundable!</p>
+                </div>
+
+                <button
+                    className="btn btn-primary Razorpay_button"
+                    onClick={(e) => {
+                        razorpayHandler(e);
+                    }}
+                >
+                    Pay
+                </button>
             </div>
-            <button
-                className="btn btn-success"
-                onClick={(e) => {
-                    razorpayHandler(e);
-                }}
-            >
-                Pay
-            </button>
         </>
     );
 };

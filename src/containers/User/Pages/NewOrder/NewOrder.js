@@ -249,7 +249,7 @@ const NewOrder = () => {
                                     <p>Yeah, I have confirmed my order!</p>
                                 </div>
 
-                                <div className="pt-1">
+                                <div>
                                     <button
                                         type="submit"
                                         className="btn btn-primary"
