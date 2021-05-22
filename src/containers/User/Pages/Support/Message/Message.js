@@ -5,8 +5,12 @@ import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { InputGroup, Card } from 'react-bootstrap';
 
+import { IconContext } from 'react-icons';
+import { VscListSelection } from 'react-icons/vsc';
+
 import Axios from '../../../../../axiosIns';
-import classes from './Message.module.css';
+// import classes from './Message.module.css';
+import '../../../../../sass/pages/user/messages.scss';
 import { AuthContext } from '../../../../Context/AuthContext';
 
 import supportSVG from '../../../../../assets/icons/ts.svg';
@@ -86,32 +90,29 @@ const Message = () => {
         ticket &&
         messages.map((message) => {
             return +userId === +message.userId ? (
-                <div
-                    key={keyNum++}
-                    className={[classes.container, classes.darker].join(' ')}
-                >
+                <div key={keyNum++} className="containerMsg darker">
                     <img
                         style={{
                             width: '100%',
                         }}
                         src={customerSVG}
                         alt="Avatar"
-                        className={classes.imageRight}
+                        className="imageRight"
                     />
                     <p>{message.message}</p>
-                    <span className={classes.timeLeft}>
+                    <span className="timeLeft">
                         {new Date(ticket.createdAt).toLocaleString('en-us')}
                     </span>
                 </div>
             ) : (
-                <div key={keyNum++} className={classes.container}>
+                <div key={keyNum++} className="containerMsg">
                     <img
                         style={{ width: '100%' }}
                         src={supportSVG}
                         alt="Avatar"
                     />
                     <p>{message.message}</p>
-                    <span className={classes.timeRight}>
+                    <span className="timeRight">
                         {new Date(ticket.createdAt).toLocaleString('en-us')}
                     </span>
                 </div>
@@ -126,52 +127,53 @@ const Message = () => {
             </Helmet>
 
             <div className="container">
-                <div className={classes.Support}>
-                    <h3 className={classes.pageTitle}>Support</h3>
+                <div className="Support">
+                    <h2 className="pageTitle">
+                        <IconContext.Provider
+                            value={{
+                                style: {
+                                    fontSize: '30px',
+                                },
+                            }}
+                        >
+                            <VscListSelection />
+                        </IconContext.Provider>{' '}
+                        Support
+                    </h2>
 
                     <Card>
                         <Card.Header>
                             <Card.Title>
-                                {showError ? (
-                                    <div>
-                                        <small className={classes.errorMsg}>
-                                            {errorMsg}
-                                        </small>
-                                    </div>
-                                ) : (
-                                    <h3>Subject -{ticket && ticket.subject}</h3>
-                                )}
+                                <h3>Subject -{ticket && ticket.subject}</h3>
                             </Card.Title>
                         </Card.Header>
 
-                        <Card.Body className={classes.CardBody}>
+                        <Card.Body className="CardBody">
                             {ticketMessage}
                         </Card.Body>
 
                         <Card.Footer>
                             <form onSubmit={submitMessageHandler}>
-                                {blockInput ? null : (
-                                    <InputGroup>
-                                        <input
-                                            id="btn-input"
-                                            type="text"
-                                            className="form-control input-sm chat_input m-2"
-                                            placeholder="Write your message here..."
-                                            value={inputMessage}
-                                            onChange={inputChangeHandler}
-                                            name="message"
-                                        />
-                                        <span className="input-group-btn">
-                                            <button
-                                                className="btn btn-primary btn-sm m-2 p-2"
-                                                id="btn-chat"
-                                                type="submit"
-                                            >
-                                                Send
-                                            </button>
-                                        </span>
-                                    </InputGroup>
-                                )}
+                                <InputGroup>
+                                    <input
+                                        id="btn-input"
+                                        type="text"
+                                        className="form-control input-sm chat_input m-2"
+                                        placeholder="Write your message here..."
+                                        value={inputMessage}
+                                        onChange={inputChangeHandler}
+                                        name="message"
+                                    />
+                                    <span className="input-group-btn">
+                                        <button
+                                            className="btn btn-primary btn-sm m-2 p-2"
+                                            id="btn-chat"
+                                            type="submit"
+                                        >
+                                            Send
+                                        </button>
+                                    </span>
+                                </InputGroup>
                             </form>
                         </Card.Footer>
                     </Card>
