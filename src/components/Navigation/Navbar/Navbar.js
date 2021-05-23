@@ -4,7 +4,6 @@ import React, { useContext } from 'react';
 
 import { Navbar } from 'react-bootstrap';
 
-// import classes from './Navbar.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavigationItems from '../NavigationItems/NavigationItems';
 import { AuthContext } from '../../../containers/Context/AuthContext';
@@ -35,7 +34,10 @@ const NavbarComponent = () => {
                         />
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
+                    <Navbar.Collapse
+                        id="responsive-navbar-nav"
+                        className="nav__custom"
+                    >
                         <NavigationItems />
                         {isLoggedIn && (
                             <button
