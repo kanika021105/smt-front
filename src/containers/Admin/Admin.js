@@ -18,7 +18,15 @@ const Settings = lazy(() => import('./Pages/Settings/Settings'));
 
 const Admin = () => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+            fallback={
+                <div className="loading">
+                    <div className="loading__1">
+                        <div></div>
+                    </div>
+                </div>
+            }
+        >
             <Layout>
                 <Switch>
                     <Route

@@ -6,9 +6,11 @@ import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
+import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/user/transactions.scss';
 import Card from '../../../../components/UI/Card/Card';
+
+import '../../../../sass/pages/user/transactions.scss';
 
 export default function Services() {
     const [errorMsg, setErrorMsg] = useState('');
@@ -16,27 +18,46 @@ export default function Services() {
 
     const [transactions, setTransactions] = useState();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         let url = '/transactions';
         Axios.get(url)
             .then((res) => {
                 let { data } = res;
 
-                if (data.status === 'success') {
-                    setErrorMsg('');
-                    setShowError(false);
-                    setTransactions(data.transactions.reverse());
-
-                    return;
+                if (data.status !== 'success') {
+                    setErrorMsg(
+                        'Failed to load transactions please try again or contact support team.'
+                    );
+                    setShowError(true);
                 }
+                setIsLoading(false);
 
-                setErrorMsg(
-                    'Failed to load transactions please try again or contact support team.'
-                );
-                setShowError(true);
+                setErrorMsg('');
+                setShowError(false);
+                setTransactions(data.transactions.reverse());
+
+                return;
             })
             .catch((err) => console.log(err));
     }, []);
+
+    const loading__1 = () => {
+        if (!isLoading) return;
+
+        return (
+            <Backdrop show={isLoading}>
+                <div className="loading">
+                    <div className="loading__1">
+                        <div></div>
+                    </div>
+                </div>
+            </Backdrop>
+        );
+    };
 
     // TODO Change title to dynamic
     return (
@@ -44,6 +65,8 @@ export default function Services() {
             <Helmet>
                 <title>Transactions - SMT Panel</title>
             </Helmet>
+
+            {loading__1()}
 
             <div className="container Transactions">
                 <h2 className="pageTitle">

@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Table } from 'react-bootstrap';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/user/services.scss';
 import Card from '../../../../components/UI/Card/Card';
+import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+
+import '../../../../sass/pages/user/services.scss';
 
 export default function Services() {
     const [errorMsg, setErrorMsg] = useState('');
@@ -18,23 +19,27 @@ export default function Services() {
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
 
-    useEffect(() => {
-        let url = '/services';
+    const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        setIsLoading(false);
+
+        let url = '/services';
         Axios.get(url)
             .then((res) => {
                 let { data } = res;
 
-                if (data.status === 'success') {
-                    setServices(res.data.services);
-                    setCategories(res.data.categories);
+                if (data.status !== 'success') {
+                    setErrorMsg(
+                        'Failed to load services... Please try again or contact support team!'
+                    );
+                    setShowError(true);
                     return;
                 }
+                setIsLoading(false);
 
-                setErrorMsg(
-                    'Failed to load services... Please try again or contact support team!'
-                );
-                setShowError(true);
+                setServices(res.data.services);
+                setCategories(res.data.categories);
                 return;
             })
             .catch((err) => console.log(err));
@@ -72,12 +77,28 @@ export default function Services() {
         ));
     };
 
+    const loading__1 = () => {
+        if (!isLoading) return;
+
+        return (
+            <Backdrop show={isLoading}>
+                <div className="loading">
+                    <div className="loading__1">
+                        <div></div>
+                    </div>
+                </div>
+            </Backdrop>
+        );
+    };
+
     // TODO Change title to dynamic
     return (
         <>
             <Helmet>
                 <title>Services - SMT Panel</title>
             </Helmet>
+
+            {loading__1()}
 
             <div className="container Services">
                 <h2 className="pageTitle">

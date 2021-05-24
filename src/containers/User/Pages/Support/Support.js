@@ -6,11 +6,13 @@ import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
+import Modal from 'react-bootstrap/Modal';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/user/support.scss';
 import Card from '../../../../components/UI/Card/Card';
-import { Table, Modal } from 'react-bootstrap';
+import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+
+import '../../../../sass/pages/user/support.scss';
 
 const Support = () => {
     const history = useHistory();
@@ -31,7 +33,11 @@ const Support = () => {
     const [tickets, setTickets] = useState();
     const [user, setUser] = useState();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         setShowError(false);
         setErrorMsg('');
 
@@ -39,17 +45,17 @@ const Support = () => {
         Axios.get(url).then((res) => {
             let { data } = res;
 
-            if (data.status === 'success') {
-                setUser(data.user);
-                setTickets(data.tickets.reverse());
+            if (data.status !== 'success') {
+                setShowError(true);
+                setErrorMsg(
+                    'Failed to load tickets, Please try again or contact support team'
+                );
                 return;
             }
+            setIsLoading(false);
 
-            setShowError(true);
-            setErrorMsg(
-                'Failed to load tickets, Please try again or contact support team'
-            );
-            return;
+            setUser(data.user);
+            setTickets(data.tickets.reverse());
         });
     }, []);
 
@@ -416,6 +422,20 @@ const Support = () => {
         </Modal>
     );
 
+    const loading__1 = () => {
+        if (!isLoading) return;
+
+        return (
+            <Backdrop show={isLoading}>
+                <div className="loading">
+                    <div className="loading__1">
+                        <div></div>
+                    </div>
+                </div>
+            </Backdrop>
+        );
+    };
+
     return (
         <>
             <Helmet>
@@ -426,6 +446,7 @@ const Support = () => {
             </Helmet>
 
             {addModal}
+            {loading__1()}
 
             <div className="container Support">
                 <div>

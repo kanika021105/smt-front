@@ -9,7 +9,6 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
-// import classes from './Message.module.css';
 import '../../../../../sass/pages/user/messages.scss';
 import { AuthContext } from '../../../../Context/AuthContext';
 

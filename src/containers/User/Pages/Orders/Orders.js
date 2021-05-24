@@ -6,6 +6,8 @@ import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
+import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+
 import Axios from '../../../../axiosIns';
 import '../../../../sass/pages/user/orders.scss';
 import Card from '../../../../components/UI/Card/Card';
@@ -17,21 +19,26 @@ const Orders = () => {
     const [orders, setOrders] = useState();
     const [services, setServices] = useState();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         let url = '/orders';
         Axios.get(url).then((res) => {
             let { data } = res;
 
-            if (data.status === 'success') {
-                setOrders(data.orders.reverse());
-                setServices(data.services);
+            if (data.status !== 'success') {
+                setShowError(true);
+                setErrorMsg(
+                    'Failed to load order history please try again... If error continue contact support team...'
+                );
                 return;
             }
+            setIsLoading(false);
 
-            setShowError(true);
-            setErrorMsg(
-                'Failed to load order history please try again... If error continue contact support team...'
-            );
+            setOrders(data.orders.reverse());
+            setServices(data.services);
             return;
         });
     }, []);
@@ -103,12 +110,28 @@ const Orders = () => {
         }
     };
 
+    const loading__1 = () => {
+        if (!isLoading) return;
+
+        return (
+            <Backdrop show={isLoading}>
+                <div className="loading">
+                    <div className="loading__1">
+                        <div></div>
+                    </div>
+                </div>
+            </Backdrop>
+        );
+    };
+
     // TODO Change title to dynamic
     return (
         <>
             <Helmet>
                 <title>Orders - SMT Panel</title>
             </Helmet>
+
+            {loading__1()}
 
             <div className="container Orders">
                 <h2 className="pageTitle">
