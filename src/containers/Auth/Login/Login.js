@@ -1,20 +1,26 @@
 // jshint esversion:9
 
 import React, { useState, useContext } from 'react';
-import { Form, FormControl } from 'react-bootstrap';
+
 import { Helmet } from 'react-helmet';
 
-import axios from '../../../axiosIns';
-import classes from './Login.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from '../../../components/UI/Card/Card';
 import { AuthContext } from '../../Context/AuthContext';
+import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
+
+import Axios from '../../../axiosIns';
+import classes from './Login.module.css';
+import Card from '../../../components/UI/Card/Card';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
     const [loginEmail, setLoginEmail] = useState('');
     const [password, setPassword] = useState('');
+
     const [errorMsg, setErrorMsg] = useState('');
     const [showError, setShowError] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
     const {
         setRole,
         setEmail,
@@ -28,53 +34,49 @@ const Login = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        let expiryDate;
-        let url = '/login';
-        let remainingMilliseconds;
+        const url = '/login';
         const loginData = { email: loginEmail, password: password };
 
-        let { data } = await axios.post(url, { ...loginData });
+        const { data } = await Axios.post(url, { ...loginData });
 
-        if (data) {
-            if (data.status === 'success') {
-                remainingMilliseconds = 24 * 60 * 60 * 1000;
-                expiryDate = Date.now() + remainingMilliseconds;
-                localStorage.setItem('expiryDate', expiryDate);
-                localStorage.setItem('token', data.token);
+        if (!data) return console.log('something went wrong!');
+        if (data.status !== 'success') {
+            setErrorMsg(data.errorMsg);
+            setShowError(true);
+        }
 
-                let { user } = data;
+        const remainingMilliseconds = 24 * 60 * 60 * 1000;
+        const expiryDate = Date.now() + remainingMilliseconds;
 
-                if (data.user) {
-                    setRole(user.role);
-                    setEmail(user.email);
-                    setUserId(user.userId);
-                    setFName(user.firstName);
-                    setLName(user.lastName);
-                    setBalance(user.balance);
-                    setIsLoggedIn(user.isLoggedIn);
+        localStorage.setItem('expiryDate', expiryDate);
+        localStorage.setItem('token', data.token);
 
-                    if (user.role === 'admin') {
-                        return (window.location = '/admin/dashboard');
-                    }
+        const { user } = data;
+        if (!data.user) return 'something went wrong!!';
 
-                    if (user.role === 'user') {
-                        return (window.location = '/dashboard');
-                    }
-                }
-            }
+        setRole(user.role);
+        setEmail(user.email);
+        setUserId(user.userId);
+        setFName(user.firstName);
+        setLName(user.lastName);
+        setBalance(user.balance);
+        setIsLoggedIn(user.isLoggedIn);
 
-            if (data.status === 'failed') {
-                setErrorMsg(data.errorMsg);
-                setShowError(true);
-            }
+        if (user.role === 'admin') {
+            return (window.location = '/admin/dashboard');
+        }
+
+        if (user.role === 'user') {
+            return (window.location = '/dashboard');
         }
     };
 
     return (
         <>
             <Helmet>
-                <title>SignUp - SMT Panel</title>
+                <title>Login - {websiteName || 'SMT '}</title>
             </Helmet>
+
             <div className={classes.Login}>
                 <Card>
                     <h2>Please Login </h2>
@@ -85,8 +87,9 @@ const Login = () => {
 
                     <form onSubmit={submitHandler}>
                         <div className={classes.formControl}>
-                            <Form.Label>Email</Form.Label>
-                            <FormControl
+                            <label className="input__label">Email</label>
+                            <input
+                                className="input"
                                 id="email"
                                 type="email"
                                 name="email"
@@ -97,8 +100,9 @@ const Login = () => {
                         </div>
 
                         <div className={classes.formControl}>
-                            <Form.Label>Password</Form.Label>
-                            <FormControl
+                            <label className="input__label">Password</label>
+                            <input
+                                className="input"
                                 id="password"
                                 type="password"
                                 name="password"
@@ -107,6 +111,7 @@ const Login = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+
                         <div>
                             <button className="btn btn-primary">Login</button>
                         </div>

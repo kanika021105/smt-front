@@ -15,7 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../../sass/pages/user/NewOrder.scss';
 
 const NewOrder = () => {
-    let websiteName = process.env.REACT_APP_WEBSITE_NAME;
+    const websiteName = process.env.REACT_APP_WEBSITE_NAME;
 
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();

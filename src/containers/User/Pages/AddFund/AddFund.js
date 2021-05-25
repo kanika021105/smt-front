@@ -1,7 +1,8 @@
 // jshint esversion:9
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, NavLink } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
@@ -9,9 +10,13 @@ import { VscListSelection } from 'react-icons/vsc';
 import Razorpay from './RazorPay/Razorpay';
 import Card from '../../../../components/UI/Card/Card';
 
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../sass/pages/user/AddFund.scss';
 
 const AddFund = () => {
+    const { websiteName } = useContext(WebsiteDetail);
+
     // TODO Change title to dynamic
     return (
         <>
@@ -61,6 +66,11 @@ const AddFund = () => {
                             </Route>
 
                             <Route path="/add-fund/paytm" exact>
+                                <Helmet>
+                                    <title>
+                                        Paytm - {websiteName || 'SMT'}{' '}
+                                    </title>
+                                </Helmet>
                                 {'Coming Soon...'}
                             </Route>
                         </div>

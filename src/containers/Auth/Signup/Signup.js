@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+// jshint esversion:9
+
+import React, { useState, useContext } from 'react';
+
 import { Helmet } from 'react-helmet';
 import { Button, Form, FormControl, Modal } from 'react-bootstrap';
 
-import axios from '../../../axiosIns';
+import Axios from '../../../axiosIns';
+
+import Card from '../../../components/UI/Card/Card';
+
+import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
+
 import classes from './Singup.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from '../../../components/UI/Card/Card';
-// import Modal from '../../../components/UI/Modal/Modal';
 
 const Signup = () => {
     const [firstName, setFirstName] = useState('');
@@ -19,6 +25,8 @@ const Signup = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [showError, setShowError] = useState(false);
     const [showModal, setShowModal] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -33,7 +41,7 @@ const Signup = () => {
             confirmPassword,
         };
 
-        let { data } = await axios.post(url, { ...signUpData });
+        let { data } = await Axios.post(url, { ...signUpData });
 
         console.log(data.status);
 
@@ -110,7 +118,7 @@ const Signup = () => {
     return (
         <>
             <Helmet>
-                <title>SignUp - SMT Panel</title>
+                <title>SignUp - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {successModal}
@@ -127,8 +135,11 @@ const Signup = () => {
                         <div className="row">
                             <div className="col-md-6 col-sm-12">
                                 <div className={classes.formControl}>
-                                    <Form.Label>First Name</Form.Label>
-                                    <FormControl
+                                    <label className="input__label">
+                                        First Name
+                                    </label>
+                                    <input
+                                        className="input"
                                         id="firstName"
                                         type="text"
                                         value={firstName}
@@ -140,8 +151,11 @@ const Signup = () => {
 
                             <div className="col-md-6 col-sm-12">
                                 <div className={classes.formControl}>
-                                    <Form.Label>Last Name</Form.Label>
-                                    <FormControl
+                                    <label className="input__label">
+                                        Last Name
+                                    </label>
+                                    <input
+                                        className="input"
                                         id="lastName"
                                         type="text"
                                         value={lastName}
@@ -153,8 +167,9 @@ const Signup = () => {
                         </div>
 
                         <div className={classes.formControl}>
-                            <Form.Label>Email</Form.Label>
-                            <FormControl
+                            <label className="input__label">Email</label>
+                            <input
+                                className="input"
                                 id="email"
                                 type="email"
                                 value={email}
@@ -164,8 +179,11 @@ const Signup = () => {
                         </div>
 
                         <div className={classes.formControl}>
-                            <Form.Label>WhatsApp/Telegram</Form.Label>
-                            <FormControl
+                            <label className="input__label">
+                                WhatsApp/Telegram
+                            </label>
+                            <input
+                                className="input"
                                 id="contact"
                                 type="number"
                                 value={contact}
@@ -175,8 +193,9 @@ const Signup = () => {
                         </div>
 
                         <div className={classes.formControl}>
-                            <Form.Label>Password</Form.Label>
+                            <label className="input__label">Password</label>
                             <FormControl
+                                className="input"
                                 id="password"
                                 type="password"
                                 value={password}
@@ -186,8 +205,11 @@ const Signup = () => {
                         </div>
 
                         <div className={classes.formControl}>
-                            <Form.Label>Confirm Password</Form.Label>
-                            <FormControl
+                            <label className="input__label">
+                                Confirm Password
+                            </label>
+                            <input
+                                className="input"
                                 id="confirmPassword"
                                 type="password"
                                 value={confirmPassword}
@@ -195,9 +217,8 @@ const Signup = () => {
                                 onChange={confirmPasswordChangeHandler}
                             />
                         </div>
-                        <div className={classes.primaryButton}>
-                            <button className="btn btn-primary">Signup</button>
-                        </div>
+
+                        <button className="mt-3 btn btn-primary">Signup</button>
                     </form>
                 </Card>
             </div>

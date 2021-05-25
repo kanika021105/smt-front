@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
@@ -18,9 +18,11 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../sass/pages/admin/apiProvider.scss';
 
-const Services = () => {
+const ApiProvider = () => {
     const history = useHistory();
 
     const [apiProviders, setApiProviders] = useState();
@@ -42,6 +44,8 @@ const Services = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [addError, setAddError] = useState(false);
     // const [showError, setShowError] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -442,16 +446,17 @@ const Services = () => {
         }
     };
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Users - SMT Panel</title>
+                <title>Api Provider - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {addModal}
             {editModal}
             {syncModal}
+
             {<Loading show={isLoading} />}
 
             <div className="container">
@@ -683,4 +688,4 @@ const Services = () => {
     );
 };
 
-export default Services;
+export default ApiProvider;

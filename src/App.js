@@ -3,17 +3,17 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import axios from './axiosIns';
+import Axios from './axiosIns';
 import User from './containers/User/User';
 import Admin from './containers/Admin/Admin';
 import Layout from './containers/Layout/Layout';
 import { AuthContext } from './containers/Context/AuthContext';
+import { WebsiteDetail } from './containers/Context/WebsiteDetailContext';
 
-// const NewOrder = lazy(() => import('./Pages/NewOrder/NewOrder'));
 const Login = lazy(() => import('./containers/Auth/Login/Login'));
 const Signup = lazy(() => import('./containers/Auth/Signup/Signup'));
 
-function App() {
+const App = () => {
     const [email, setEmail] = useState();
     const [userId, setUserId] = useState();
     const [role, setRole] = useState(false);
@@ -22,9 +22,11 @@ function App() {
     const [balance, setBalance] = useState(0);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const [websiteName, setWebsiteName] = useState('SMT Panel');
+
     useEffect(() => {
-        let expireTime = localStorage.getItem('expiryDate');
-        let token = localStorage.getItem('token');
+        const expireTime = localStorage.getItem('expiryDate');
+        const token = localStorage.getItem('token');
 
         // Checking if login expired
         if (expireTime <= Date.now()) {
@@ -34,33 +36,45 @@ function App() {
             return;
         }
 
-        // checking user login token is valid and updating role
-        if (token && expireTime > Date.now()) {
-            axios
-                .post('/verify-token', { token })
-                .then((res) => {
-                    let { data } = res;
+        // checking if token is present
+        if (!token) return setIsLoggedIn(false);
 
-                    if (res.data) {
-                        setRole(data.role);
-                        setIsLoggedIn(true);
-                        setEmail(data.email);
-                        setRole(res.data.role);
-                        setUserId(data.userId);
-                        setFName(data.fName);
-                        setLName(data.lName);
-                        setBalance(data.balance);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-            setIsLoggedIn(false);
-        }
+        // sending verification request
+        Axios.post('/verify-token', { token })
+            .then((res) => {
+                const { data } = res;
+
+                // Showing error if data not found
+                if (!data) {
+                    return console.log('something went wrong!');
+                }
+
+                // Setting context state
+                setRole(data.role);
+                setIsLoggedIn(true);
+                setEmail(data.email);
+                setRole(res.data.role);
+                setUserId(data.userId);
+                setFName(data.fName);
+                setLName(data.lName);
+                setBalance(data.balance);
+            })
+            .catch((err) => {
+                console.log(err.response.msg);
+            });
     }, []);
 
+    // Route for not logged in User
     let route = (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+            fallback={
+                <div className="loading">
+                    <div className="loading__1">
+                        <div></div>
+                    </div>
+                </div>
+            }
+        >
             <Layout>
                 <Switch>
                     <Route path="/signup" exact>
@@ -90,27 +104,29 @@ function App() {
     }
 
     return (
-        <AuthContext.Provider
-            value={{
-                role,
-                setRole,
-                email,
-                setEmail,
-                userId,
-                setUserId,
-                fName,
-                setFName,
-                lName,
-                setLName,
-                balance,
-                setBalance,
-                isLoggedIn,
-                setIsLoggedIn,
-            }}
-        >
-            {route}
-        </AuthContext.Provider>
+        <WebsiteDetail.Provider value={{ websiteName, setWebsiteName }}>
+            <AuthContext.Provider
+                value={{
+                    role,
+                    setRole,
+                    email,
+                    setEmail,
+                    userId,
+                    setUserId,
+                    fName,
+                    setFName,
+                    lName,
+                    setLName,
+                    balance,
+                    setBalance,
+                    isLoggedIn,
+                    setIsLoggedIn,
+                }}
+            >
+                {route}
+            </AuthContext.Provider>
+        </WebsiteDetail.Provider>
     );
-}
+};
 
 export default App;

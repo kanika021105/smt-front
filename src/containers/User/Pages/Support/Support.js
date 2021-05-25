@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
 
@@ -11,6 +11,8 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/support.scss';
 
@@ -32,6 +34,8 @@ const Support = () => {
 
     const [tickets, setTickets] = useState();
     const [user, setUser] = useState();
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -425,10 +429,7 @@ const Support = () => {
     return (
         <>
             <Helmet>
-                <title>
-                    Support -{' '}
-                    {process.env.REACT_APP_WEBSITE_NAME || 'SMT Panel'}
-                </title>
+                <title>Support - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {addModal}

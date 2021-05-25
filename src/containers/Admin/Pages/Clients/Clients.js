@@ -1,5 +1,6 @@
 // jshint esversion:9
-import React, { useEffect, useState } from 'react';
+
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Modal from 'react-bootstrap/Modal';
@@ -12,10 +13,12 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/clients.scss';
 
-export default function Services() {
+const Clients = () => {
     const [users, setUsers] = useState();
     const [showEditModal, setShowEditModal] = useState(false);
 
@@ -28,6 +31,8 @@ export default function Services() {
     const [editedBalance, setEditedBalance] = useState('');
     const [editedLastName, setEditedLastName] = useState('');
     const [editedFirstName, setEditedFirstName] = useState('');
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -274,7 +279,7 @@ export default function Services() {
     return (
         <>
             <Helmet>
-                <title>Users - SMT Panel</title>
+                <title>Clients - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {editModal}
@@ -292,7 +297,7 @@ export default function Services() {
                         >
                             <VscListSelection />
                         </IconContext.Provider>{' '}
-                        Users
+                        Clients
                     </h2>
                     <Card>
                         <table className="table">
@@ -384,4 +389,6 @@ export default function Services() {
             </div>
         </>
     );
-}
+};
+
+export default Clients;

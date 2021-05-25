@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
@@ -10,11 +10,15 @@ import Axios from '../../../../axiosIns';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../sass/pages/user/Dashboard.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     useEffect(() => {
         setIsLoading(true);
@@ -68,7 +72,7 @@ const Dashboard = () => {
         <>
             <Helmet>
                 <meta name="description" content="Helmet application" />
-                <title>Dashboard</title>
+                <title>Dashboard - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {<Loading show={isLoading} />}

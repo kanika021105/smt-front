@@ -1,6 +1,7 @@
 // jshint esversion:9
 
 import React, { useEffect, useState, useContext } from 'react';
+
 import { useParams } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { InputGroup, Card } from 'react-bootstrap';
@@ -9,13 +10,14 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
-import '../../../../../sass/pages/admin/messages.scss';
-// import classes from './Message.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { AuthContext } from '../../../../Context/AuthContext';
-
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
+
+import { AuthContext } from '../../../../Context/AuthContext';
+import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../../../sass/pages/admin/messages.scss';
 
 const Message = () => {
     const { userId } = useContext(AuthContext);
@@ -25,6 +27,8 @@ const Message = () => {
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     useEffect(() => {
         let url = `/admin/support/ticket/${id}`;
@@ -101,11 +105,11 @@ const Message = () => {
             );
         });
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Support - SMT Panel</title>
+                <title>Ticket - {websiteName || 'SMT'}</title>
             </Helmet>
 
             <div className="container">
@@ -120,7 +124,7 @@ const Message = () => {
                         >
                             <VscListSelection />
                         </IconContext.Provider>{' '}
-                        Support
+                        Ticket
                     </h2>
 
                     <Card>

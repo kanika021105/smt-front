@@ -1,20 +1,33 @@
 // jshint esversion:9
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { Helmet } from 'react-helmet';
+
+import Loading from '../../../../../components/UI/Loading/Loading';
+import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../../sass/pages/admin/settings/general.scss';
 
 const General = () => {
-    const [websiteName, setWebsiteName] = useState('');
+    const [siteName, setSiteName] = useState('');
     const [websiteDescription, setWebsiteDescription] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const websiteNameChangeHandler = (e) => {
-        setWebsiteName(e.target.value);
+    const { websiteName } = useContext(WebsiteDetail);
+
+    const siteNameChangeHandler = (e) => {
+        setSiteName(e.target.value);
     };
 
     return (
         <>
+            <Helmet>
+                <title>General - {websiteName || 'SMT'}</title>
+            </Helmet>
+
+            {<Loading show={isLoading} />}
+
             <div className=" border p-4">
                 <div>
                     <label className="input__label">Website Name</label>
@@ -22,8 +35,8 @@ const General = () => {
                         className="input"
                         placeholder="Website Name"
                         type="text"
-                        value={websiteName}
-                        onChange={websiteNameChangeHandler}
+                        value={siteName}
+                        onChange={siteNameChangeHandler}
                     />
                 </div>
 
@@ -34,7 +47,7 @@ const General = () => {
                         className="input"
                         rows="5"
                         value={websiteDescription}
-                        onChange={websiteNameChangeHandler}
+                        onChange={siteNameChangeHandler}
                     />
                 </div>
 
@@ -45,7 +58,7 @@ const General = () => {
                         className="input"
                         rows="6"
                         value={websiteName}
-                        onChange={websiteNameChangeHandler}
+                        onChange={siteNameChangeHandler}
                     />
                 </div>
 

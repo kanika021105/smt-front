@@ -1,27 +1,40 @@
 // jshint esversion:9
 
-import React, { useState, useEffect } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react';
+
+import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
+
+import Loading from '../../../../../components/UI/Loading/Loading';
+import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../../sass/pages/admin/settings/payment.scss';
-import classes from '../../../../../sass/pages/admin/settings/payment.scss';
 
 const Payment = () => {
     const [secretKey, setSecretKey] = useState('');
     const [keyId, setKeyId] = useState('');
 
-    useEffect(() => {
-        const url = '/admin/settings/razorpay';
+    const [isLoading, setIsLoading] = useState(false);
 
+    const { websiteName } = useContext(WebsiteDetail);
+
+    useEffect(() => {
+        setIsLoading(true);
+
+        const url = '/admin/settings/razorpay';
         Axios.get(url)
             .then((res) => {
+                setIsLoading(false);
+
                 const { data } = res;
 
                 setSecretKey(data.privateKey);
                 setKeyId(data.publicKey);
             })
             .catch((err) => {
+                setIsLoading(false);
+
                 console.log(err);
             });
     }, []);
@@ -51,6 +64,12 @@ const Payment = () => {
 
     return (
         <>
+            <Helmet>
+                <title>Payment - {websiteName || 'SMT'}</title>
+            </Helmet>
+
+            {<Loading show={isLoading} />}
+
             <div className="border p-4">
                 <form onSubmit={formSubmitHandler}>
                     <div>

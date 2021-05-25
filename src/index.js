@@ -1,10 +1,13 @@
 // jshint esversion:9
 
 import React from 'react';
+
 import ReactDOM from 'react-dom';
-import './sass/index.scss';
-import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+
+import App from './App';
+import './sass/index.scss';
+
 require('dotenv').config();
 
 const app = (

@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Modal from 'react-bootstrap/Modal';
@@ -12,6 +12,8 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/services.scss';
@@ -49,6 +51,8 @@ export default function Services() {
 
     const [errorMsg, setErrorMsg] = useState('');
     const [addError, setAddError] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -714,11 +718,11 @@ export default function Services() {
         }
     };
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Services - SMT Panel</title>
+                <title>Services - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {editModal}

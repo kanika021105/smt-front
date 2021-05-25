@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Modal from 'react-bootstrap/Modal';
@@ -12,6 +12,8 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/categories.scss';
@@ -35,6 +37,8 @@ const Categories = () => {
 
     const [errorMsg, setErrorMsg] = useState('');
     const [addError, setAddError] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     // const [loadingError, setLoadingError] = useState(false);
 
@@ -370,11 +374,11 @@ const Categories = () => {
         }
     };
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Categories - SMT Panel</title>
+                <title>Categories - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {editModal}

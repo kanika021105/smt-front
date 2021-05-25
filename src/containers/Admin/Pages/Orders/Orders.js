@@ -1,6 +1,6 @@
 /*jshint esversion: 9 */
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
@@ -11,6 +11,8 @@ import Axios from '../../../../axiosIns';
 import Modal from 'react-bootstrap/Modal';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/orders.scss';
@@ -27,6 +29,8 @@ const Orders = () => {
     const [editedStatus, setEditedStatus] = useState();
     const [editedRemains, setEditedRemains] = useState();
     const [editedStartCounter, setEditedStartCounter] = useState();
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -410,11 +414,11 @@ const Orders = () => {
         }
     };
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Orders - SMT Panel</title>
+                <title>Orders - {websiteName || 'SMT'} </title>
             </Helmet>
 
             {editModal}

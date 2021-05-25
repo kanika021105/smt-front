@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
@@ -10,6 +10,8 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../sass/pages/user/orders.scss';
 
 const Orders = () => {
@@ -18,6 +20,8 @@ const Orders = () => {
 
     const [orders, setOrders] = useState();
     const [services, setServices] = useState();
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -114,7 +118,7 @@ const Orders = () => {
     return (
         <>
             <Helmet>
-                <title>Orders - SMT Panel</title>
+                <title>Orders - {websiteName || 'SMT '}</title>
             </Helmet>
 
             {<Loading show={isLoading} />}

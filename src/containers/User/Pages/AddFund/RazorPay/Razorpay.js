@@ -7,12 +7,16 @@ import Axios from '../../../../../axiosIns';
 import { AuthContext } from '../../../../Context/AuthContext';
 import Loading from '../../../../../components/UI/Loading/Loading';
 
+import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+
 import '../../../../../sass/pages/user/Razorpay.scss';
 
 const Razorpay = () => {
     const [amount, setAmount] = useState(0);
     const { userId, fName } = useContext(AuthContext);
     const [publicKey, setPublicKey] = useState('');
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -76,7 +80,7 @@ const Razorpay = () => {
     return (
         <>
             <Helmet>
-                <title>RazorPay - Add Fund</title>
+                <title>RazorPay - {websiteName || 'SMT'} </title>
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             </Helmet>
 

@@ -12,6 +12,8 @@ import Axios from '../../../../../axiosIns';
 import '../../../../../sass/pages/user/messages.scss';
 import { AuthContext } from '../../../../Context/AuthContext';
 
+import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
@@ -23,6 +25,8 @@ const Message = () => {
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const { userId } = useContext(AuthContext);
     const params = useParams();
@@ -122,7 +126,7 @@ const Message = () => {
     return (
         <>
             <Helmet>
-                <title>Support - {process.env.REACT_APP_WEBSITE_NAME} </title>
+                <title>Ticket - {websiteName || 'SMT'} </title>
             </Helmet>
 
             <div className="container">
@@ -137,7 +141,7 @@ const Message = () => {
                         >
                             <VscListSelection />
                         </IconContext.Provider>{' '}
-                        Support
+                        Ticket
                     </h2>
 
                     <Card>

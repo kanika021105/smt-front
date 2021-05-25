@@ -27,48 +27,50 @@ const Settings = () => {
             </Helmet>
 
             <div className="container">
-                <div className="Settings">
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>{' '}
-                        Settings
-                    </h2>
+                <h2 className="pageTitle">
+                    <IconContext.Provider
+                        value={{
+                            style: {
+                                fontSize: '30px',
+                            },
+                        }}
+                    >
+                        <VscListSelection />
+                    </IconContext.Provider>{' '}
+                    Settings
+                </h2>
 
-                    <Card>
-                        <div className="row">
-                            <div className="col-md-3 border p-4">
-                                <li>
-                                    <Link to={'/admin/settings/general'}>
-                                        General
-                                    </Link>
-                                </li>
+                <Card>
+                    <div className="row">
+                        <div className="col-md-3 border p-4">
+                            <li>
+                                <Link to={'/admin/settings/general'}>
+                                    General
+                                </Link>
+                            </li>
 
-                                <li>
-                                    <Link to={'/admin/settings/payment'}>
-                                        Payment
-                                    </Link>
-                                </li>
-                            </div>
-
-                            <div className="col-md-9">
-                                <Route exact path="/admin/settings/general">
-                                    <General />
-                                </Route>
-
-                                <Route exact path="/admin/settings/payment">
-                                    <Payment />
-                                </Route>
-                            </div>
+                            <li>
+                                <Link to={'/admin/settings/payment'}>
+                                    Payment
+                                </Link>
+                            </li>
                         </div>
-                    </Card>
-                </div>
+
+                        <div className="col-md-9">
+                            <Route exact path="/admin/settings">
+                                <General />
+                            </Route>
+
+                            <Route exact path="/admin/settings/general">
+                                <General />
+                            </Route>
+
+                            <Route exact path="/admin/settings/payment">
+                                <Payment />
+                            </Route>
+                        </div>
+                    </div>
+                </Card>
             </div>
         </>
     );

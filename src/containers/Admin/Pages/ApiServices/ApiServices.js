@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
@@ -12,6 +12,8 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/apiServices.scss';
@@ -25,6 +27,8 @@ const ApiServices = () => {
 
     const [selectedService, setSelectedService] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -269,11 +273,11 @@ const ApiServices = () => {
         </Modal>
     );
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Api Services - SMT Panel</title>
+                <title>Api Services - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {addUpdateModal}

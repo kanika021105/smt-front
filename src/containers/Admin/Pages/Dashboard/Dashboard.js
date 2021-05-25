@@ -1,6 +1,6 @@
 // jshint esversion:9
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
@@ -10,11 +10,15 @@ import Axios from '../../../../axiosIns';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
+import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../../sass/pages/admin/dashboard.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
+
+    const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -160,11 +164,11 @@ const Dashboard = () => {
         }
     };
 
-    // TODO Change title to dynamic
+    // TODO
     return (
         <>
             <Helmet>
-                <title>Dashboard</title>
+                <title>Dashboard - {websiteName || 'SMT'}</title>
             </Helmet>
 
             {<Loading show={isLoading} />}
