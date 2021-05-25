@@ -1,29 +1,38 @@
 // jshint esversion:9
 
 import React, { useEffect, useState } from 'react';
-
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
-import {} from 'react-bootstrap';
-
 import Axios from '../../../../axiosIns';
+import Loading from '../../../../components/UI/Loading/Loading';
+import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../../sass/pages/admin/dashboard.scss';
-import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         let url = '/admin/dashboard';
         Axios.get(url)
             .then((res) => {
+                setIsLoading(false);
+
                 return setData(res.data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err.response.msg);
+            });
     }, []);
 
     let { users } = data;
@@ -157,6 +166,8 @@ const Dashboard = () => {
             <Helmet>
                 <title>Dashboard</title>
             </Helmet>
+
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <h2 className="pageTitle">

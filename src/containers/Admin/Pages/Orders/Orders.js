@@ -1,18 +1,19 @@
 /*jshint esversion: 9 */
 
 import React, { useEffect, useState } from 'react';
-
 import { Helmet } from 'react-helmet';
+
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
-import { Modal } from 'react-bootstrap';
-
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/admin/orders.scss';
-import 'bootstrap/js/dist/dropdown';
+import Modal from 'react-bootstrap/Modal';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import 'bootstrap/js/dist/dropdown';
+import '../../../../sass/pages/admin/orders.scss';
 
 const Orders = () => {
     const [users, setUsers] = useState();
@@ -27,14 +28,18 @@ const Orders = () => {
     const [editedRemains, setEditedRemains] = useState();
     const [editedStartCounter, setEditedStartCounter] = useState();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     //
     useEffect(() => {
-        let url = '/admin/orders';
+        setIsLoading(true);
 
+        let url = '/admin/orders';
         Axios.get(url)
             .then((res) => {
-                let { data } = res;
+                setIsLoading(false);
 
+                let { data } = res;
                 if (data) {
                     setUsers(data.users);
                     setServices(data.services);
@@ -42,6 +47,8 @@ const Orders = () => {
                 }
             })
             .catch((err) => {
+                setIsLoading(false);
+
                 console.log(err.error);
             });
     }, []);
@@ -411,6 +418,7 @@ const Orders = () => {
             </Helmet>
 
             {editModal}
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <div className="Orders">
@@ -528,43 +536,6 @@ const Orders = () => {
                                                             </li>
                                                         </ul>
                                                     </div>
-
-                                                    {/* <DropdownButton
-                                                        className="dropdownButton"
-                                                        id="dropdown-item-button"
-                                                        title={
-                                                            <BsThreeDotsVertical />
-                                                        }
-                                                    >
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-info"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={order.id}
-                                                                onClick={
-                                                                    editButtonHandler
-                                                                }
-                                                            >
-                                                                Edit
-                                                            </button>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                className="btn btn-danger"
-                                                                style={{
-                                                                    width: '100%',
-                                                                }}
-                                                                value={order.id}
-                                                                onClick={
-                                                                    deleteButtonHandler
-                                                                }
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </div>
-                                                    </DropdownButton> */}
                                                 </IconContext.Provider>
                                             </td>
                                         </tr>

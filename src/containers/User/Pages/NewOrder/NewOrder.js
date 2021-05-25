@@ -7,9 +7,9 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { FiSliders } from 'react-icons/fi';
 
-import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../../sass/pages/user/NewOrder.scss';
@@ -38,22 +38,28 @@ const NewOrder = () => {
         setIsLoading(true);
 
         let url = '/new-order';
-        Axios.get(url).then((res) => {
-            let { data } = res;
+        Axios.get(url)
+            .then((res) => {
+                setIsLoading(false);
+                let { data } = res;
 
-            if (data.status !== 'success') {
-                setErrorMsg(
-                    'Something went wrong please try again or contact us if error continue to show.'
-                );
-                setShowError(true);
+                if (data.status !== 'success') {
+                    setErrorMsg(
+                        'Something went wrong please try again or contact us if error continue to show.'
+                    );
+                    setShowError(true);
+                    return;
+                }
+
+                setCategories(data.categories);
+                setServices(data.services);
                 return;
-            }
-            setIsLoading(false);
+            })
+            .catch((err) => {
+                setIsLoading(false);
 
-            setCategories(data.categories);
-            setServices(data.services);
-            return;
-        });
+                console.log(err.response.msg);
+            });
     }, []);
 
     const servicesByCategory =
@@ -74,7 +80,7 @@ const NewOrder = () => {
         const serviceDetail = await services.filter(
             (service) => +service.id === +e.target.value
         );
-        console.log(serviceDetail[0]);
+
         setSelectedService(serviceDetail[0]);
 
         if (!serviceDetail[0]) return;
@@ -127,20 +133,6 @@ const NewOrder = () => {
         }
     };
 
-    const loading__1 = () => {
-        if (!isLoading) return;
-
-        return (
-            <Backdrop show={isLoading}>
-                <div className="loading">
-                    <div className="loading__1">
-                        <div></div>
-                    </div>
-                </div>
-            </Backdrop>
-        );
-    };
-
     // TODO Change title to dynamic
     return (
         <>
@@ -148,7 +140,7 @@ const NewOrder = () => {
                 <title>New Order - {websiteName || 'SMT Panel'}</title>
             </Helmet>
 
-            {loading__1()}
+            {<Loading show={isLoading} />}
 
             <div className="container newOrder">
                 <h2 className="pageTitle">

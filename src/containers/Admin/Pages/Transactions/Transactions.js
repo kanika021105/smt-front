@@ -7,19 +7,32 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import axios from '../../../../axiosIns';
-import '../../../../sass/pages/admin/transactions.scss';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import '../../../../sass/pages/admin/transactions.scss';
 
 export default function Services() {
     const [transactions, setTransactions] = useState();
 
-    useEffect(() => {
-        let url = '/admin/transactions';
+    const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        setIsLoading(true);
+
+        let url = '/admin/transactions';
         axios
             .get(url)
-            .then((res) => setTransactions(res.data.transactions.reverse()))
-            .catch((err) => console.log(err));
+            .then((res) => {
+                setIsLoading(false);
+
+                setTransactions(res.data.transactions.reverse());
+            })
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err.response.msg);
+            });
     }, []);
 
     // TODO Change title to dynamic
@@ -28,6 +41,8 @@ export default function Services() {
             <Helmet>
                 <title>Transactions - SMT Panel</title>
             </Helmet>
+
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <div className="Transactions">

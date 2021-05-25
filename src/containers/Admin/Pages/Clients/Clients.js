@@ -2,22 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import Modal from 'react-bootstrap/Modal';
+
 import { IconContext } from 'react-icons';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
-import {
-    Form,
-    Modal,
-    Button,
-    InputGroup,
-    FormControl,
-    DropdownButton,
-} from 'react-bootstrap';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
+import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/clients.scss';
-import Card from '../../../../components/UI/Card/Card';
 
 export default function Services() {
     const [users, setUsers] = useState();
@@ -33,10 +29,22 @@ export default function Services() {
     const [editedLastName, setEditedLastName] = useState('');
     const [editedFirstName, setEditedFirstName] = useState('');
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         Axios.get('/admin/clients')
-            .then((res) => setUsers(res.data.users.reverse()))
-            .catch((err) => console.log(err));
+            .then((res) => {
+                setIsLoading(false);
+
+                setUsers(res.data.users.reverse());
+            })
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err.response.message);
+            });
     }, []);
 
     const editButtonHandler = (e) => {
@@ -270,6 +278,7 @@ export default function Services() {
             </Helmet>
 
             {editModal}
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <div className="Clients">

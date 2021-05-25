@@ -3,16 +3,18 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { IconContext } from 'react-icons';
-import '../../../../sass/pages/admin/categories.scss';
-import 'bootstrap/js/dist/dropdown';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { VscListSelection } from 'react-icons/vsc';
+import Modal from 'react-bootstrap/Modal';
 
-import { Modal } from 'react-bootstrap';
+import { IconContext } from 'react-icons';
+import { VscListSelection } from 'react-icons/vsc';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import 'bootstrap/js/dist/dropdown';
+import '../../../../sass/pages/admin/categories.scss';
 
 const Categories = () => {
     const [categories, setCategories] = useState();
@@ -33,14 +35,26 @@ const Categories = () => {
 
     const [errorMsg, setErrorMsg] = useState('');
     const [addError, setAddError] = useState(false);
+
     // const [loadingError, setLoadingError] = useState(false);
 
-    useEffect(() => {
-        let url = '/admin/categories';
+    const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        setIsLoading(true);
+
+        let url = '/admin/categories';
         Axios.get(url)
-            .then((res) => setCategories(res.data.categories.reverse() || {}))
-            .catch((err) => console.log(err.response.data));
+            .then((res) => {
+                setIsLoading(false);
+
+                setCategories(res.data.categories.reverse() || {});
+            })
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err.response.data);
+            });
     }, []);
 
     const handleAddButtonClick = () => {
@@ -365,6 +379,7 @@ const Categories = () => {
 
             {editModal}
             {addModal}
+            {<Loading show={isLoading} />}
 
             <main className="categories">
                 <div className="container">

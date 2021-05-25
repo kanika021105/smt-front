@@ -8,7 +8,7 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
-import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+import Loading from '../../../../components/UI/Loading/Loading';
 
 import '../../../../sass/pages/user/services.scss';
 
@@ -77,20 +77,6 @@ export default function Services() {
         ));
     };
 
-    const loading__1 = () => {
-        if (!isLoading) return;
-
-        return (
-            <Backdrop show={isLoading}>
-                <div className="loading">
-                    <div className="loading__1">
-                        <div></div>
-                    </div>
-                </div>
-            </Backdrop>
-        );
-    };
-
     // TODO Change title to dynamic
     return (
         <>
@@ -98,7 +84,7 @@ export default function Services() {
                 <title>Services - SMT Panel</title>
             </Helmet>
 
-            {loading__1()}
+            {<Loading show={isLoading} />}
 
             <div className="container Services">
                 <h2 className="pageTitle">

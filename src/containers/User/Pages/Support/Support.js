@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
-import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+import Loading from '../../../../components/UI/Loading/Loading';
 
 import '../../../../sass/pages/user/support.scss';
 
@@ -422,20 +422,6 @@ const Support = () => {
         </Modal>
     );
 
-    const loading__1 = () => {
-        if (!isLoading) return;
-
-        return (
-            <Backdrop show={isLoading}>
-                <div className="loading">
-                    <div className="loading__1">
-                        <div></div>
-                    </div>
-                </div>
-            </Backdrop>
-        );
-    };
-
     return (
         <>
             <Helmet>
@@ -446,7 +432,7 @@ const Support = () => {
             </Helmet>
 
             {addModal}
-            {loading__1()}
+            {<Loading show={isLoading} />}
 
             <div className="container Support">
                 <div>

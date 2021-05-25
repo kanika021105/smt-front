@@ -1,8 +1,8 @@
 // jshint esversion:9
 
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { FiEdit } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
@@ -15,8 +15,10 @@ import { AiOutlineUnorderedList } from 'react-icons/ai';
 import { Form, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/admin/apiProvider.scss';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import '../../../../sass/pages/admin/apiProvider.scss';
 
 const Services = () => {
     const history = useHistory();
@@ -41,14 +43,21 @@ const Services = () => {
     const [addError, setAddError] = useState(false);
     // const [showError, setShowError] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         Axios.get('/admin/api-provider')
             .then((res) => {
                 const { data } = res;
-
                 setApiProviders(data.apiProviders);
+
+                setIsLoading(false);
             })
             .catch((err) => {
+                setIsLoading(false);
+
                 console.log(err.response.data.message);
             });
     }, []);
@@ -443,6 +452,7 @@ const Services = () => {
             {addModal}
             {editModal}
             {syncModal}
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <div className="apiProvider">

@@ -4,15 +4,20 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
-import '../../../../../sass/pages/user/Razorpay.scss';
 import { AuthContext } from '../../../../Context/AuthContext';
+import Loading from '../../../../../components/UI/Loading/Loading';
+
+import '../../../../../sass/pages/user/Razorpay.scss';
 
 const Razorpay = () => {
     const [amount, setAmount] = useState(0);
     const { userId, fName } = useContext(AuthContext);
     const [publicKey, setPublicKey] = useState('');
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        // setIsLoading(true);
         const url = '';
         // Axios.get(url).then((res) => {
         //     const { data } = res;
@@ -74,6 +79,8 @@ const Razorpay = () => {
                 <title>RazorPay - Add Fund</title>
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             </Helmet>
+
+            {<Loading show={isLoading} />}
 
             <div className="Razorpay">
                 <input

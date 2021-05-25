@@ -6,11 +6,11 @@ import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
-import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
-
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/user/orders.scss';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import '../../../../sass/pages/user/orders.scss';
 
 const Orders = () => {
     const [errorMsg, setErrorMsg] = useState('');
@@ -110,20 +110,6 @@ const Orders = () => {
         }
     };
 
-    const loading__1 = () => {
-        if (!isLoading) return;
-
-        return (
-            <Backdrop show={isLoading}>
-                <div className="loading">
-                    <div className="loading__1">
-                        <div></div>
-                    </div>
-                </div>
-            </Backdrop>
-        );
-    };
-
     // TODO Change title to dynamic
     return (
         <>
@@ -131,7 +117,7 @@ const Orders = () => {
                 <title>Orders - SMT Panel</title>
             </Helmet>
 
-            {loading__1()}
+            {<Loading show={isLoading} />}
 
             <div className="container Orders">
                 <h2 className="pageTitle">

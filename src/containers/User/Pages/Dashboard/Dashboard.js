@@ -7,9 +7,10 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/user/Dashboard.scss';
-import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
+
+import '../../../../sass/pages/user/Dashboard.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
@@ -25,7 +26,11 @@ const Dashboard = () => {
 
                 setIsLoading(false);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err);
+            });
     }, []);
 
     let { orders } = data;
@@ -58,20 +63,6 @@ const Dashboard = () => {
             .sort((a, b) => parseFloat(b.min) - parseFloat(a.min))
             .slice(0, 10);
 
-    const loading__1 = () => {
-        if (!isLoading) return;
-
-        return (
-            <Backdrop show={isLoading}>
-                <div className="loading">
-                    <div className="loading__1">
-                        <div></div>
-                    </div>
-                </div>
-            </Backdrop>
-        );
-    };
-
     // TODO Change title to dynamic
     return (
         <>
@@ -79,6 +70,8 @@ const Dashboard = () => {
                 <meta name="description" content="Helmet application" />
                 <title>Dashboard</title>
             </Helmet>
+
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <h2 className="pageTitle">
@@ -95,8 +88,6 @@ const Dashboard = () => {
                 </h2>
 
                 <main className="main">
-                    {loading__1()}
-
                     <section className="section__one">
                         <div className="row">
                             <div className="col-lg-3 col-md-6 col-sm-6 u-mb-2 u-sm-mb-1">

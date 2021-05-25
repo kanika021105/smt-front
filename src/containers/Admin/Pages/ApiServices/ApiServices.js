@@ -5,14 +5,16 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
-import 'bootstrap/js/dist/dropdown';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import Modal from 'react-bootstrap/Modal';
 import { VscListSelection } from 'react-icons/vsc';
-import { Form, Modal, Button } from 'react-bootstrap';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/admin/apiServices.scss';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import 'bootstrap/js/dist/dropdown';
+import '../../../../sass/pages/admin/apiServices.scss';
 
 const ApiServices = () => {
     const { id } = useParams();
@@ -24,7 +26,11 @@ const ApiServices = () => {
     const [selectedService, setSelectedService] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         const url = `/admin/api-provider/service-list/${id}`;
         Axios.get(url)
             .then((res) => {
@@ -32,8 +38,14 @@ const ApiServices = () => {
 
                 setServices(data.services);
                 setCategories(data.categories);
+
+                setIsLoading(false);
             })
-            .catch((err) => console.log(err.response.data.message));
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err.response.data.message);
+            });
     }, [id]);
 
     const addButtonHandler = async (e) => {
@@ -265,6 +277,7 @@ const ApiServices = () => {
             </Helmet>
 
             {addUpdateModal}
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <div className="apiServices">

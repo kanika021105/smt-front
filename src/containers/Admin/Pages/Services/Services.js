@@ -3,22 +3,18 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import Modal from 'react-bootstrap/Modal';
+
 import { IconContext } from 'react-icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
 
-import {
-    Form,
-    Modal,
-    InputGroup,
-    FormControl,
-    DropdownButton,
-} from 'react-bootstrap';
-
 import Axios from '../../../../axiosIns';
-import '../../../../sass/pages/admin/services.scss';
-import 'bootstrap/js/dist/dropdown';
 import Card from '../../../../components/UI/Card/Card';
+import Loading from '../../../../components/UI/Loading/Loading';
+
+import 'bootstrap/js/dist/dropdown';
+import '../../../../sass/pages/admin/services.scss';
 
 export default function Services() {
     const [services, setServices] = useState();
@@ -54,15 +50,25 @@ export default function Services() {
     const [errorMsg, setErrorMsg] = useState('');
     const [addError, setAddError] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         Axios.get('/admin/services')
             .then((res) => {
+                setIsLoading(false);
+
                 let { data } = res;
                 setServices(data.services);
                 setCategories(data.categories);
                 setProviders(data.apiProviders);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                setIsLoading(false);
+
+                console.log(err);
+            });
     }, []);
 
     const handleAddButtonClick = () => {
@@ -682,37 +688,6 @@ export default function Services() {
                                 </li>
                             </ul>
                         </div>
-
-                        {/* <DropdownButton
-                            className="dropdownButton"
-                            id="dropdown-item-button"
-                            title={<BsThreeDotsVertical />}
-                        >
-                            <div>
-                                <button
-                                    className="btn btn-info"
-                                    style={{
-                                        width: '100%',
-                                    }}
-                                    value={service.id}
-                                    onClick={editButtonHandler}
-                                >
-                                    Edit
-                                </button>
-                            </div>
-                            <div>
-                                <button
-                                    className="btn btn-danger"
-                                    style={{
-                                        width: '100%',
-                                    }}
-                                    value={service.id}
-                                    onClick={deleteButtonHandler}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </DropdownButton> */}
                     </IconContext.Provider>
                 </td>
             </tr>
@@ -748,6 +723,7 @@ export default function Services() {
 
             {editModal}
             {addModal}
+            {<Loading show={isLoading} />}
 
             <div className="container">
                 <div className="Services">
