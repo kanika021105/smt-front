@@ -17,7 +17,6 @@ import '../../../../sass/pages/admin/dashboard.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
-
     const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +24,7 @@ const Dashboard = () => {
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/admin/dashboard';
+        const url = '/admin/dashboard';
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
@@ -39,47 +38,55 @@ const Dashboard = () => {
             });
     }, []);
 
-    let { users } = data;
-    let { orders } = data;
-    let { services } = data;
+    const {
+        lastUsers,
+        totalUsers,
+        lastOrders,
+        totalOrders,
+        lastServices,
+        totalTickets,
+        totalAmount,
+    } = data;
 
-    const completed = orders
-        ? orders.filter((order) => order.status === 'completed')
+    const completed = lastOrders
+        ? lastOrders.filter((order) => order.status === 'completed')
         : null;
-    const pending = orders
-        ? orders.filter((order) => order.status === 'pending')
+    const pending = lastOrders
+        ? lastOrders.filter((order) => order.status === 'pending')
         : null;
-    const processing = orders
-        ? orders.filter((order) => order.status === 'processing')
+    const processing = lastOrders
+        ? lastOrders.filter((order) => order.status === 'processing')
         : null;
-    const inProgress = orders
-        ? orders.filter((order) => order.status === 'inprogress')
+    const inProgress = lastOrders
+        ? lastOrders.filter((order) => order.status === 'inprogress')
         : null;
-    const partial = orders
-        ? orders.filter((order) => order.status === 'partial')
+    const partial = lastOrders
+        ? lastOrders.filter((order) => order.status === 'partial')
         : null;
-    const cancelled = orders
-        ? orders.filter((order) => order.status === 'cancelled')
+    const cancelled = lastOrders
+        ? lastOrders.filter((order) => order.status === 'cancelled')
         : null;
-    const refunded = orders
-        ? orders.filter((order) => order.status === 'refunded')
+    const refunded = lastOrders
+        ? lastOrders.filter((order) => order.status === 'refunded')
         : null;
 
-    let topServicesList =
-        services &&
-        services
-            .sort((a, b) => parseFloat(b.min) - parseFloat(a.min))
-            .slice(0, 10);
+    // const topServicesList =
+    //     services &&
+    //     services
+    //         .sort((a, b) => parseFloat(b.min) - parseFloat(a.min))
+    //         .slice(0, 10);
 
-    let lastUsersList = users && users.reverse().slice(0, 10);
-    let lastOrdersList = orders && orders.reverse().slice(0, 10);
+    // const lastUsersList = users && users.reverse().slice(0, 10);
+    // const lastOrdersList = orders && orders.reverse().slice(0, 10);
 
-    let getServiceTitle = (id) => {
-        if (services) {
-            let service = services.filter((service) => +service.id === +id);
+    const getServiceTitle = (id) => {
+        if (lastServices) {
+            const service = lastServices.filter(
+                (service) => +service.id === +id
+            );
 
-            if (service[0]) return service[0].title;
-            return null;
+            if (!service[0]) return null;
+            return service[0].title;
         }
         return null;
     };
@@ -92,6 +99,7 @@ const Dashboard = () => {
                         {status}
                     </button>
                 );
+
             case 'processing':
                 return (
                     <button
@@ -159,6 +167,7 @@ const Dashboard = () => {
                         {status}
                     </button>
                 );
+
             default:
                 break;
         }
@@ -195,8 +204,7 @@ const Dashboard = () => {
                                     Total Amount
                                 </span>
                                 <span className={'section__one__dataValue'}>
-                                    {(data.totalAmount &&
-                                        data.totalAmount.toFixed(2)) ||
+                                    {(totalAmount && totalAmount.toFixed(2)) ||
                                         '0'}
                                 </span>
                             </DashboardCard>
@@ -208,7 +216,7 @@ const Dashboard = () => {
                                     Total User
                                 </span>
                                 <span className={'section__one__dataValue'}>
-                                    {(users && users.length) || '0'}
+                                    {totalUsers || '0'}
                                 </span>
                             </DashboardCard>
                         </div>
@@ -219,7 +227,7 @@ const Dashboard = () => {
                                     Total Order
                                 </span>
                                 <span className={'section__one__dataValue'}>
-                                    {(orders && orders.length) || '0'}
+                                    {totalOrders || '0'}
                                 </span>
                             </DashboardCard>
                         </div>
@@ -230,7 +238,7 @@ const Dashboard = () => {
                                     Total Ticket
                                 </span>
                                 <span className={'section__one__dataValue'}>
-                                    {data.totalTickets || '0'}
+                                    {totalTickets || '0'}
                                 </span>
                             </DashboardCard>
                         </div>
@@ -403,30 +411,26 @@ const Dashboard = () => {
                                         </thead>
 
                                         <tbody>
-                                            {topServicesList &&
-                                                topServicesList.map(
-                                                    (service) => (
-                                                        <tr key={service.id}>
-                                                            <td>
-                                                                {service.id}
-                                                            </td>
-                                                            <td>
-                                                                {service.title
-                                                                    .length > 30
-                                                                    ? service.title.substr(
-                                                                          0,
-                                                                          31
-                                                                      ) + '...'
-                                                                    : service.title}
-                                                            </td>
-                                                            <td>
-                                                                {checkStatus(
-                                                                    service.status
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                )}
+                                            {lastServices &&
+                                                lastServices.map((service) => (
+                                                    <tr key={service.id}>
+                                                        <td>{service.id}</td>
+                                                        <td>
+                                                            {service.title
+                                                                .length > 30
+                                                                ? service.title.substr(
+                                                                      0,
+                                                                      31
+                                                                  ) + '...'
+                                                                : service.title}
+                                                        </td>
+                                                        <td>
+                                                            {checkStatus(
+                                                                service.status
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -438,6 +442,7 @@ const Dashboard = () => {
                                 <div className={'tableTitle'}>
                                     Last 10 Account created
                                 </div>
+
                                 <div>
                                     <table className="table">
                                         <thead>
@@ -447,9 +452,10 @@ const Dashboard = () => {
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
-                                            {lastUsersList &&
-                                                lastUsersList.map((user) => (
+                                            {lastUsers &&
+                                                lastUsers.map((user) => (
                                                     <tr key={user.id}>
                                                         <td>{user.id}</td>
                                                         <td>
@@ -461,38 +467,10 @@ const Dashboard = () => {
                                                                   ) + '...'
                                                                 : user.email}
                                                         </td>
+
                                                         <td>
-                                                            {user.status ===
-                                                                'active' && (
-                                                                <button
-                                                                    className={
-                                                                        'btn btn-success btn-disabled'
-                                                                    }
-                                                                    disabled
-                                                                >
-                                                                    {user.status[0].toUpperCase() +
-                                                                        user.status
-                                                                            .substring(
-                                                                                1
-                                                                            )
-                                                                            .toLowerCase()}
-                                                                </button>
-                                                            )}
-                                                            {user.status ===
-                                                                'deactive' && (
-                                                                <button
-                                                                    className={
-                                                                        'btn btn-inactive btn-disabled'
-                                                                    }
-                                                                    disabled
-                                                                >
-                                                                    {user.status[0].toUpperCase() +
-                                                                        user.status
-                                                                            .substring(
-                                                                                1
-                                                                            )
-                                                                            .toLowerCase()}
-                                                                </button>
+                                                            {checkStatus(
+                                                                user.status
                                                             )}
                                                         </td>
                                                     </tr>
@@ -526,62 +504,51 @@ const Dashboard = () => {
                                                     <th>Status</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
-                                                {lastOrdersList &&
-                                                    lastOrdersList.map(
-                                                        (order) => (
-                                                            <tr key={order.id}>
-                                                                <td>
-                                                                    {order.id}
-                                                                </td>
-                                                                <td>
-                                                                    {getServiceTitle(
-                                                                        order.serviceId
-                                                                    ) &&
-                                                                    getServiceTitle(
-                                                                        order.serviceId
-                                                                    ).length >
-                                                                        35
-                                                                        ? getServiceTitle(
-                                                                              order.serviceId
-                                                                          ).slice(
-                                                                              0,
-                                                                              35
-                                                                          ) +
-                                                                          '...'
-                                                                        : getServiceTitle(
-                                                                              order.serviceId
-                                                                          )}
-                                                                </td>
-                                                                <td>
-                                                                    {order.link
-                                                                        .length >
-                                                                    35
-                                                                        ? order.link.slice(
-                                                                              0,
-                                                                              35
-                                                                          ) +
-                                                                          '...'
-                                                                        : order.link}
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                        order.quantity
-                                                                    }
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                        order.charge
-                                                                    }
-                                                                </td>
-                                                                <td>
-                                                                    {getStatus(
-                                                                        order.status
-                                                                    )}
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    )}
+                                                {lastOrders &&
+                                                    lastOrders.map((order) => (
+                                                        <tr key={order.id}>
+                                                            <td>{order.id}</td>
+                                                            <td>
+                                                                {getServiceTitle(
+                                                                    order.serviceId
+                                                                ) &&
+                                                                getServiceTitle(
+                                                                    order.serviceId
+                                                                ).length > 35
+                                                                    ? getServiceTitle(
+                                                                          order.serviceId
+                                                                      ).slice(
+                                                                          0,
+                                                                          35
+                                                                      ) + '...'
+                                                                    : getServiceTitle(
+                                                                          order.serviceId
+                                                                      )}
+                                                            </td>
+                                                            <td>
+                                                                {order.link
+                                                                    .length > 35
+                                                                    ? order.link.slice(
+                                                                          0,
+                                                                          35
+                                                                      ) + '...'
+                                                                    : order.link}
+                                                            </td>
+                                                            <td>
+                                                                {order.quantity}
+                                                            </td>
+                                                            <td>
+                                                                {order.charge}
+                                                            </td>
+                                                            <td>
+                                                                {getStatus(
+                                                                    order.status
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
                                             </tbody>
                                         </table>
                                     </div>
@@ -609,9 +576,10 @@ const Dashboard = () => {
                                                     <th>Status</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
-                                                {topServicesList &&
-                                                    topServicesList.map(
+                                                {lastServices &&
+                                                    lastServices.map(
                                                         (service) => (
                                                             <tr
                                                                 key={service.id}
@@ -619,6 +587,7 @@ const Dashboard = () => {
                                                                 <td>
                                                                     {service.id}
                                                                 </td>
+
                                                                 <td>
                                                                     {service
                                                                         .title
@@ -631,38 +600,10 @@ const Dashboard = () => {
                                                                           '...'
                                                                         : service.title}
                                                                 </td>
+
                                                                 <td>
-                                                                    {service.status ===
-                                                                        'active' && (
-                                                                        <button
-                                                                            className={
-                                                                                'btn btn-success btn-disabled'
-                                                                            }
-                                                                            disabled
-                                                                        >
-                                                                            {service.status[0].toUpperCase() +
-                                                                                service.status
-                                                                                    .substring(
-                                                                                        1
-                                                                                    )
-                                                                                    .toLowerCase()}
-                                                                        </button>
-                                                                    )}
-                                                                    {service.status ===
-                                                                        'deactive' && (
-                                                                        <button
-                                                                            className={
-                                                                                'btn btn-inactive btn-disabled'
-                                                                            }
-                                                                            disabled
-                                                                        >
-                                                                            {service.status[0].toUpperCase() +
-                                                                                service.status
-                                                                                    .substring(
-                                                                                        1
-                                                                                    )
-                                                                                    .toLowerCase()}
-                                                                        </button>
+                                                                    {checkStatus(
+                                                                        service.status
                                                                     )}
                                                                 </td>
                                                             </tr>

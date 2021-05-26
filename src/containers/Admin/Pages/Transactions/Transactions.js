@@ -14,7 +14,7 @@ import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailConte
 
 import '../../../../sass/pages/admin/transactions.scss';
 
-export default function Services() {
+const Transactions = () => {
     const [transactions, setTransactions] = useState();
 
     const { websiteName } = useContext(WebsiteDetail);
@@ -102,4 +102,6 @@ export default function Services() {
             </div>
         </>
     );
-}
+};
+
+export default Transactions;

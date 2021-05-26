@@ -1,11 +1,9 @@
 // jshint esversion:9
 
 import React, { useState, useEffect, useContext } from 'react';
-
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
-
 import Loading from '../../../../../components/UI/Loading/Loading';
 import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
 

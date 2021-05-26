@@ -18,7 +18,7 @@ import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailConte
 import 'bootstrap/js/dist/dropdown';
 import '../../../../sass/pages/admin/services.scss';
 
-export default function Services() {
+const Services = () => {
     const [services, setServices] = useState();
     const [providers, setProviders] = useState();
     const [categories, setCategories] = useState();
@@ -782,4 +782,6 @@ export default function Services() {
             </div>
         </>
     );
-}
+};
+
+export default Services;

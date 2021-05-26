@@ -23,165 +23,168 @@ const Orders = () => {
     const [services, setServices] = useState();
 
     const [editingOrder, setEditingOrder] = useState();
+    const [editedOrder, setEditedOrder] = useState({
+        id: '',
+        link: '',
+        startCounter: 0,
+        remains: 0,
+        status: '',
+    });
+
     const [showEditModal, setShowEditModal] = useState(false);
-
-    const [editedLink, setEditedLink] = useState();
-    const [editedStatus, setEditedStatus] = useState();
-    const [editedRemains, setEditedRemains] = useState();
-    const [editedStartCounter, setEditedStartCounter] = useState();
-
     const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
 
-    //
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/admin/orders';
+        const url = '/admin/orders';
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
 
-                let { data } = res;
-                if (data) {
-                    setUsers(data.users);
-                    setServices(data.services);
-                    setOrders(data.orders.reverse());
-                }
+                const { data } = res;
+
+                if (!data) return console.log('something went wrong!');
+
+                setUsers(data.users);
+                setServices(data.services);
+                setOrders(data.orders.reverse());
             })
             .catch((err) => {
                 setIsLoading(false);
 
-                console.log(err.error);
+                console.log(err.response);
             });
     }, []);
 
-    //
-    const editButtonHandler = (e) => {
-        setShowEditModal(true);
-        let orderId = e.target.value;
+    const getServiceTitle = (id) => {
+        if (services) {
+            const service = services.filter((service) => service.id === id);
 
-        if (orders) {
-            let order = orders.filter((order) => +order.id === +orderId);
-            if (order) setEditingOrder(order[0]);
-
-            setEditedLink(order[0].link);
-            setEditedStatus(order[0].status);
-            setEditedRemains(order[0].remains);
-            setEditedStartCounter(order[0].startCounter);
+            if (service[0]) return service[0].title;
+            return null;
         }
+
+        return null;
     };
 
-    //
+    const getUserEmail = (id) => {
+        if (users) {
+            const user = users.filter((user) => user.id === id);
+
+            if (user[0]) return user[0].email;
+            return null;
+        }
+
+        return null;
+    };
+
+    // Deleting Order
     const deleteButtonHandler = async (e) => {
         const id = e.target.value;
 
         const url = `/admin/order/delete/${id}`;
         try {
-            let res = await Axios.delete(url);
-            console.log(res);
+            setIsLoading(true);
+
+            const { data } = await Axios.delete(url);
+            if (!data) {
+                setIsLoading(false);
+                return console.log('something went wrong');
+            }
+
+            const newList = await orders.filter((order) => order.id !== +id);
+            setOrders([...newList]);
+
+            setIsLoading(false);
         } catch (err) {
             console.log(err.response);
         }
-
-        const newList = orders.filter((order) => order.id !== +id);
-        setOrders([...newList]);
-        return;
     };
 
-    //
-    let getServiceTitle = (id) => {
-        if (services) {
-            let service = services.filter((service) => service.id === id);
+    // Editing order
+    const editButtonHandler = (e) => {
+        setShowEditModal(true);
+        const orderId = e.target.value;
 
-            if (service[0]) return service[0].title;
-            return null;
-        }
-        return null;
+        if (!orders) return console.log('Orders list not available!');
+
+        const order = orders.filter((ordr) => +ordr.id === +orderId);
+
+        if (!order) return console.log('order not found!');
+
+        setEditingOrder(order[0]);
+        setEditedOrder({
+            id: order[0].id,
+            link: order[0].link,
+            startCounter: order[0].startCounter,
+            remains: order[0].remains,
+            status: order[0].status,
+        });
     };
-
-    //
-    let getUserEmail = (id) => {
-        if (users) {
-            let user = users.filter((user) => user.id === id);
-
-            if (user[0]) return user[0].email;
-            return null;
-        }
-        return null;
-    };
-
-    //
-    // const backdropClickHandler = () => {
-    //     setEditedLink('');
-    //     setEditedStatus('');
-    //     setEditedRemains('');
-    //     setEditedStartCounter('');
-
-    //     return setShowEditModal(false);
-    // };
 
     const startCounterChangeHandler = (e) => {
-        setEditedStartCounter(e.target.value);
-        return;
+        setEditedOrder((preState) => ({
+            ...preState,
+            startCounter: e.target.value,
+        }));
     };
 
     const remainChangeHandler = (e) => {
-        setEditedRemains(e.target.value);
-        return;
+        setEditedOrder((preState) => ({
+            ...preState,
+            remains: e.target.value,
+        }));
     };
 
     const statusChangeHandler = (e) => {
-        setEditedStatus(e.target.value);
-        return;
+        setEditedOrder((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
     };
 
     const linkChangeHandler = (e) => {
-        setEditedLink(e.target.value);
-        return;
+        setEditedOrder((preState) => ({
+            ...preState,
+            link: e.target.value,
+        }));
     };
 
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
 
-        let orderId = editingOrder.id;
-        let url = `/admin/order/edit/${orderId}`;
-        let editingData = {
-            status: editedStatus,
-            link: editedLink,
-            remains: editedRemains,
-            startCounter: editedStartCounter,
-        };
+        const orderId = editingOrder.id;
+        const url = `/admin/order/edit/${orderId}`;
+        const editingData = { ...editedOrder };
 
-        let newList = orders.filter((order) => order.id !== editingOrder.id);
-        let { data } = await Axios.patch(url, editingData);
+        const newList = orders.filter((order) => order.id !== editingOrder.id);
 
-        if (data.status === 'success') {
-            setOrders((preState) => [
-                { ...editingOrder, ...editingData },
-                ...newList,
-            ]);
+        try {
+            const { data } = await Axios.patch(url, editingData);
+            if (data.status !== 'success') {
+                return console.log('Something went wrong');
+            }
 
             handleClose();
-            return;
+            setIsLoading(false);
+            setOrders((preState) => [{ ...data.updatedOrder }, ...newList]);
+        } catch (err) {
+            console.log(err.response);
         }
-        return;
     };
 
     const handleClose = () => {
-        setEditedLink('');
-        setEditedStatus('');
-        setEditedRemains('');
-        setEditedStartCounter('');
-
+        setEditedOrder('');
+        setEditingOrder('');
         setShowEditModal(false);
-        return;
     };
 
     const editModal = (
         <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton closeLabel>
+            <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Edit Order</Modal.Title>
             </Modal.Header>
 
@@ -284,7 +287,8 @@ const Orders = () => {
                                     </label>
                                     <input
                                         className="input"
-                                        value={editedStartCounter || ''}
+                                        type="number"
+                                        value={editedOrder.startCounter || ''}
                                         onChange={startCounterChangeHandler}
                                     />
                                 </div>
@@ -295,7 +299,8 @@ const Orders = () => {
                                     </label>
                                     <input
                                         className="input"
-                                        value={editedRemains || ''}
+                                        type="number"
+                                        value={editedOrder.remains || ''}
                                         onChange={remainChangeHandler}
                                     />
                                 </div>
@@ -306,7 +311,7 @@ const Orders = () => {
                                     </label>
                                     <select
                                         className="select"
-                                        value={editedStatus || ''}
+                                        value={editedOrder.status || ''}
                                         onChange={statusChangeHandler}
                                     >
                                         <option value="pending">Pending</option>
@@ -331,7 +336,8 @@ const Orders = () => {
                                 <label className="input__label">Link</label>
                                 <input
                                     className="input"
-                                    value={editedLink || ''}
+                                    type="url"
+                                    value={editedOrder.link || ''}
                                     onChange={linkChangeHandler}
                                 />
                             </div>
@@ -362,6 +368,7 @@ const Orders = () => {
                         {status}
                     </button>
                 );
+
             case 'processing':
                 return (
                     <button
@@ -438,6 +445,7 @@ const Orders = () => {
                         </IconContext.Provider>{' '}
                         Orders
                     </h2>
+
                     <Card>
                         <table className="table">
                             <thead>
@@ -452,11 +460,13 @@ const Orders = () => {
                                     <th>Options</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {orders &&
                                     orders.map((order) => (
                                         <tr key={order.id}>
                                             <td>{order.id}</td>
+
                                             <td>
                                                 {getServiceTitle(
                                                     order.serviceId
@@ -475,16 +485,19 @@ const Orders = () => {
                                                           order.serviceId
                                                       )}
                                             </td>
+
                                             <td>
                                                 {order.link.length > 20
                                                     ? order.link.slice(0, 20) +
                                                       '...'
                                                     : order.link}
                                             </td>
+
                                             <td>{order.charge}</td>
                                             <td>{order.quantity}</td>
                                             <td>{order.startCounter}</td>
                                             <td>{getStatus(order.status)}</td>
+
                                             <td>
                                                 <IconContext.Provider
                                                     value={{
