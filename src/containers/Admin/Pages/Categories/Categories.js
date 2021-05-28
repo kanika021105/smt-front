@@ -24,66 +24,75 @@ const Categories = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
 
-    const [title, setTitle] = useState('');
-    const [desc, setDesc] = useState('');
-    const [short, setShort] = useState('');
-    const [status, setStatus] = useState('active');
-
-    const [editedTitle, setEditedTitle] = useState('');
-    const [editedDesc, setEditedDesc] = useState('');
-    const [editedShort, setEditedShort] = useState('');
-    const [editedStatus, setEditedStatus] = useState('');
-    const [editingCategory, setEditingCategory] = useState('');
+    const [newCategoryDetails, setNewCategoryDetails] = useState({
+        title: '',
+        description: '',
+        short: '',
+        status: 'active',
+    });
+    const [editingCategoryDetails, setEditingCategoryDetails] = useState({
+        id: '',
+        title: '',
+        description: '',
+        short: '',
+        status: '',
+    });
 
     const [errorMsg, setErrorMsg] = useState('');
     const [addError, setAddError] = useState(false);
 
     const { websiteName } = useContext(WebsiteDetail);
 
-    // const [loadingError, setLoadingError] = useState(false);
-
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/admin/categories';
+        const url = '/admin/categories';
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
 
-                setCategories(res.data.categories.reverse() || {});
+                setCategories(res.data.categories || {});
             })
             .catch((err) => {
                 setIsLoading(false);
 
-                console.log(err.response.data);
+                console.log(err.response);
             });
     }, []);
 
+    // Adding Category
     const handleAddButtonClick = () => {
         setShowAddModal(true);
-        return;
     };
 
     const addTitleChangeHandler = (e) => {
-        setTitle(e.target.value);
-        return;
+        setNewCategoryDetails((preState) => ({
+            ...preState,
+            title: e.target.value,
+        }));
     };
 
     const addShortChangeHandler = (e) => {
-        setShort(e.target.value);
-        return;
+        setNewCategoryDetails((preState) => ({
+            ...preState,
+            short: e.target.value,
+        }));
     };
 
     const addDescChangeHandler = (e) => {
-        setDesc(e.target.value);
-        return;
+        setNewCategoryDetails((preState) => ({
+            ...preState,
+            desc: e.target.value,
+        }));
     };
 
     const addStatusChangeHandler = (e) => {
-        setStatus(e.target.value);
-        return;
+        setNewCategoryDetails((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
     };
 
     const formSubmitHandler = async (e) => {
@@ -92,40 +101,39 @@ const Categories = () => {
         setErrorMsg('');
         setAddError(false);
 
-        const url = '/admin/categories/add';
-        let cateData = {
-            title,
-            desc,
-            short,
-            status,
+        const url = '/admin/category/add';
+        const cateData = {
+            ...newCategoryDetails,
         };
-        let { data } = await Axios.post(url, cateData);
 
-        if (data.status === 'success') {
+        try {
+            const { data } = await Axios.post(url, cateData);
+
+            if (data.status !== 'success') {
+                setErrorMsg(data.error);
+                setAddError(true);
+                return;
+            }
+
             setCategories((preState) => [
                 { ...data.createdCategory },
                 ...preState,
             ]);
             setShowAddModal(false);
-            return;
+        } catch (err) {
+            console.log(err.response.data);
         }
-
-        setErrorMsg(data.error);
-        setAddError(true);
-        return;
     };
 
-    const handleBackdropClick = () => {
+    const handleBackdropClick = (e) => {
         setShowAddModal(false);
-
-        setTitle('');
-        setDesc('');
-        setShort('');
-        setStatus('');
-        setErrorMsg('');
+        setNewCategoryDetails({
+            title: '',
+            short: '',
+            description: '',
+            status: 'active',
+        });
         setAddError(false);
-
-        return;
     };
 
     const addModal = (
@@ -142,7 +150,7 @@ const Categories = () => {
                             className="input"
                             placeholder="Enter title"
                             type="text"
-                            value={title || ''}
+                            value={newCategoryDetails.title || ''}
                             onChange={addTitleChangeHandler}
                         />
                     </div>
@@ -153,7 +161,7 @@ const Categories = () => {
                             placeholder="Enter short number"
                             className="input"
                             type="number"
-                            value={short || ''}
+                            value={newCategoryDetails.short || ''}
                             onChange={addShortChangeHandler}
                         />
                     </div>
@@ -163,7 +171,7 @@ const Categories = () => {
                         <textarea
                             placeholder="Enter description..."
                             className="input"
-                            value={desc || ''}
+                            value={newCategoryDetails.desc || ''}
                             rows={3}
                             onChange={addDescChangeHandler}
                         />
@@ -173,22 +181,24 @@ const Categories = () => {
                         <label className="input__label">Status</label>
                         <select
                             className="select"
-                            value={status}
+                            value={newCategoryDetails.status}
                             onChange={addStatusChangeHandler}
                         >
-                            <option value="disable">Disable</option>
                             <option value="active">Active</option>
+                            <option value="disable">Disable</option>
                         </select>
                     </div>
                 </Modal.Body>
 
                 <Modal.Footer>
                     <button
+                        type="button"
                         className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
                         Close
                     </button>
+
                     <button
                         className="btn btn-primary"
                         type="submit"
@@ -201,6 +211,7 @@ const Categories = () => {
         </Modal>
     );
 
+    // Editing Category
     const editButtonHandler = async (e) => {
         setShowEditModal(true);
 
@@ -209,72 +220,75 @@ const Categories = () => {
             (cate) => cate.id === categoryId
         );
 
-        setEditedTitle(category[0].title);
-        setEditedDesc(category[0].desc);
-        setEditedShort(category[0].short);
-        setEditedStatus(category[0].status);
-        setEditingCategory(category[0]);
-
-        return;
+        setEditingCategoryDetails({
+            id: category[0].id,
+            title: category[0].title,
+            description: category[0].description,
+            short: category[0].short,
+            status: category[0].status,
+        });
     };
 
     const titleChangeHandler = (e) => {
-        setEditedTitle(e.target.value);
-        return;
+        setEditingCategoryDetails((preState) => ({
+            ...preState,
+            title: e.target.value,
+        }));
     };
 
     const descChangeHandler = (e) => {
-        setEditedDesc(e.target.value);
-        return;
+        setEditingCategoryDetails((preState) => ({
+            ...preState,
+            description: e.target.value,
+        }));
     };
 
     const shortChangeHandler = (e) => {
-        setEditedShort(e.target.value);
-        return;
+        setEditingCategoryDetails((preState) => ({
+            ...preState,
+            short: e.target.value,
+        }));
     };
 
     const statusChangeHandler = (e) => {
-        setEditedStatus(e.target.value);
-        return;
+        setEditingCategoryDetails((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
     };
 
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
 
-        const { id } = editingCategory;
-
-        const editingData = {
-            title: editedTitle,
-            desc: editedDesc,
-            short: editedShort,
-            status: editedStatus,
-        };
-
+        const { id } = editingCategoryDetails;
         const url = `/admin/category/update/${id}`;
         const newList = await categories.filter((cate) => cate.id !== id);
 
-        const { data } = await Axios.patch(url, { ...editingData });
+        try {
+            const { data } = await Axios.patch(url, {
+                ...editingCategoryDetails,
+            });
 
-        if (!data) {
+            if (!data) {
+                console.log('Failed to update Category!');
+            }
+
+            setCategories([{ ...editingCategoryDetails }, ...newList]);
+            handleClose();
+        } catch (err) {
+            console.log(err);
         }
-
-        setCategories((preState) => [
-            { id: editingCategory, ...editingData },
-            ...newList,
-        ]);
-        handleClose();
-        return;
     };
 
     const handleClose = () => {
+        setEditingCategoryDetails({
+            id: '',
+            title: '',
+            description: '',
+            short: '',
+            status: '',
+        });
         setShowEditModal(false);
-
-        setEditedTitle('');
-        setEditedDesc('');
-        setEditedShort('');
-        setEditedStatus('');
-        setEditingCategory('');
-        return;
     };
 
     const editModal = (
@@ -291,7 +305,7 @@ const Categories = () => {
                             className="input"
                             placeholder="Title"
                             type="text"
-                            value={editedTitle || ''}
+                            value={editingCategoryDetails.title || ''}
                             onChange={titleChangeHandler}
                         />
                     </div>
@@ -302,7 +316,7 @@ const Categories = () => {
                             rows="3"
                             className="input"
                             placeholder="Description..."
-                            value={editedDesc || ''}
+                            value={editingCategoryDetails.description || ''}
                             onChange={descChangeHandler}
                         />
                     </div>
@@ -313,7 +327,7 @@ const Categories = () => {
                             className="input"
                             type="number"
                             placeholder="short"
-                            value={(editedShort && editedShort) || ''}
+                            value={editingCategoryDetails.short || ''}
                             onChange={shortChangeHandler}
                         />
                     </div>
@@ -322,7 +336,7 @@ const Categories = () => {
                         <label className="input__label">Status</label>
                         <select
                             className="select"
-                            value={editedStatus || ''}
+                            value={editingCategoryDetails.status || ''}
                             onChange={statusChangeHandler}
                         >
                             <option value="disable">Disable</option>
@@ -332,10 +346,15 @@ const Categories = () => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button className="btn btn-secondary" onClick={handleClose}>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleClose}
+                    >
                         Close
                     </button>
-                    <button className="btn btn-primary" type="submit">
+
+                    <button type="submit" className="btn btn-primary">
                         Submit
                     </button>
                 </Modal.Footer>
@@ -345,11 +364,16 @@ const Categories = () => {
 
     // Delete
     const deleteButtonHandler = async (e) => {
-        const id = e.target.value;
-        let url = `/admin/category/delete/${id}`;
+        const id = +e.target.value;
+        const url = `/admin/category/delete/${id}`;
         const newList = categories.filter((category) => category.id !== +id);
 
-        await Axios.delete(url, { id });
+        try {
+            await Axios.delete(url, { id });
+        } catch (err) {
+            console.log(err.response.data);
+        }
+
         setCategories([...newList]);
         return;
     };
@@ -420,17 +444,20 @@ const Categories = () => {
                                     <th>Options</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {categories &&
                                     categories.map((category) => (
                                         <tr key={category.id}>
                                             <td>{category.id}</td>
                                             <td>{category.title}</td>
-                                            <td>{category.desc}</td>
+                                            <td>{category.description}</td>
                                             <td>{category.short}</td>
+
                                             <td>
                                                 {checkStatus(category.status)}
                                             </td>
+
                                             <td>
                                                 <IconContext.Provider
                                                     value={{
@@ -448,6 +475,7 @@ const Categories = () => {
                                                         >
                                                             <BsThreeDotsVertical />
                                                         </span>
+
                                                         <ul
                                                             className="dropdown-menu"
                                                             aria-labelledby="option"

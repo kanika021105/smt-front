@@ -23,16 +23,16 @@ const Orders = () => {
     const [services, setServices] = useState();
 
     const [editingOrder, setEditingOrder] = useState();
-    const [editedOrder, setEditedOrder] = useState({
-        id: '',
+    const [editedDetails, setEditedDetails] = useState({
         link: '',
         startCounter: 0,
         remains: 0,
         status: '',
     });
 
-    const [showEditModal, setShowEditModal] = useState(false);
     const { websiteName } = useContext(WebsiteDetail);
+
+    const [showEditModal, setShowEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -44,12 +44,11 @@ const Orders = () => {
                 setIsLoading(false);
 
                 const { data } = res;
-
                 if (!data) return console.log('something went wrong!');
 
                 setUsers(data.users);
                 setServices(data.services);
-                setOrders(data.orders.reverse());
+                setOrders(data.orders);
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -83,8 +82,8 @@ const Orders = () => {
     // Deleting Order
     const deleteButtonHandler = async (e) => {
         const id = e.target.value;
-
         const url = `/admin/order/delete/${id}`;
+
         try {
             setIsLoading(true);
 
@@ -111,12 +110,10 @@ const Orders = () => {
         if (!orders) return console.log('Orders list not available!');
 
         const order = orders.filter((ordr) => +ordr.id === +orderId);
-
         if (!order) return console.log('order not found!');
 
         setEditingOrder(order[0]);
-        setEditedOrder({
-            id: order[0].id,
+        setEditedDetails({
             link: order[0].link,
             startCounter: order[0].startCounter,
             remains: order[0].remains,
@@ -125,28 +122,28 @@ const Orders = () => {
     };
 
     const startCounterChangeHandler = (e) => {
-        setEditedOrder((preState) => ({
+        setEditedDetails((preState) => ({
             ...preState,
             startCounter: e.target.value,
         }));
     };
 
     const remainChangeHandler = (e) => {
-        setEditedOrder((preState) => ({
+        setEditedDetails((preState) => ({
             ...preState,
             remains: e.target.value,
         }));
     };
 
     const statusChangeHandler = (e) => {
-        setEditedOrder((preState) => ({
+        setEditedDetails((preState) => ({
             ...preState,
             status: e.target.value,
         }));
     };
 
     const linkChangeHandler = (e) => {
-        setEditedOrder((preState) => ({
+        setEditedDetails((preState) => ({
             ...preState,
             link: e.target.value,
         }));
@@ -158,12 +155,10 @@ const Orders = () => {
 
         const orderId = editingOrder.id;
         const url = `/admin/order/edit/${orderId}`;
-        const editingData = { ...editedOrder };
-
         const newList = orders.filter((order) => order.id !== editingOrder.id);
 
         try {
-            const { data } = await Axios.patch(url, editingData);
+            const { data } = await Axios.patch(url, { ...editedDetails });
             if (data.status !== 'success') {
                 return console.log('Something went wrong');
             }
@@ -172,12 +167,17 @@ const Orders = () => {
             setIsLoading(false);
             setOrders((preState) => [{ ...data.updatedOrder }, ...newList]);
         } catch (err) {
-            console.log(err.response);
+            console.log(err);
         }
     };
 
     const handleClose = () => {
-        setEditedOrder('');
+        setEditedDetails({
+            link: '',
+            startCounter: 0,
+            remains: 0,
+            status: '',
+        });
         setEditingOrder('');
         setShowEditModal(false);
     };
@@ -288,7 +288,7 @@ const Orders = () => {
                                     <input
                                         className="input"
                                         type="number"
-                                        value={editedOrder.startCounter || ''}
+                                        value={editedDetails.startCounter || 0}
                                         onChange={startCounterChangeHandler}
                                     />
                                 </div>
@@ -300,7 +300,7 @@ const Orders = () => {
                                     <input
                                         className="input"
                                         type="number"
-                                        value={editedOrder.remains || ''}
+                                        value={editedDetails.remains || 0}
                                         onChange={remainChangeHandler}
                                     />
                                 </div>
@@ -311,7 +311,7 @@ const Orders = () => {
                                     </label>
                                     <select
                                         className="select"
-                                        value={editedOrder.status || ''}
+                                        value={editedDetails.status}
                                         onChange={statusChangeHandler}
                                     >
                                         <option value="pending">Pending</option>
@@ -337,7 +337,7 @@ const Orders = () => {
                                 <input
                                     className="input"
                                     type="url"
-                                    value={editedOrder.link || ''}
+                                    value={editedDetails.link || ''}
                                     onChange={linkChangeHandler}
                                 />
                             </div>
@@ -346,10 +346,16 @@ const Orders = () => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button className="btn btn-secondary" onClick={handleClose}>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleClose}
+                    >
                         Close
                     </button>
+
                     <button
+                        type="submit"
                         className="btn btn-primary"
                         onClick={editingSubmitHandler}
                     >
@@ -535,6 +541,7 @@ const Orders = () => {
                                                                     Edit
                                                                 </button>
                                                             </li>
+
                                                             <li>
                                                                 <button
                                                                     className="btn btn-delete"

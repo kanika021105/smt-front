@@ -48,37 +48,6 @@ const Dashboard = () => {
         totalAmount,
     } = data;
 
-    const completed = lastOrders
-        ? lastOrders.filter((order) => order.status === 'completed')
-        : null;
-    const pending = lastOrders
-        ? lastOrders.filter((order) => order.status === 'pending')
-        : null;
-    const processing = lastOrders
-        ? lastOrders.filter((order) => order.status === 'processing')
-        : null;
-    const inProgress = lastOrders
-        ? lastOrders.filter((order) => order.status === 'inprogress')
-        : null;
-    const partial = lastOrders
-        ? lastOrders.filter((order) => order.status === 'partial')
-        : null;
-    const cancelled = lastOrders
-        ? lastOrders.filter((order) => order.status === 'cancelled')
-        : null;
-    const refunded = lastOrders
-        ? lastOrders.filter((order) => order.status === 'refunded')
-        : null;
-
-    // const topServicesList =
-    //     services &&
-    //     services
-    //         .sort((a, b) => parseFloat(b.min) - parseFloat(a.min))
-    //         .slice(0, 10);
-
-    // const lastUsersList = users && users.reverse().slice(0, 10);
-    // const lastOrdersList = orders && orders.reverse().slice(0, 10);
-
     const getServiceTitle = (id) => {
         if (lastServices) {
             const service = lastServices.filter(
@@ -326,7 +295,7 @@ const Dashboard = () => {
                                                     'section__two--statusData'
                                                 }
                                             >
-                                                {pending ? pending.length : 0}
+                                                {data.pendingOrders || 0}
                                             </span>
 
                                             <span
@@ -334,9 +303,7 @@ const Dashboard = () => {
                                                     'section__two--statusData'
                                                 }
                                             >
-                                                {processing
-                                                    ? processing.length
-                                                    : 0}
+                                                {data.processingOrders || 0}
                                             </span>
 
                                             <span
@@ -344,9 +311,7 @@ const Dashboard = () => {
                                                     'section__two--statusData'
                                                 }
                                             >
-                                                {inProgress
-                                                    ? inProgress.length
-                                                    : 0}
+                                                {data.inprogressOrders || 0}
                                             </span>
 
                                             <span
@@ -354,9 +319,7 @@ const Dashboard = () => {
                                                     'section__two--statusData completedColor'
                                                 }
                                             >
-                                                {completed
-                                                    ? completed.length
-                                                    : 0}
+                                                {data.completedOrders || 0}
                                             </span>
 
                                             <span
@@ -364,7 +327,7 @@ const Dashboard = () => {
                                                     'section__two--statusData partialColor'
                                                 }
                                             >
-                                                {partial ? partial.length : 0}
+                                                {data.partialOrders || 0}
                                             </span>
 
                                             <span
@@ -372,9 +335,7 @@ const Dashboard = () => {
                                                     'section__two--statusData cancelledColor'
                                                 }
                                             >
-                                                {cancelled
-                                                    ? cancelled.length
-                                                    : 0}
+                                                {data.cancelledOrders || 0}
                                             </span>
 
                                             <span
@@ -382,7 +343,7 @@ const Dashboard = () => {
                                                     'section__two--statusData refundedColor'
                                                 }
                                             >
-                                                {refunded ? refunded.length : 0}
+                                                {data.refundedOrders || 0}
                                             </span>
                                         </div>
                                     </div>
