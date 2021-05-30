@@ -7,6 +7,8 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { FiSliders } from 'react-icons/fi';
 
+import { Modal } from 'react-bootstrap';
+
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
@@ -20,28 +22,38 @@ const NewOrder = () => {
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
 
-    const [min, setMin] = useState(0);
-    const [max, setMax] = useState(0);
+    const [serviceDetails, setServiceDetails] = useState({
+        id: '',
+        title: '',
+        min: '',
+        max: '',
+        rate: '',
+        speed: '',
+        avgtime: '',
+        description: '',
+    });
+
+    const [orderDetails, setOrderDetails] = useState({
+        link: '',
+        charge: 0,
+        quantity: 0,
+        selectedService: 0,
+        selectedCategory: 0,
+    });
 
     const [errorMsg, setErrorMsg] = useState('');
     const [showError, setShowError] = useState(false);
-
-    const [link, setLink] = useState('');
-    const [charge, setCharge] = useState(0.0);
-    const [quantity, setQuantity] = useState(0);
-    const [selectedService, setSelectedService] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState();
 
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/new-order';
+        const url = '/new-order';
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
-                let { data } = res;
+                const { data } = res;
 
                 if (data.status !== 'success') {
                     setErrorMsg(
@@ -53,7 +65,6 @@ const NewOrder = () => {
 
                 setCategories(data.categories);
                 setServices(data.services);
-                return;
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -64,47 +75,75 @@ const NewOrder = () => {
 
     const servicesByCategory =
         services &&
-        services.filter((service) => +service.categoryId === +selectedCategory);
+        services.filter(
+            (service) => +service.categoryId === +orderDetails.selectedCategory
+        );
 
     const selectedCategoryHandler = (e) => {
-        setSelectedCategory(e.target.value);
-        return;
+        setServiceDetails(() => ({
+            id: '',
+            title: '',
+            min: '',
+            max: '',
+            rate: '',
+            speed: '',
+            avgtime: '',
+            desc: '',
+        }));
+
+        setOrderDetails((preState) => ({
+            ...preState,
+            selectedCategory: +e.target.value,
+            selectedService: '',
+        }));
     };
 
     const selectedServiceHandler = async (e) => {
-        setMin(0);
-        setMax(0);
-        setLink('');
-        setQuantity(0);
-        setCharge(0.0);
-        const serviceDetail = await services.filter(
+        setOrderDetails((preState) => ({
+            ...preState,
+            link: '',
+            charge: '',
+            quantity: 0,
+            selectedService: +e.target.value,
+        }));
+
+        const service = await services.filter(
             (service) => +service.id === +e.target.value
         );
 
-        setSelectedService(serviceDetail[0]);
+        if (!service[0]) return;
 
-        if (!serviceDetail[0]) return;
-
-        setMin(serviceDetail[0].min);
-        setMax(serviceDetail[0].max);
+        setServiceDetails(() => ({
+            id: service[0].id,
+            title: service[0].title,
+            min: service[0].min,
+            max: service[0].max,
+            rate: service[0].rate,
+            speed: service[0].speed,
+            avgtime: service[0].avgtime,
+            desc: service[0].desc,
+        }));
     };
 
     const linkInputHandler = (e) => {
-        setLink(e.target.value);
+        setOrderDetails((preState) => ({
+            ...preState,
+            link: e.target.value,
+        }));
     };
 
     const quantityInputHandler = async (e) => {
-        let orderQuantity = e.target.value;
-        setQuantity(orderQuantity);
+        const orderQuantity = e.target.value;
+        setOrderDetails((preState) => ({
+            ...preState,
+            quantity: orderQuantity,
+        }));
 
-        // let serviceDetail = await services.filter(
-        //     (service) => +service.id === +selectedService.id
-        // );
-        if (!selectedService) return;
-
-        let totalAmount = (selectedService.rate / 1000) * orderQuantity;
-
-        setCharge(totalAmount);
+        const totalAmount = (serviceDetails.rate / 1000) * orderQuantity;
+        setOrderDetails((preState) => ({
+            ...preState,
+            charge: totalAmount,
+        }));
     };
 
     const orderSubmitHandler = async (e) => {
@@ -112,17 +151,17 @@ const NewOrder = () => {
         setErrorMsg('');
         setShowError(false);
 
-        let url = '/new-order';
-        let orderData = {
-            link,
-            charge,
-            quantity,
-            service: selectedService.id,
-            category: selectedCategory,
+        const url = '/new-order';
+        const orderData = {
+            link: orderDetails.link,
+            charge: orderDetails.charge,
+            quantity: orderDetails.quantity,
+            service: orderDetails.selectedService,
+            category: orderDetails.selectedCategory,
         };
 
         try {
-            let { data } = await Axios.post(url, orderData);
+            const { data } = await Axios.post(url, orderData);
 
             if (data.status === 'failed') {
                 setErrorMsg(data.error);
@@ -142,6 +181,11 @@ const NewOrder = () => {
 
             {<Loading show={isLoading} />}
 
+            {/* Modal to show order placed status */}
+            {/* <Modal show={true} centered>
+                Test
+            </Modal> */}
+
             <div className="container newOrder">
                 <h2 className="pageTitle">
                     <IconContext.Provider
@@ -156,12 +200,6 @@ const NewOrder = () => {
                     New Order
                 </h2>
 
-                {/* {showError && (
-                        <div className="errorMsg">
-                            <small>{errorMsg}</small>
-                        </div>
-                    )} */}
-
                 <div className="row">
                     <div className="col-md-6 u-sm-mb-1">
                         <Card>
@@ -171,11 +209,11 @@ const NewOrder = () => {
                                         Category
                                     </label>
                                     <select
-                                        class="select"
-                                        value={selectedCategory}
+                                        className="select"
+                                        value={orderDetails.selectedCategory}
                                         onChange={selectedCategoryHandler}
                                     >
-                                        <option defaultValue>
+                                        <option value="0" defaultValue>
                                             Choose a Category
                                         </option>
                                         {categories &&
@@ -198,13 +236,10 @@ const NewOrder = () => {
                                     </label>
                                     <select
                                         class="select"
-                                        value={
-                                            selectedService &&
-                                            selectedService.id
-                                        }
+                                        value={orderDetails.selectedService}
                                         onChange={selectedServiceHandler}
                                     >
-                                        <option defaultValue>
+                                        <option value="0" defaultValue>
                                             Choose a Service
                                         </option>
                                         {servicesByCategory &&
@@ -228,7 +263,7 @@ const NewOrder = () => {
                                     <label className="input__label">Link</label>
                                     <input
                                         type="url"
-                                        value={link}
+                                        value={orderDetails.link}
                                         className="input"
                                         placeholder="https://..."
                                         onChange={linkInputHandler}
@@ -241,20 +276,20 @@ const NewOrder = () => {
                                     </label>
                                     <input
                                         type="number"
-                                        value={quantity}
+                                        value={orderDetails.quantity}
                                         className="input"
                                         placeholder="1000"
                                         onChange={quantityInputHandler}
                                     />
 
                                     <div className="mt-2 ">
-                                        Min: {min || 0} / Max:
-                                        {max || 0}
+                                        Min: {serviceDetails.min || 0} / Max:
+                                        {serviceDetails.max || 0}
                                     </div>
                                 </div>
 
                                 <div className="mt-4 pl-2 newOrder__totalAmount">
-                                    Total = {charge}
+                                    Total = {orderDetails.charge}
                                 </div>
 
                                 <div className="mt-3 newOrder__checkbox">
@@ -287,10 +322,7 @@ const NewOrder = () => {
                                     </label>
                                     <input
                                         className="input "
-                                        value={
-                                            selectedService &&
-                                            selectedService.title
-                                        }
+                                        value={serviceDetails.title}
                                         disabled
                                     />
                                 </div>
@@ -302,10 +334,7 @@ const NewOrder = () => {
                                         </label>
                                         <input
                                             className="input "
-                                            value={
-                                                selectedService &&
-                                                selectedService.min
-                                            }
+                                            value={serviceDetails.min}
                                             disabled
                                         />
                                     </div>
@@ -316,10 +345,7 @@ const NewOrder = () => {
                                         </label>
                                         <input
                                             className="input "
-                                            value={
-                                                selectedService &&
-                                                selectedService.max
-                                            }
+                                            value={serviceDetails.max}
                                             disabled
                                         />
                                     </div>
@@ -330,11 +356,7 @@ const NewOrder = () => {
                                         </label>
                                         <input
                                             className="input "
-                                            value={
-                                                (selectedService &&
-                                                    selectedService.speed) ||
-                                                ''
-                                            }
+                                            value={serviceDetails.speed}
                                             disabled
                                         />
                                     </div>
@@ -347,10 +369,7 @@ const NewOrder = () => {
                                         </label>
                                         <input
                                             className="input "
-                                            value={
-                                                selectedService &&
-                                                selectedService.rate
-                                            }
+                                            value={serviceDetails.rate}
                                             disabled
                                         />
                                     </div>
@@ -361,11 +380,7 @@ const NewOrder = () => {
                                         </label>
                                         <input
                                             className="input "
-                                            value={
-                                                (selectedService &&
-                                                    selectedService.avgtime) ||
-                                                ''
-                                            }
+                                            value={serviceDetails.avgtime}
                                             disabled
                                         />
                                     </div>
@@ -377,11 +392,7 @@ const NewOrder = () => {
                                     </label>
                                     <textarea
                                         className="input "
-                                        value={
-                                            (selectedService &&
-                                                selectedService.desc) ||
-                                            ''
-                                        }
+                                        value={serviceDetails.description}
                                         rows="7"
                                         disabled
                                     />

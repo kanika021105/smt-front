@@ -3,11 +3,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import Modal from 'react-bootstrap/Modal';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+
+import Modal from 'react-bootstrap/Modal';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
@@ -22,8 +22,18 @@ const Clients = () => {
     const [users, setUsers] = useState();
     const [showEditModal, setShowEditModal] = useState(false);
 
-    const [editingUser, setEditingUser] = useState();
+    const [editingUserDetails, setEditingUserDetails] = useState({
+        id: '',
+        fName: '',
+        lName: '',
+        email: '',
+        balance: '',
+        contact: '',
+        role: '',
+        status: '',
+    });
 
+    const [editingUser, setEditingUser] = useState();
     const [editedRole, setEditedRole] = useState('');
     const [editedEmail, setEditedEmail] = useState('');
     const [editedStatus, setEditedStatus] = useState('');
@@ -33,13 +43,13 @@ const Clients = () => {
     const [editedFirstName, setEditedFirstName] = useState('');
 
     const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
 
-        Axios.get('/admin/clients')
+        const url = '/admin/clients';
+        Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
 
@@ -52,66 +62,84 @@ const Clients = () => {
             });
     }, []);
 
-    const editButtonHandler = (e) => {
+    const editButtonHandler = async (e) => {
         const id = e.target.value;
-        const user = users.filter((user) => user.id === +id);
+        const user = await users.filter((user) => user.id === +id);
 
-        setEditedRole(user[0].role || '');
-        setEditedEmail(user[0].email || '');
-        setEditedStatus(user[0].status || '');
-        setEditedContact(user[0].contact || '');
-        setEditedBalance(user[0].balance || 0.0);
-        setEditedLastName(user[0].l_name || '');
-        setEditedFirstName(user[0].f_name || '');
+        setEditingUserDetails({
+            id: user[0].id,
+            fName: user[0].f_name,
+            lName: user[0].l_name,
+            email: user[0].email,
+            balance: user[0].balance,
+            contact: user[0].contact,
+            role: user[0].role,
+            status: user[0].status,
+        });
 
-        setEditingUser(user[0] || {});
         setShowEditModal(true);
     };
 
     const eFNChangeHandler = (e) => {
-        setEditedFirstName(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            fName: e.target.value,
+        }));
     };
 
     const eLNChangeHandler = (e) => {
-        setEditedLastName(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            lName: e.target.value,
+        }));
     };
 
     const eEmailChangeHandler = (e) => {
-        setEditedEmail(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            email: e.target.value,
+        }));
     };
 
     const eBalanceChangeHandler = (e) => {
-        setEditedBalance(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            balance: e.target.value,
+        }));
     };
 
     const eContactChangeHandler = (e) => {
-        setEditedContact(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            contact: e.target.value,
+        }));
     };
 
     const eRoleChangeHandler = (e) => {
-        setEditedRole(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            role: e.target.value,
+        }));
     };
 
     const eStatusChangeHandler = (e) => {
-        setEditedStatus(e.target.value);
-        return;
+        setEditingUserDetails((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
     };
 
     const handleClose = () => {
-        setEditedRole('');
-        setEditingUser('');
-        setEditedEmail('');
-        setEditedStatus('');
-        setEditedContact('');
-        setEditedBalance(0.0);
-        setEditedLastName('');
-        setEditedFirstName('');
+        setEditingUserDetails({
+            id: '',
+            fName: '',
+            lName: '',
+            email: '',
+            balance: 0,
+            contact: '',
+            role: '',
+            status: '',
+        });
 
         setShowEditModal(false);
     };
@@ -119,18 +147,18 @@ const Clients = () => {
     const eSubmitHandler = async (e) => {
         e.preventDefault();
 
-        const id = editingUser.id;
-        let url = `/admin/client/update/${id}`;
-        let newList = users.filter((user) => user.id !== id);
-        let userData = {
+        const id = editingUserDetails.id;
+        const url = `/admin/client/update/${id}`;
+        const newList = users.filter((user) => user.id !== id);
+        const userData = {
             id,
-            role: editedRole,
-            email: editedEmail,
-            status: editedStatus,
-            contact: editedContact,
-            balance: editedBalance,
-            l_name: editedLastName,
-            f_name: editedFirstName,
+            role: editingUserDetails.role,
+            email: editingUserDetails.email,
+            status: editingUserDetails.status,
+            contact: editingUserDetails.contact,
+            balance: editingUserDetails.balance,
+            l_name: editingUserDetails.lName,
+            f_name: editingUserDetails.fName,
         };
 
         await Axios.patch(url, { ...userData });
@@ -153,7 +181,7 @@ const Clients = () => {
                                 placeholder="First Name"
                                 type="text"
                                 className="input"
-                                value={editedFirstName}
+                                value={editingUserDetails.fName}
                                 onChange={eFNChangeHandler}
                             />
                         </div>
@@ -164,7 +192,7 @@ const Clients = () => {
                                 placeholder="Last Name"
                                 type="text"
                                 className="input"
-                                value={editedLastName}
+                                value={editingUserDetails.lName}
                                 onChange={eLNChangeHandler}
                             />
                         </div>
@@ -176,7 +204,7 @@ const Clients = () => {
                             placeholder="Email"
                             type="email"
                             className="input"
-                            value={editedEmail}
+                            value={editingUserDetails.email}
                             onChange={eEmailChangeHandler}
                         />
                     </div>
@@ -188,7 +216,7 @@ const Clients = () => {
                                 placeholder="Balance"
                                 className="input"
                                 type="number"
-                                value={editedBalance}
+                                value={editingUserDetails.balance}
                                 onChange={eBalanceChangeHandler}
                             />
                         </div>
@@ -199,7 +227,7 @@ const Clients = () => {
                                 placeholder="Contact"
                                 className="input"
                                 type="number"
-                                value={editedContact}
+                                value={editingUserDetails.contact}
                                 onChange={eContactChangeHandler}
                             />
                         </div>
@@ -210,7 +238,7 @@ const Clients = () => {
                             <label className="input__label">Role</label>
                             <select
                                 className="select"
-                                value={editedRole}
+                                value={editingUserDetails.role}
                                 onChange={eRoleChangeHandler}
                             >
                                 <option value="admin">Admin</option>
@@ -222,21 +250,26 @@ const Clients = () => {
                             <label className="input__label">Status</label>
                             <select
                                 className="select"
-                                value={editedStatus}
+                                value={editingUserDetails.status}
                                 onChange={eStatusChangeHandler}
                             >
-                                <option value="disable">Disable</option>
                                 <option value="active">Active</option>
+                                <option value="disable">Disable</option>
                             </select>
                         </div>
                     </div>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button className="btn btn-secondary" onClick={handleClose}>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleClose}
+                    >
                         Close
                     </button>
-                    <button className="btn btn-primary" type="submit">
+
+                    <button type="submit" className="btn btn-primary">
                         Submit
                     </button>
                 </Modal.Footer>
@@ -247,12 +280,11 @@ const Clients = () => {
     const deleteButtonHandler = async (e) => {
         const id = e.target.value;
 
-        let url = `/admin/client/delete/${id}`;
+        const url = `/admin/client/delete/${id}`;
         const newList = users.filter((user) => user.id !== +id);
 
         await Axios.delete(url);
         setUsers([...newList]);
-        return;
     };
 
     const checkStatus = (status) => {

@@ -305,8 +305,9 @@ const Categories = () => {
                             className="input"
                             placeholder="Title"
                             type="text"
-                            value={editingCategoryDetails.title || ''}
+                            value={editingCategoryDetails.title}
                             onChange={titleChangeHandler}
+                            required
                         />
                     </div>
 
@@ -316,7 +317,7 @@ const Categories = () => {
                             rows="3"
                             className="input"
                             placeholder="Description..."
-                            value={editingCategoryDetails.description || ''}
+                            value={editingCategoryDetails.description}
                             onChange={descChangeHandler}
                         />
                     </div>
@@ -327,8 +328,9 @@ const Categories = () => {
                             className="input"
                             type="number"
                             placeholder="short"
-                            value={editingCategoryDetails.short || ''}
+                            value={editingCategoryDetails.short}
                             onChange={shortChangeHandler}
+                            required
                         />
                     </div>
 
@@ -336,8 +338,9 @@ const Categories = () => {
                         <label className="input__label">Status</label>
                         <select
                             className="select"
-                            value={editingCategoryDetails.status || ''}
+                            value={editingCategoryDetails.status}
                             onChange={statusChangeHandler}
+                            required
                         >
                             <option value="disable">Disable</option>
                             <option value="active">Active</option>

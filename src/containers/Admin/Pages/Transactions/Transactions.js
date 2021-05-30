@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
-import axios from '../../../../axiosIns';
+import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
@@ -18,19 +18,17 @@ const Transactions = () => {
     const [transactions, setTransactions] = useState();
 
     const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/admin/transactions';
-        axios
-            .get(url)
+        const url = '/admin/transactions';
+        Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
 
-                setTransactions(res.data.transactions.reverse());
+                setTransactions(res.data.transactions);
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -62,6 +60,7 @@ const Transactions = () => {
                         </IconContext.Provider>{' '}
                         Transactions
                     </h2>
+
                     <Card>
                         <table className="table">
                             <thead>
@@ -74,6 +73,7 @@ const Transactions = () => {
                                     <th>Status</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {transactions &&
                                     transactions.map((transaction) => (

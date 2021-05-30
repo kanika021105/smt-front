@@ -27,45 +27,15 @@ const Dashboard = () => {
         Axios.get(url)
             .then((res) => {
                 setData(res.data);
-
                 setIsLoading(false);
             })
             .catch((err) => {
                 setIsLoading(false);
-
                 console.log(err);
             });
     }, []);
 
-    let { orders } = data;
-    const completed = orders
-        ? orders.filter((order) => order.status === 'completed')
-        : null;
-    const pending = orders
-        ? orders.filter((order) => order.status === 'pending')
-        : null;
-    const processing = orders
-        ? orders.filter((order) => order.status === 'processing')
-        : null;
-    const inProgress = orders
-        ? orders.filter((order) => order.status === 'inprogress')
-        : null;
-    const partial = orders
-        ? orders.filter((order) => order.status === 'partial')
-        : null;
-    const cancelled = orders
-        ? orders.filter((order) => order.status === 'cancelled')
-        : null;
-    const refunded = orders
-        ? orders.filter((order) => order.status === 'refunded')
-        : null;
-
-    let { services } = data;
-    let topServicesList =
-        services &&
-        services
-            .sort((a, b) => parseFloat(b.min) - parseFloat(a.min))
-            .slice(0, 10);
+    const { totalOrders, services, totalTickets, balance, spent } = data;
 
     // TODO Change title to dynamic
     return (
@@ -100,9 +70,7 @@ const Dashboard = () => {
                                         Available Fund
                                     </span>
                                     <span className="section__one__dataValue">
-                                        {(data.balance &&
-                                            data.balance.toFixed(2)) ||
-                                            '0'}
+                                        {(balance && balance.toFixed(2)) || '0'}
                                     </span>
                                 </DashboardCard>
                             </div>
@@ -113,9 +81,7 @@ const Dashboard = () => {
                                         Total Spent
                                     </span>
                                     <span className="section__one__dataValue">
-                                        {(data.spent &&
-                                            data.spent.toFixed(2)) ||
-                                            '0'}
+                                        {(spent && spent.toFixed(2)) || '0'}
                                     </span>
                                 </DashboardCard>
                             </div>
@@ -126,7 +92,7 @@ const Dashboard = () => {
                                         Total Order
                                     </span>
                                     <span className="section__one__dataValue">
-                                        {(orders && orders.length) || '0'}
+                                        {totalOrders || '0'}
                                     </span>
                                 </DashboardCard>
                             </div>
@@ -137,7 +103,7 @@ const Dashboard = () => {
                                         Total Ticket
                                     </span>
                                     <span className="section__one__dataValue">
-                                        {data.totalTickets || '0'}
+                                        {totalTickets || '0'}
                                     </span>
                                 </DashboardCard>
                             </div>
@@ -195,45 +161,31 @@ const Dashboard = () => {
 
                                             <div className={'col-6'}>
                                                 <span className="section__two--statusData">
-                                                    {pending
-                                                        ? pending.length
-                                                        : 0}
+                                                    {data.pendingOrder || 0}
                                                 </span>
 
                                                 <span className="section__two--statusData">
-                                                    {processing
-                                                        ? processing.length
-                                                        : 0}
+                                                    {data.processingOrder || 0}
                                                 </span>
 
                                                 <span className="section__two--statusData">
-                                                    {inProgress
-                                                        ? inProgress.length
-                                                        : 0}
+                                                    {data.inprogressOrder || 0}
                                                 </span>
 
                                                 <span className="section__two--statusData">
-                                                    {completed
-                                                        ? completed.length
-                                                        : 0}
+                                                    {data.completedOrder || 0}
                                                 </span>
 
                                                 <span className="section__two--statusData">
-                                                    {partial
-                                                        ? partial.length
-                                                        : 0}
+                                                    {data.partialOrder || 0}
                                                 </span>
 
                                                 <span className="section__two--statusData">
-                                                    {cancelled
-                                                        ? cancelled.length
-                                                        : 0}
+                                                    {data.cancelledOrder || 0}
                                                 </span>
 
                                                 <span className="section__two--statusData">
-                                                    {refunded
-                                                        ? refunded.length
-                                                        : 0}
+                                                    {data.refundedOrder || 0}
                                                 </span>
                                             </div>
                                         </div>
@@ -260,8 +212,8 @@ const Dashboard = () => {
                                     </thead>
 
                                     <tbody>
-                                        {topServicesList &&
-                                            topServicesList.map((service) => (
+                                        {services &&
+                                            services.map((service) => (
                                                 <tr key={service.id}>
                                                     <td>{service.id}</td>
                                                     <td>

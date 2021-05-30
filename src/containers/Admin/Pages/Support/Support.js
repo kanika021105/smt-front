@@ -9,8 +9,8 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
 
+import Loading from '../../../../components/UI/Loading/Loading';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/admin/support.scss';
@@ -22,7 +22,6 @@ const Support = () => {
     const [users, setUsers] = useState();
 
     const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -35,7 +34,7 @@ const Support = () => {
 
                 const { data } = res;
 
-                setTickets(data.tickets.reverse());
+                setTickets(data.tickets);
                 setUsers(data.users);
             })
             .catch((err) => {
@@ -46,11 +45,11 @@ const Support = () => {
     }, []);
 
     const ticketClickHandler = (id) => {
-        let path = `/admin/support/ticket/${id}`;
+        const path = `/admin/support/ticket/${id}`;
         return history.push(path);
     };
 
-    let ticketList =
+    const ticketList =
         tickets &&
         users &&
         tickets.map((ticket) => {
@@ -96,6 +95,7 @@ const Support = () => {
                         </IconContext.Provider>{' '}
                         Support
                     </h2>
+
                     <Card>
                         <table className="table">
                             <thead>
@@ -106,6 +106,7 @@ const Support = () => {
                                     <th>Status</th>
                                 </tr>
                             </thead>
+
                             <tbody>{ticketList}</tbody>
                         </table>
                     </Card>

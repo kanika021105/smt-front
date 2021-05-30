@@ -31,10 +31,10 @@ const Message = () => {
     const { websiteName } = useContext(WebsiteDetail);
 
     useEffect(() => {
-        let url = `/admin/support/ticket/${id}`;
+        const url = `/admin/support/ticket/${id}`;
         Axios.get(url)
             .then((res) => {
-                let { data } = res;
+                const { data } = res;
 
                 setTicket(data.ticket);
                 setMessages(data.messages);
@@ -45,7 +45,7 @@ const Message = () => {
     const submitMessageHandler = async (e) => {
         e.preventDefault();
 
-        let url = `/admin/support/ticket/update/${id}`;
+        const url = `/admin/support/ticket/update/${id}`;
         try {
             await Axios.post(url, { message: inputMessage });
         } catch (err) {
