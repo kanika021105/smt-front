@@ -8,12 +8,16 @@
         color: $color-white;
         border: none;
         padding: 0 1rem;
-        border-radius: 5px;
+        border-radius: 0.5rem;
         background-color: lighten($color-red, 20);
         font-size: 2rem;
     }
 
     &-content {
         border-radius: 5px;
+    }
+
+    &__success {
+        max-width: 400px;
     }
 }

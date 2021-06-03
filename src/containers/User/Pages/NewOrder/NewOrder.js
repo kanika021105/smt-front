@@ -172,6 +172,9 @@ const NewOrder = () => {
         }
     };
 
+    const categoriesLength = () => categories && categories.length <= 0;
+    const servicesLength = () => services && services.length <= 0;
+
     // TODO Change title to dynamic
     return (
         <>
@@ -212,6 +215,7 @@ const NewOrder = () => {
                                         className="select"
                                         value={orderDetails.selectedCategory}
                                         onChange={selectedCategoryHandler}
+                                        disabled={categoriesLength()}
                                     >
                                         <option value="0" defaultValue>
                                             Choose a Category
@@ -238,6 +242,7 @@ const NewOrder = () => {
                                         class="select"
                                         value={orderDetails.selectedService}
                                         onChange={selectedServiceHandler}
+                                        disabled={servicesLength()}
                                     >
                                         <option value="0" defaultValue>
                                             Choose a Service

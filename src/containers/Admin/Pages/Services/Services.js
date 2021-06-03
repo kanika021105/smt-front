@@ -13,10 +13,11 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
-import '../../../../sass/pages/admin/services.scss';
+import './services.scss';
 
 const Services = () => {
     const [services, setServices] = useState();
@@ -157,33 +158,6 @@ const Services = () => {
         }));
     };
 
-    const addFormSubmitHandler = async (e) => {
-        e.preventDefault();
-
-        setErrorMsg('');
-        setAddError(false);
-
-        try {
-            const url = '/admin/service/add';
-            const { data } = await Axios.post(url, { ...addServiceDetails });
-
-            if (data.status !== 'success') {
-                return console.log('Something went wrong!');
-            }
-
-            setServices((preState) => [
-                { ...data.createdService },
-                ...preState,
-            ]);
-
-            setShowAddModal(false);
-        } catch (err) {
-            setErrorMsg(err.response.data.message);
-            setAddError(true);
-            console.log(err.response.data);
-        }
-    };
-
     const handleBackdropClick = () => {
         setErrorMsg('');
         setAddError(false);
@@ -203,6 +177,37 @@ const Services = () => {
         });
     };
 
+    const addFormSubmitHandler = async (e) => {
+        e.preventDefault();
+
+        setErrorMsg('');
+        setAddError(false);
+
+        try {
+            const url = '/admin/service/add';
+            const { data } = await Axios.post(url, {
+                ...addServiceDetails,
+            });
+
+            if (data.status !== 'success') {
+                return console.log('Something went wrong!');
+            }
+
+            setServices((preState) => [
+                { ...data.createdService },
+                ...preState,
+            ]);
+
+            handleBackdropClick();
+        } catch (err) {
+            setErrorMsg(err.response);
+            setAddError(true);
+            console.log(err);
+        }
+    };
+
+    const categoriesCount = categories && categories.length <= 0;
+
     const addModal = (
         <Modal show={showAddModal} onHide={handleBackdropClick}>
             <Modal.Header closeButton closeLabel="">
@@ -217,9 +222,12 @@ const Services = () => {
                             className="select"
                             value={addServiceDetails.categoryId}
                             onChange={addCategoryChangeHandler}
+                            disabled={categoriesCount}
                         >
                             <option key={0} value={null}>
-                                Choose a service
+                                {categoriesCount
+                                    ? 'No category to choose!'
+                                    : 'Choose a Category'}
                             </option>
                             {categories &&
                                 categories.map((category) => (
@@ -488,7 +496,7 @@ const Services = () => {
             });
 
             setServices((preState) => [{ ...data.updatedService }, ...newList]);
-            // handleClose();
+            handleClose();
         } catch (err) {
             console.log(err.response.data);
         }
@@ -681,9 +689,10 @@ const Services = () => {
     };
 
     const getServiceByCategory = (id) => {
-        console.log(services);
         const servicesList =
-            services && services.filter((service) => service.categoryId === id);
+            services &&
+            services.filter((service) => +service.categoryId === +id);
+        console.log(servicesList);
 
         return servicesList.map((service) => (
             <tr key={service.id}>
@@ -697,7 +706,7 @@ const Services = () => {
                 <td>
                     {service.min} / {service.max}
                 </td>
-                <td>{service.rate.toFixed(2)}</td>
+                <td>{parseFloat(service.rate).toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
                 <td>{checkStatus(service.status)}</td>
                 <td>
@@ -774,6 +783,59 @@ const Services = () => {
         }
     };
 
+    const servicesData = () => {
+        if (services && services.length <= 0) {
+            return (
+                <DataNotFound message="Please add some services in any category to show here." />
+            );
+        }
+
+        if (categories && categories.length <= 0) {
+            return (
+                <DataNotFound message="Please add some services in any category to show here." />
+            );
+        }
+
+        return (
+            categories &&
+            categories.map((category) => {
+                const serviceLength = getServiceByCategory(category.id);
+
+                if (serviceLength.length <= 0) return '';
+                if (serviceLength.length <= 0 && categories.length <= 1) {
+                    return (
+                        <DataNotFound message="Please add some services in any category to show here." />
+                    );
+                }
+
+                return (
+                    <div key={category.id} className="serviceListCard">
+                        <Card>
+                            <h3 className="categoryTitle">{category.title}</h3>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Provider - Service Id</th>
+                                        <th>Min / Max</th>
+                                        <th>Price</th>
+                                        <th>Drip Feed</th>
+                                        <th>Status</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {getServiceByCategory(category.id)}
+                                </tbody>
+                            </table>
+                        </Card>
+                    </div>
+                );
+            })
+        );
+    };
+
     // TODO
     return (
         <>
@@ -807,33 +869,8 @@ const Services = () => {
                             +
                         </button>
                     </div>
-                    {categories &&
-                        categories.map((category) => (
-                            <div key={category.id} className="serviceListCard">
-                                <Card>
-                                    <h3 className="categoryTitle">
-                                        {category.title}
-                                    </h3>
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Title</th>
-                                                <th>Provider - Service Id</th>
-                                                <th>Min / Max</th>
-                                                <th>Price</th>
-                                                <th>Drip Feed</th>
-                                                <th>Status</th>
-                                                <th>Option</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {getServiceByCategory(category.id)}
-                                        </tbody>
-                                    </table>
-                                </Card>
-                            </div>
-                        ))}
+
+                    {servicesData()}
                 </div>
             </div>
         </>

@@ -14,8 +14,10 @@ import Loading from '../../../../components/UI/Loading/Loading';
 
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
+import classes from './orders.module.scss';
 import 'bootstrap/js/dist/dropdown';
-import '../../../../sass/pages/admin/orders.scss';
+
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
 const Orders = () => {
     const [users, setUsers] = useState();
@@ -427,6 +429,118 @@ const Orders = () => {
         }
     };
 
+    const ordersTable =
+        orders && orders.length <= 0 ? (
+            <DataNotFound message="Please wait for users to create some order." />
+        ) : (
+            <Card>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Service</th>
+                            <th>Link</th>
+                            <th>Charge</th>
+                            <th>QTY</th>
+                            <th>Start Counter</th>
+                            <th>Status</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {orders &&
+                            orders.map((order) => (
+                                <tr key={order.id}>
+                                    <td>{order.id}</td>
+
+                                    <td>
+                                        {getServiceTitle(order.serviceId) &&
+                                        getServiceTitle(order.serviceId)
+                                            .length > 30
+                                            ? order.serviceId +
+                                              '- ' +
+                                              getServiceTitle(
+                                                  order.serviceId
+                                              ).slice(0, 30) +
+                                              '...'
+                                            : order.serviceId +
+                                              '- ' +
+                                              getServiceTitle(order.serviceId)}
+                                    </td>
+
+                                    <td>
+                                        {order.link.length > 20
+                                            ? order.link.slice(0, 20) + '...'
+                                            : order.link}
+                                    </td>
+
+                                    <td>{order.charge}</td>
+                                    <td>{order.quantity}</td>
+                                    <td>{order.startCounter}</td>
+                                    <td>{getStatus(order.status)}</td>
+
+                                    <td>
+                                        <IconContext.Provider
+                                            value={{
+                                                style: {
+                                                    fontSize: '30px',
+                                                    padding: 'auto',
+                                                },
+                                            }}
+                                        >
+                                            <div className="dropdown ">
+                                                <span
+                                                    id="option"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                >
+                                                    <BsThreeDotsVertical />
+                                                </span>
+                                                <ul
+                                                    className="dropdown-menu"
+                                                    aria-labelledby="option"
+                                                >
+                                                    <li>
+                                                        <button
+                                                            className="btn btn-edit"
+                                                            style={{
+                                                                width: '100%',
+                                                            }}
+                                                            value={order.id}
+                                                            onClick={
+                                                                editButtonHandler
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    </li>
+
+                                                    <li>
+                                                        <button
+                                                            className="btn btn-delete"
+                                                            style={{
+                                                                width: '100%',
+                                                            }}
+                                                            value={order.id}
+                                                            onClick={
+                                                                deleteButtonHandler
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </IconContext.Provider>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </Card>
+        );
+
     // TODO
     return (
         <>
@@ -438,7 +552,7 @@ const Orders = () => {
             {<Loading show={isLoading} />}
 
             <div className="container">
-                <div className="Orders">
+                <div className={classes.Orders}>
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
@@ -452,121 +566,7 @@ const Orders = () => {
                         Orders
                     </h2>
 
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Service</th>
-                                    <th>Link</th>
-                                    <th>Charge</th>
-                                    <th>QTY</th>
-                                    <th>Start Counter</th>
-                                    <th>Status</th>
-                                    <th>Options</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {orders &&
-                                    orders.map((order) => (
-                                        <tr key={order.id}>
-                                            <td>{order.id}</td>
-
-                                            <td>
-                                                {getServiceTitle(
-                                                    order.serviceId
-                                                ) &&
-                                                getServiceTitle(order.serviceId)
-                                                    .length > 30
-                                                    ? order.serviceId +
-                                                      '- ' +
-                                                      getServiceTitle(
-                                                          order.serviceId
-                                                      ).slice(0, 30) +
-                                                      '...'
-                                                    : order.serviceId +
-                                                      '- ' +
-                                                      getServiceTitle(
-                                                          order.serviceId
-                                                      )}
-                                            </td>
-
-                                            <td>
-                                                {order.link.length > 20
-                                                    ? order.link.slice(0, 20) +
-                                                      '...'
-                                                    : order.link}
-                                            </td>
-
-                                            <td>{order.charge}</td>
-                                            <td>{order.quantity}</td>
-                                            <td>{order.startCounter}</td>
-                                            <td>{getStatus(order.status)}</td>
-
-                                            <td>
-                                                <IconContext.Provider
-                                                    value={{
-                                                        style: {
-                                                            fontSize: '30px',
-                                                            padding: 'auto',
-                                                        },
-                                                    }}
-                                                >
-                                                    <div className="dropdown ">
-                                                        <span
-                                                            id="option"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-expanded="false"
-                                                        >
-                                                            <BsThreeDotsVertical />
-                                                        </span>
-                                                        <ul
-                                                            className="dropdown-menu"
-                                                            aria-labelledby="option"
-                                                        >
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-edit"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        order.id
-                                                                    }
-                                                                    onClick={
-                                                                        editButtonHandler
-                                                                    }
-                                                                >
-                                                                    Edit
-                                                                </button>
-                                                            </li>
-
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-delete"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        order.id
-                                                                    }
-                                                                    onClick={
-                                                                        deleteButtonHandler
-                                                                    }
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </IconContext.Provider>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </Card>
+                    {ordersTable}
                 </div>
             </div>
         </>

@@ -6,6 +6,16 @@
     margin-bottom: 20px;
 }
 
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+// .centered {
+//     margin: 0 auto;
+// }
+
 @media (max-width: 767px) {
     .u-sm-mb-1 {
         margin-bottom: 10px;

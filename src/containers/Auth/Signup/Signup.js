@@ -3,116 +3,142 @@
 import React, { useState, useContext } from 'react';
 
 import { Helmet } from 'react-helmet';
-import { Button, Form, FormControl, Modal } from 'react-bootstrap';
+import { FormControl, Modal } from 'react-bootstrap';
 
-import Axios from '../../../axiosIns';
-
+import classes from './Signup.module.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Card from '../../../components/UI/Card/Card';
 
+import Axios from '../../../axiosIns';
 import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
-
-import classes from './Singup.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [contact, setContact] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [userDetails, setUserDetails] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        contact: '',
+        password: '',
+        confirmPassword: '',
+    });
 
     const [errorMsg, setErrorMsg] = useState('');
     const [showError, setShowError] = useState(false);
-    const [showModal, setShowModal] = useState(false);
 
+    const [showModal, setShowModal] = useState(false);
     const { websiteName } = useContext(WebsiteDetail);
 
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        let url = '/signup';
-        const signUpData = {
-            f_name: firstName,
-            l_name: lastName,
-            email,
-            contact,
-            password,
-            confirmPassword,
-        };
+        const url = '/signup';
 
-        let { data } = await Axios.post(url, { ...signUpData });
-
+        const { data } = await Axios.post(url, { ...userDetails });
         console.log(data.status);
 
-        if (data) {
-            if (data.status === 'success' || data.status === 'Success') {
-                setShowModal(true);
-            }
-
-            if (data.status === 'failed' || data.status === 'Failed') {
-                setErrorMsg(data.errorMsg);
-                setShowError(true);
-            }
+        if (data.status === 'failed' || data.status === 'Failed') {
+            setErrorMsg(data.errorMsg);
+            setShowError(true);
         }
 
-        return;
+        setShowModal(true);
     };
 
     const firstNameChangeHandler = (e) => {
-        setFirstName(e.target.value);
-        return;
+        setUserDetails((preState) => ({
+            ...preState,
+            firstName: e.target.value,
+        }));
     };
 
     const lastNameChangeHandler = (e) => {
-        setLastName(e.target.value);
-        return;
+        setUserDetails((preState) => ({
+            ...preState,
+            lastName: e.target.value,
+        }));
     };
 
     const emailChangeHandler = (e) => {
-        setEmail(e.target.value);
-        return;
+        setUserDetails((preState) => ({
+            ...preState,
+            email: e.target.value,
+        }));
     };
 
     const contactChangeHandler = (e) => {
-        setContact(e.target.value);
-        return;
+        setUserDetails((preState) => ({
+            ...preState,
+            contact: e.target.value,
+        }));
     };
 
     const passwordChangeHandler = (e) => {
-        setPassword(e.target.value);
-        return;
+        setUserDetails((preState) => ({
+            ...preState,
+            password: e.target.value,
+        }));
     };
 
     const confirmPasswordChangeHandler = (e) => {
-        setConfirmPassword(e.target.value);
-        return;
+        setUserDetails((preState) => ({
+            ...preState,
+            confirmPassword: e.target.value,
+        }));
     };
 
     const handleClose = () => {
-        setEmail('');
-        setContact('');
+        setUserDetails({
+            firstName: '',
+            lastName: '',
+            email: '',
+            contact: '',
+            password: '',
+            confirmPassword: '',
+        });
+
         setErrorMsg('');
-        setPassword('');
-        setLastName('');
-        setFirstName('');
         setShowError('');
         setShowModal(false);
-        setConfirmPassword('');
     };
 
     const successModal = (
-        <div className={classes.successModal}>
-            <Modal show={showModal} onHide={handleClose}>
-                <Modal.Body>
-                    <h3>Account Created Successfully!</h3>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                    </Button>
-                </Modal.Body>
-                <Modal.Footer></Modal.Footer>
-            </Modal>
-        </div>
+        <Modal show={showModal} onHide={handleClose} centered>
+            <Modal.Body>
+                <div className={classes.successModal}>
+                    <div className="centered">
+                        <img
+                            className={classes.signUp__success__img}
+                            src="/images/success.svg"
+                            alt="successImage"
+                        />
+                    </div>
+                    <h3 className={classes.signUp__success__heading}>
+                        Congratulations!
+                    </h3>
+
+                    <p className={classes.signUp__success__paragraph}>
+                        Your account have been created successfully! Please{' '}
+                        <Link
+                            className={classes.signUp__success__paragraph__link}
+                            to={'/login'}
+                        >
+                            Login
+                        </Link>{' '}
+                        to your account to use our panel.
+                    </p>
+
+                    <div className="centered">
+                        <button
+                            className="btn btn-primary"
+                            onClick={handleClose}
+                        >
+                            Okay!
+                        </button>
+                    </div>
+                </div>
+            </Modal.Body>
+        </Modal>
     );
 
     return (
@@ -142,7 +168,7 @@ const Signup = () => {
                                         className="input"
                                         id="firstName"
                                         type="text"
-                                        value={firstName}
+                                        value={userDetails.firstName}
                                         placeholder="First Name"
                                         onChange={firstNameChangeHandler}
                                     />
@@ -158,7 +184,7 @@ const Signup = () => {
                                         className="input"
                                         id="lastName"
                                         type="text"
-                                        value={lastName}
+                                        value={userDetails.lastName}
                                         placeholder="Last Name"
                                         onChange={lastNameChangeHandler}
                                     />
@@ -172,7 +198,7 @@ const Signup = () => {
                                 className="input"
                                 id="email"
                                 type="email"
-                                value={email}
+                                value={userDetails.email}
                                 placeholder="Email"
                                 onChange={emailChangeHandler}
                             />
@@ -186,7 +212,7 @@ const Signup = () => {
                                 className="input"
                                 id="contact"
                                 type="number"
-                                value={contact}
+                                value={userDetails.contact}
                                 placeholder="+91"
                                 onChange={contactChangeHandler}
                             />
@@ -198,7 +224,7 @@ const Signup = () => {
                                 className="input"
                                 id="password"
                                 type="password"
-                                value={password}
+                                value={userDetails.password}
                                 placeholder="Password"
                                 onChange={passwordChangeHandler}
                             />
@@ -212,13 +238,15 @@ const Signup = () => {
                                 className="input"
                                 id="confirmPassword"
                                 type="password"
-                                value={confirmPassword}
+                                value={userDetails.confirmPassword}
                                 placeholder="Confirm Password"
                                 onChange={confirmPasswordChangeHandler}
                             />
                         </div>
 
-                        <button className="mt-3 btn btn-primary">Signup</button>
+                        <button type="submit" className="mt-3 btn btn-primary">
+                            Signup
+                        </button>
                     </form>
                 </Card>
             </div>

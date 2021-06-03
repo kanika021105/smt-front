@@ -10,9 +10,10 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import DataNotFound from '.././../../../components/UI/DataNotFound/DataNotFound';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
-import '../../../../sass/pages/admin/transactions.scss';
+import './Transactions.scss';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState();
@@ -36,6 +37,54 @@ const Transactions = () => {
                 console.log(err.response.msg);
             });
     }, []);
+
+    const transactionDataTable = (
+        <Card>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Transaction Id</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {transactions &&
+                        transactions.map((transaction) => (
+                            <tr key={transaction.id}>
+                                <td>{transaction.id}</td>
+                                <td>{transaction.email}</td>
+                                <td>{transaction.transactionId}</td>
+                                <td>{transaction.amount}</td>
+                                <td>{transaction.paymentMethod}</td>
+                                <td>
+                                    <button
+                                        className={
+                                            'btn btn-success btn-disabled'
+                                        }
+                                        disabled
+                                    >
+                                        {transaction.status}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table>
+        </Card>
+    );
+
+    const isEmptyTransactions = transactions && transactions.length <= 0;
+
+    const showData = isEmptyTransactions ? (
+        <DataNotFound message="Please wait for users to make some transaction." />
+    ) : (
+        transactionDataTable
+    );
 
     // TODO
     return (
@@ -61,43 +110,7 @@ const Transactions = () => {
                         Transactions
                     </h2>
 
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Email</th>
-                                    <th>Transaction Id</th>
-                                    <th>Amount</th>
-                                    <th>Method</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {transactions &&
-                                    transactions.map((transaction) => (
-                                        <tr key={transaction.id}>
-                                            <td>{transaction.id}</td>
-                                            <td>{transaction.email}</td>
-                                            <td>{transaction.transactionId}</td>
-                                            <td>{transaction.amount}</td>
-                                            <td>{transaction.paymentMethod}</td>
-                                            <td>
-                                                <button
-                                                    className={
-                                                        'btn btn-success btn-disabled'
-                                                    }
-                                                    disabled
-                                                >
-                                                    {transaction.status}
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </Card>
+                    <div>{showData}</div>
                 </div>
             </div>
         </>

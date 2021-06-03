@@ -13,10 +13,11 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
-import '../../../../sass/pages/admin/categories.scss';
+import './categories.scss';
 
 const Categories = () => {
     const [categories, setCategories] = useState();
@@ -401,6 +402,96 @@ const Categories = () => {
         }
     };
 
+    const categoriesTable =
+        categories && categories.length <= 0 ? (
+            <DataNotFound message="Please addd some categories to show here." />
+        ) : (
+            <Card>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Desc</th>
+                            <th>Short</th>
+                            <th>Status</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {categories &&
+                            categories.map((category) => (
+                                <tr key={category.id}>
+                                    <td>{category.id}</td>
+                                    <td>{category.title}</td>
+                                    <td>{category.description}</td>
+                                    <td>{category.short}</td>
+
+                                    <td>{checkStatus(category.status)}</td>
+
+                                    <td>
+                                        <IconContext.Provider
+                                            value={{
+                                                style: {
+                                                    fontSize: '30px',
+                                                    padding: 'auto',
+                                                },
+                                            }}
+                                        >
+                                            <div className="dropdown ">
+                                                <span
+                                                    id="option"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                >
+                                                    <BsThreeDotsVertical />
+                                                </span>
+
+                                                <ul
+                                                    className="dropdown-menu"
+                                                    aria-labelledby="option"
+                                                >
+                                                    <li>
+                                                        <button
+                                                            className="btn btn-edit"
+                                                            style={{
+                                                                width: '100%',
+                                                            }}
+                                                            value={category.id}
+                                                            onClick={
+                                                                editButtonHandler
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    </li>
+
+                                                    <li>
+                                                        <button
+                                                            className="btn btn-delete"
+                                                            style={{
+                                                                width: '100%',
+                                                            }}
+                                                            value={category.id}
+                                                            onClick={
+                                                                deleteButtonHandler
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </IconContext.Provider>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </Card>
+        );
+
     // TODO
     return (
         <>
@@ -435,96 +526,7 @@ const Categories = () => {
                         </button>
                     </div>
 
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Desc</th>
-                                    <th>Short</th>
-                                    <th>Status</th>
-                                    <th>Options</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {categories &&
-                                    categories.map((category) => (
-                                        <tr key={category.id}>
-                                            <td>{category.id}</td>
-                                            <td>{category.title}</td>
-                                            <td>{category.description}</td>
-                                            <td>{category.short}</td>
-
-                                            <td>
-                                                {checkStatus(category.status)}
-                                            </td>
-
-                                            <td>
-                                                <IconContext.Provider
-                                                    value={{
-                                                        style: {
-                                                            fontSize: '30px',
-                                                            padding: 'auto',
-                                                        },
-                                                    }}
-                                                >
-                                                    <div className="dropdown ">
-                                                        <span
-                                                            id="option"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-expanded="false"
-                                                        >
-                                                            <BsThreeDotsVertical />
-                                                        </span>
-
-                                                        <ul
-                                                            className="dropdown-menu"
-                                                            aria-labelledby="option"
-                                                        >
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-edit"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        category.id
-                                                                    }
-                                                                    onClick={
-                                                                        editButtonHandler
-                                                                    }
-                                                                >
-                                                                    Edit
-                                                                </button>
-                                                            </li>
-
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-delete"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        category.id
-                                                                    }
-                                                                    onClick={
-                                                                        deleteButtonHandler
-                                                                    }
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </IconContext.Provider>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </Card>
+                    {categoriesTable}
                 </div>
             </main>
         </>

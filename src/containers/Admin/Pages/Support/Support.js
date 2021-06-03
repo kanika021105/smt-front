@@ -11,9 +11,10 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 
 import Loading from '../../../../components/UI/Loading/Loading';
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
-import '../../../../sass/pages/admin/support.scss';
+import './support.scss';
 
 const Support = () => {
     const history = useHistory();
@@ -72,6 +73,31 @@ const Support = () => {
             );
         });
 
+    const supportDataTable = (
+        <Card>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>{ticketList}</tbody>
+            </table>
+        </Card>
+    );
+
+    const isSupportEmpty = Support && Support.length <= 0;
+
+    const DataToShow = isSupportEmpty ? (
+        <DataNotFound message="Please wait for users to create support Tickets." />
+    ) : (
+        supportDataTable
+    );
+
     // TODO
     return (
         <>
@@ -96,20 +122,7 @@ const Support = () => {
                         Support
                     </h2>
 
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Email</th>
-                                    <th>Subject</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>{ticketList}</tbody>
-                        </table>
-                    </Card>
+                    {DataToShow}
                 </div>
             </div>
         </>

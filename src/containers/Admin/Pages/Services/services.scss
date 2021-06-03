@@ -1,14 +1,7 @@
-@import '../../abstracts/mixins';
-@import '../../abstracts/variables';
-
-@import '../../base/base';
-@import '../../base/typography';
-@import '../../base/utilities';
-
-@import '../../components/button';
+@import '../../../../sass/index';
 
 .Services {
-    min-height: 80vh;
+    min-height: calc(100vh - (8rem + 5rem + 1.2rem));
 }
 
 .addError {
