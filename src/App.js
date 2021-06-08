@@ -75,14 +75,14 @@ const App = () => {
                 </div>
             }
         >
-            <Layout>
-                <Switch>
-                    <Route path="/signup" exact>
-                        <Signup />
-                    </Route>
-                    <Route path="/login" exact>
-                        <Login />
-                    </Route>
+            <Switch>
+                <Route path="/signup" exact>
+                    <Signup />
+                </Route>
+                <Route path="/login" exact>
+                    <Login />
+                </Route>
+                <Layout>
                     <Route
                         path="/"
                         render={(e) => {
@@ -90,8 +90,8 @@ const App = () => {
                         }}
                         exact
                     />
-                </Switch>
-            </Layout>
+                </Layout>
+            </Switch>
         </Suspense>
     );
 

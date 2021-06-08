@@ -1,0 +1,204 @@
+@import '../../../sass/index';
+
+.login {
+    min-height: calc(100vh);
+    padding: 10rem 18rem;
+    background-image: linear-gradient(
+        to right,
+        lighten($color-primary, 6),
+        lighten($color-primary, 4)
+    );
+
+    &__container {
+        position: relative;
+        border-radius: 1.4rem;
+        border-top-right-radius: 2.4rem;
+        border-bottom-right-radius: 2.4rem;
+        height: calc(100vh - (20rem));
+        background-color: $color-white;
+        overflow: hidden;
+
+        & .image__section {
+            position: relative;
+            height: 100%;
+            background-color: darken($color-white, 1);
+            background-repeat: no-repeat;
+            background-size: cover;
+
+            &__heading {
+                display: block;
+                white-space: nowrap;
+                padding: 3rem 0 0 4rem;
+                font-size: 3rem;
+                color: lighten($color-primary, 2);
+            }
+
+            & .heading__bottomLine {
+                display: block;
+                width: 15rem;
+                margin-left: 4rem;
+                border-top: 4px solid lighten($color-primary, 8);
+                border-radius: 3px;
+            }
+
+            & .image__section__paragraph {
+                color: lighten($color-grey, 12);
+                max-width: 65%;
+                margin-left: 4rem;
+                padding-top: 0.6rem;
+            }
+
+            img {
+                display: block;
+                margin: -2rem 0 0 -8rem;
+                max-height: 80%;
+            }
+
+            & .circle {
+                position: absolute;
+                top: calc(74% - (22rem));
+                left: calc(100% - (9rem));
+                display: inline-block;
+                border: 2rem solid lighten($color-primary, 12);
+                height: 22rem;
+                width: 9rem;
+                border-right: none;
+                border-radius: 6rem 0px 0 6rem;
+            }
+        }
+
+        & .form {
+            position: relative;
+            text-align: center;
+
+            & .shapeOne {
+                position: absolute;
+                top: 10%;
+                left: calc(100% - (5rem));
+
+                height: 12rem;
+                width: 12rem;
+
+                border: 2rem solid lighten($color-primary, 4);
+                border-right: none;
+                border-bottom: none;
+                border-radius: 2rem;
+
+                transform: rotate(-45deg);
+            }
+
+            & .homeLink {
+                &__box {
+                    float: left;
+                    padding: 0.6rem 0.8rem;
+                    margin: 2.5rem 0 0 2rem;
+                    border-radius: 0.8rem;
+                    border: 1px solid $color-primary;
+
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        color: $color-white;
+                        background-color: lighten($color-primary, 8);
+                        border: none;
+                    }
+                }
+
+                &__text {
+                    font-size: 1.6rem;
+                    margin-left: 0.3rem;
+                    display: inline-block;
+                    letter-spacing: 0.05rem;
+                }
+            }
+
+            &__container {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                & .form {
+                    &__heading {
+                        display: block;
+                        margin-bottom: 4rem;
+
+                        & h2 {
+                            display: block;
+                            font-size: 2.5rem;
+                            font-weight: 500;
+                        }
+
+                        & .borderLine {
+                            margin: 0 auto;
+                            width: 6rem;
+                            border-top: 2px solid lighten($color-primary, 8);
+                        }
+                    }
+
+                    &__input {
+                        &.email {
+                            margin-bottom: 3rem;
+                        }
+
+                        & input {
+                            width: 25rem;
+                            font-size: 1.8rem;
+                            padding: 0.2rem 0.6rem;
+                            outline: none;
+                            border: none;
+                            border-top-right-radius: 0.8rem;
+                            border-top-left-radius: 0.8rem;
+                            border-bottom: 2px solid $color-grey;
+
+                            transition: all 0.2s;
+
+                            &:focus {
+                                border-bottom: 2px solid
+                                    lighten($color-primary, 4);
+                            }
+
+                            &:invalid {
+                                border-bottom: 2px solid lighten($color-red, 5);
+                            }
+                        }
+
+                        .forgetPasswordLink {
+                            padding-top: 0.6rem;
+
+                            & a {
+                                font-size: 1.6rem;
+                                text-decoration: none;
+                                float: right;
+                                color: lighten($color-primary, 4);
+                            }
+                        }
+                    }
+                }
+
+                & .login__button {
+                    margin: 2rem 0 0.6rem 0;
+                    font-size: 2rem;
+                    padding: 0.7rem 10rem;
+                    transition: all 0.2s;
+                    display: inline-block;
+
+                    // TODO Add Shadow on hover and some click and some animation too if possible
+                    &:hover {
+                        background-color: darken($color-primary, 4);
+                    }
+                }
+
+                & .signupLink {
+                    padding-top: 0;
+
+                    & a {
+                        text-decoration: none;
+                        font-size: 1.6rem;
+                        color: lighten($color-primary, 4);
+                    }
+                }
+            }
+        }
+    }
+}

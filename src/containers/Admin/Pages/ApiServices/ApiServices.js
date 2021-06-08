@@ -13,10 +13,11 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
+import './apiServices.scss';
 import 'bootstrap/js/dist/dropdown';
-import '../../../../sass/pages/admin/apiServices.scss';
 
 const ApiServices = () => {
     const { id } = useParams();
@@ -273,6 +274,80 @@ const ApiServices = () => {
         </Modal>
     );
 
+    const apiServicesTable = (
+        <Card>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Title</th>
+                        <th>Min/Max</th>
+                        <th>Price</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {services &&
+                        services.map((service) => (
+                            <tr key={service.service}>
+                                <td>{service.service}</td>
+                                <td>{service.category}</td>
+                                <td>{service.name}</td>
+                                <td>{`${service.min} / ${service.max}`}</td>
+                                <td>{service.rate}</td>
+                                <td>
+                                    <IconContext.Provider
+                                        value={{
+                                            style: {
+                                                fontSize: '30px',
+                                            },
+                                        }}
+                                    >
+                                        <div className="dropdown ">
+                                            <span
+                                                id="option"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <BsThreeDotsVertical />
+                                            </span>
+                                            <ul
+                                                className="dropdown-menu"
+                                                aria-labelledby="option"
+                                            >
+                                                <li>
+                                                    <button
+                                                        className="btn btn-info"
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
+                                                        value={service.service}
+                                                        onClick={
+                                                            addButtonHandler
+                                                        }
+                                                    >
+                                                        Add/Update
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </IconContext.Provider>
+                                </td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table>
+        </Card>
+    );
+
+    const isServicesEmpty = services && services.length <= 0;
+    const toShow = isServicesEmpty ? (
+        <DataNotFound message="Make sure your api provider have some services." />
+    ) : (
+        apiServicesTable
+    );
+
     // TODO
     return (
         <>
@@ -297,72 +372,8 @@ const ApiServices = () => {
                         </IconContext.Provider>{' '}
                         Services From Api
                     </h2>
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Category</th>
-                                    <th>Title</th>
-                                    <th>Min/Max</th>
-                                    <th>Price</th>
-                                    <th>Options</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {services &&
-                                    services.map((service) => (
-                                        <tr key={service.service}>
-                                            <td>{service.service}</td>
-                                            <td>{service.category}</td>
-                                            <td>{service.name}</td>
-                                            <td>{`${service.min} / ${service.max}`}</td>
-                                            <td>{service.rate}</td>
-                                            <td>
-                                                <IconContext.Provider
-                                                    value={{
-                                                        style: {
-                                                            fontSize: '30px',
-                                                        },
-                                                    }}
-                                                >
-                                                    <div className="dropdown ">
-                                                        <span
-                                                            id="option"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-expanded="false"
-                                                        >
-                                                            <BsThreeDotsVertical />
-                                                        </span>
-                                                        <ul
-                                                            className="dropdown-menu"
-                                                            aria-labelledby="option"
-                                                        >
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-info"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        service.service
-                                                                    }
-                                                                    onClick={
-                                                                        addButtonHandler
-                                                                    }
-                                                                >
-                                                                    Add/Update
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </IconContext.Provider>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </Card>
+
+                    {toShow}
                 </div>
             </div>
         </>

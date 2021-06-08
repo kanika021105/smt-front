@@ -1,14 +1,7 @@
-@import '../../abstracts/extends';
-@import '../../abstracts/variables';
-
-@import '../../base/base';
-@import '../../base/typography';
-@import '../../base/utilities';
-
-@import '../../components/button';
+@import '../../../../sass/index';
 
 .apiProvider {
-    min-height: 80vh;
+    min-height: calc(100vh - (8rem + 5rem + 1.2rem));
 }
 
 .addButton button {
@@ -16,8 +9,8 @@
     border: none;
     font-size: 2rem;
     border-radius: 0.5rem;
-    color: #fff;
-    background-color: #3f80ea;
+    color: $color-white;
+    background-color: $color-primary;
     padding: 0rem 0.8rem;
     margin: 0 0 0 1.6rem;
 }
@@ -28,13 +21,12 @@
 
 .formControl button {
     border: none;
-    color: #fff;
+    color: $color-white;
     margin: 0.5rem;
     padding: 0.5rem;
     font-size: 1.6rem;
     border-radius: 0.3rem;
     align-items: center;
-    /* background-color: #3f80ea; */
 }
 
 .addError {
@@ -42,8 +34,8 @@
 }
 
 .apiActionButton {
-    border: 0.1rem solid #3f80ea;
-    color: #3f80ea;
+    border: 0.1rem solid $color-primary;
+    color: $color-primary;
     border-radius: 0;
 }
 

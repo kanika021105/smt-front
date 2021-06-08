@@ -1,0 +1,13 @@
+@import '../../../../sass/index';
+
+.apiServices {
+    min-height: calc(100vh - (8rem + 5rem + 1.2rem));
+}
+
+.dropdownButton button::after {
+    content: none !important;
+}
+
+.label {
+    font-size: 1.3rem;
+}

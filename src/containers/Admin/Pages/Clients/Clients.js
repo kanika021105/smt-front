@@ -13,10 +13,11 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
-import '../../../../sass/pages/admin/clients.scss';
+import './clients.scss';
 
 const Clients = () => {
     const [users, setUsers] = useState();
@@ -32,15 +33,6 @@ const Clients = () => {
         role: '',
         status: '',
     });
-
-    const [editingUser, setEditingUser] = useState();
-    const [editedRole, setEditedRole] = useState('');
-    const [editedEmail, setEditedEmail] = useState('');
-    const [editedStatus, setEditedStatus] = useState('');
-    const [editedContact, setEditedContact] = useState('');
-    const [editedBalance, setEditedBalance] = useState('');
-    const [editedLastName, setEditedLastName] = useState('');
-    const [editedFirstName, setEditedFirstName] = useState('');
 
     const { websiteName } = useContext(WebsiteDetail);
     const [isLoading, setIsLoading] = useState(false);
@@ -307,6 +299,94 @@ const Clients = () => {
         }
     };
 
+    const clientDataTable = (
+        <Card>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Role</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users &&
+                        users.map((user) => (
+                            <tr key={user.id}>
+                                <td>{user.id}</td>
+                                <td>{user.email}</td>
+                                <td>
+                                    {user.f_name} {user.l_name}
+                                </td>
+                                <td>{user.role}</td>
+                                <td>{user.balance}</td>
+                                <td>{checkStatus(user.status)}</td>
+                                <td>
+                                    <IconContext.Provider
+                                        value={{
+                                            style: {
+                                                fontSize: '30px',
+                                            },
+                                        }}
+                                    >
+                                        <div className="dropdown ">
+                                            <span
+                                                id="option"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <BsThreeDotsVertical />
+                                            </span>
+                                            <ul
+                                                class="dropdown-menu"
+                                                aria-labelledby="options"
+                                            >
+                                                <li>
+                                                    <button
+                                                        className="btn btn-edit"
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
+                                                        value={user.id}
+                                                        onClick={
+                                                            editButtonHandler
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button
+                                                        className="btn btn-delete"
+                                                        style={{
+                                                            width: '100%',
+                                                        }}
+                                                        value={user.id}
+                                                        onClick={
+                                                            deleteButtonHandler
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </IconContext.Provider>
+                                </td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table>
+        </Card>
+    );
+
+    const isClientsEmpty = users && users.length <= 0;
+    const toShow = isClientsEmpty ? <DataNotFound /> : clientDataTable;
+
     // TODO Change title to dynamic
     return (
         <>
@@ -331,92 +411,8 @@ const Clients = () => {
                         </IconContext.Provider>{' '}
                         Clients
                     </h2>
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Email</th>
-                                    <th>Full Name</th>
-                                    <th>Role</th>
-                                    <th>Balance</th>
-                                    <th>Status</th>
-                                    <th>Option</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users &&
-                                    users.map((user) => (
-                                        <tr key={user.id}>
-                                            <td>{user.id}</td>
-                                            <td>{user.email}</td>
-                                            <td>
-                                                {user.f_name} {user.l_name}
-                                            </td>
-                                            <td>{user.role}</td>
-                                            <td>{user.balance}</td>
-                                            <td>{checkStatus(user.status)}</td>
-                                            <td>
-                                                <IconContext.Provider
-                                                    value={{
-                                                        style: {
-                                                            fontSize: '30px',
-                                                        },
-                                                    }}
-                                                >
-                                                    <div className="dropdown ">
-                                                        <span
-                                                            id="option"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-expanded="false"
-                                                        >
-                                                            <BsThreeDotsVertical />
-                                                        </span>
-                                                        <ul
-                                                            class="dropdown-menu"
-                                                            aria-labelledby="options"
-                                                        >
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-edit"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        user.id
-                                                                    }
-                                                                    onClick={
-                                                                        editButtonHandler
-                                                                    }
-                                                                >
-                                                                    Edit
-                                                                </button>
-                                                            </li>
-                                                            <li>
-                                                                <button
-                                                                    className="btn btn-delete"
-                                                                    style={{
-                                                                        width: '100%',
-                                                                    }}
-                                                                    value={
-                                                                        user.id
-                                                                    }
-                                                                    onClick={
-                                                                        deleteButtonHandler
-                                                                    }
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </IconContext.Provider>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </Card>
+
+                    {toShow}
                 </div>
             </div>
         </>

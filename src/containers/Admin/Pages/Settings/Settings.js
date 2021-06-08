@@ -7,7 +7,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { Helmet } from 'react-helmet';
 
-import '../../../../sass/pages/admin/settings/main.scss';
+import './Settings';
 import Card from '../../../../components/UI/Card/Card';
 
 const General = lazy(() => import('./General/General'));

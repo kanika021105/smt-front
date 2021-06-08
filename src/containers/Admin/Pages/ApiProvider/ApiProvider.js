@@ -20,7 +20,8 @@ import Loading from '../../../../components/UI/Loading/Loading';
 
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
-import '../../../../sass/pages/admin/apiProvider.scss';
+import './apiProvider.scss';
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
 const ApiProvider = () => {
     const history = useHistory();
@@ -446,6 +447,189 @@ const ApiProvider = () => {
         }
     };
 
+    const apiProviderTable = (
+        <Card>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {apiProviders &&
+                        apiProviders.map((apiProvider) => (
+                            <tr key={apiProvider.id}>
+                                <td>{apiProvider.id}</td>
+                                <td>{apiProvider.name}</td>
+                                <td>{apiProvider.balance}</td>
+                                <td>{checkStatus(apiProvider.status)}</td>
+                                <td>
+                                    <OverlayTrigger
+                                        key="balance"
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip id={`tooltip-top`}>
+                                                Update Balance
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <button
+                                            value={apiProvider.id}
+                                            variant="none"
+                                            className="apiActionButton apiActionButtonFirst"
+                                            onClick={() =>
+                                                updateBalanceHandler(
+                                                    apiProvider.id
+                                                )
+                                            }
+                                        >
+                                            <IconContext.Provider
+                                                value={{
+                                                    style: {
+                                                        fontSize: '30px',
+                                                        padding: 'auto',
+                                                    },
+                                                }}
+                                            >
+                                                <MdAttachMoney />
+                                            </IconContext.Provider>
+                                        </button>
+                                    </OverlayTrigger>
+
+                                    <OverlayTrigger
+                                        key="sync"
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip id={`tooltip-top`}>
+                                                Sync Services
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <button
+                                            variant="none"
+                                            className="apiActionButton"
+                                            onClick={() =>
+                                                syncHandler(apiProvider.id)
+                                            }
+                                        >
+                                            <IconContext.Provider
+                                                value={{
+                                                    style: {
+                                                        fontSize: '30px',
+                                                        padding: 'auto',
+                                                    },
+                                                }}
+                                            >
+                                                <IoMdSync />
+                                            </IconContext.Provider>
+                                        </button>
+                                    </OverlayTrigger>
+
+                                    <OverlayTrigger
+                                        key="service"
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip id={`tooltip-top`}>
+                                                Service List via API
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <button
+                                            variant="none"
+                                            className="apiActionButton"
+                                            onClick={() =>
+                                                serviceListHandler(
+                                                    apiProvider.id
+                                                )
+                                            }
+                                        >
+                                            <IconContext.Provider
+                                                value={{
+                                                    style: {
+                                                        fontSize: '30px',
+                                                        padding: 'auto',
+                                                    },
+                                                }}
+                                            >
+                                                <AiOutlineUnorderedList />
+                                            </IconContext.Provider>
+                                        </button>
+                                    </OverlayTrigger>
+
+                                    <OverlayTrigger
+                                        key="edit"
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip id={`tooltip-top`}>
+                                                Edit API
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <button
+                                            variant="none"
+                                            className="apiActionButton"
+                                        >
+                                            <IconContext.Provider
+                                                value={{
+                                                    style: {
+                                                        fontSize: '30px',
+                                                        padding: 'auto',
+                                                    },
+                                                }}
+                                            >
+                                                <FiEdit />
+                                            </IconContext.Provider>
+                                        </button>
+                                    </OverlayTrigger>
+
+                                    <OverlayTrigger
+                                        key="delete"
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip id={`tooltip-top`}>
+                                                Delete API
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <button
+                                            variant="none"
+                                            className="apiActionButton
+                                                            apiActionButtonLast"
+                                            onClick={() =>
+                                                deleteHandler(apiProvider.id)
+                                            }
+                                        >
+                                            <IconContext.Provider
+                                                value={{
+                                                    style: {
+                                                        fontSize: '30px',
+                                                        padding: 'auto',
+                                                    },
+                                                }}
+                                            >
+                                                <RiDeleteBin6Line />
+                                            </IconContext.Provider>
+                                        </button>
+                                    </OverlayTrigger>
+                                </td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table>
+        </Card>
+    );
+
+    const isEmptyApiProvider = apiProviders && apiProviders.length <= 0;
+    const toShow = isEmptyApiProvider ? (
+        <DataNotFound message="No Api providers found, add one now." />
+    ) : (
+        apiProviderTable
+    );
+
     // TODO
     return (
         <>
@@ -481,207 +665,8 @@ const ApiProvider = () => {
                             +
                         </button>
                     </div>
-                    <Card>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Balance</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {apiProviders &&
-                                    apiProviders.map((apiProvider) => (
-                                        <tr key={apiProvider.id}>
-                                            <td>{apiProvider.id}</td>
-                                            <td>{apiProvider.name}</td>
-                                            <td>{apiProvider.balance}</td>
-                                            <td>
-                                                {checkStatus(
-                                                    apiProvider.status
-                                                )}
-                                            </td>
-                                            <td>
-                                                <OverlayTrigger
-                                                    key="balance"
-                                                    placement="top"
-                                                    overlay={
-                                                        <Tooltip
-                                                            id={`tooltip-top`}
-                                                        >
-                                                            Update Balance
-                                                        </Tooltip>
-                                                    }
-                                                >
-                                                    <button
-                                                        value={apiProvider.id}
-                                                        variant="none"
-                                                        className="apiActionButton apiActionButtonFirst"
-                                                        onClick={() =>
-                                                            updateBalanceHandler(
-                                                                apiProvider.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <IconContext.Provider
-                                                            value={{
-                                                                style: {
-                                                                    fontSize:
-                                                                        '30px',
-                                                                    padding:
-                                                                        'auto',
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MdAttachMoney />
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </OverlayTrigger>
 
-                                                <OverlayTrigger
-                                                    key="sync"
-                                                    placement="top"
-                                                    overlay={
-                                                        <Tooltip
-                                                            id={`tooltip-top`}
-                                                        >
-                                                            Sync Services
-                                                        </Tooltip>
-                                                    }
-                                                >
-                                                    <button
-                                                        variant="none"
-                                                        className="apiActionButton"
-                                                        onClick={() =>
-                                                            syncHandler(
-                                                                apiProvider.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <IconContext.Provider
-                                                            value={{
-                                                                style: {
-                                                                    fontSize:
-                                                                        '30px',
-                                                                    padding:
-                                                                        'auto',
-                                                                },
-                                                            }}
-                                                        >
-                                                            <IoMdSync />
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </OverlayTrigger>
-
-                                                <OverlayTrigger
-                                                    key="service"
-                                                    placement="top"
-                                                    overlay={
-                                                        <Tooltip
-                                                            id={`tooltip-top`}
-                                                        >
-                                                            Service List via API
-                                                        </Tooltip>
-                                                    }
-                                                >
-                                                    <button
-                                                        variant="none"
-                                                        className="apiActionButton"
-                                                        onClick={() =>
-                                                            serviceListHandler(
-                                                                apiProvider.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <IconContext.Provider
-                                                            value={{
-                                                                style: {
-                                                                    fontSize:
-                                                                        '30px',
-                                                                    padding:
-                                                                        'auto',
-                                                                },
-                                                            }}
-                                                        >
-                                                            <AiOutlineUnorderedList />
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </OverlayTrigger>
-
-                                                <OverlayTrigger
-                                                    key="edit"
-                                                    placement="top"
-                                                    overlay={
-                                                        <Tooltip
-                                                            id={`tooltip-top`}
-                                                        >
-                                                            Edit API
-                                                        </Tooltip>
-                                                    }
-                                                >
-                                                    <button
-                                                        variant="none"
-                                                        className="apiActionButton"
-                                                    >
-                                                        <IconContext.Provider
-                                                            value={{
-                                                                style: {
-                                                                    fontSize:
-                                                                        '30px',
-                                                                    padding:
-                                                                        'auto',
-                                                                },
-                                                            }}
-                                                        >
-                                                            <FiEdit />
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </OverlayTrigger>
-
-                                                <OverlayTrigger
-                                                    key="delete"
-                                                    placement="top"
-                                                    overlay={
-                                                        <Tooltip
-                                                            id={`tooltip-top`}
-                                                        >
-                                                            Delete API
-                                                        </Tooltip>
-                                                    }
-                                                >
-                                                    <button
-                                                        variant="none"
-                                                        className="apiActionButton
-                                                            apiActionButtonLast"
-                                                        onClick={() =>
-                                                            deleteHandler(
-                                                                apiProvider.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <IconContext.Provider
-                                                            value={{
-                                                                style: {
-                                                                    fontSize:
-                                                                        '30px',
-                                                                    padding:
-                                                                        'auto',
-                                                                },
-                                                            }}
-                                                        >
-                                                            <RiDeleteBin6Line />
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </OverlayTrigger>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </Card>
+                    {toShow}
                 </div>
             </div>
         </>

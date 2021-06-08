@@ -1,25 +1,4 @@
-// @import '../../abstracts/extends';
-// @import '../../abstracts/function';
-// @import '../../abstracts/mixins';
-// @import '../../abstracts/variables';
-
-// @import '../../base/animations';
-// @import '../../base/base';
-// @import '../../base/typography';
-// @import '../../base/utilities';
-
-// @import '../../components/button';
-
-// .section__one,
-// .section__two,
-// .section__third,
-// .section__forth,
-// .section__fifth {
-//     margin-bottom: 2rem;
-//     position: relative;
-// }
-
-@import '../../index';
+@import '../../../../sass/index';
 
 .section__one {
     &__dataTitle {

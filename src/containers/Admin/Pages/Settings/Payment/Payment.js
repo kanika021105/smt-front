@@ -7,7 +7,7 @@ import Axios from '../../../../../axiosIns';
 import Loading from '../../../../../components/UI/Loading/Loading';
 import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
 
-import '../../../../../sass/pages/admin/settings/payment.scss';
+import './Payment.scss';
 
 const Payment = () => {
     const [secretKey, setSecretKey] = useState('');

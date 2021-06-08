@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import Loading from '../../../../../components/UI/Loading/Loading';
 import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
 
-import '../../../../../sass/pages/admin/settings/general.scss';
+import './General.scss';
 
 const General = () => {
     const [siteName, setSiteName] = useState('');

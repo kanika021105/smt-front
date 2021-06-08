@@ -12,8 +12,8 @@ import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard
 
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
+import './dashboard.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../../sass/pages/admin/dashboard.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});

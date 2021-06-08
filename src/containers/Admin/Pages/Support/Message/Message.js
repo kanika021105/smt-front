@@ -17,7 +17,7 @@ import { AuthContext } from '../../../../Context/AuthContext';
 import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../../../sass/pages/admin/messages.scss';
+import './messages.scss';
 
 const Message = () => {
     const { userId } = useContext(AuthContext);
