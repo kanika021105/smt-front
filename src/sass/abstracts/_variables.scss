@@ -9,6 +9,7 @@ $color-black: #000;
 $color-green: #15af4b;
 
 $color-grey-light-1: #eee;
+$color-grey-light-2: #919191;
 
 $color-pending: #ff632aed;
 $color-processing: #5dc508;
@@ -28,3 +29,20 @@ $color-white__table: #cecece;
 // GRID
 $gutter-vertical: 4rem;
 $gutter-horizontal: 0.5rem;
+
+// Break points
+$bp-15: 93.75em;
+$bp-14: 87.5em;
+$bp-13: 81.25em;
+$bp-12: 75em;
+$bp-11: 68.75em;
+$bp-10: 62.5em;
+$bp-9: 56.25em;
+$bp-8: 50em;
+$bp-7: 43.75em;
+$bp-6: 37.5em;
+$bp-5: 31.25em;
+$bp-4: 25em;
+$bp-3: 18.75em;
+$bp-2: 12.5em;
+$bp-1: 6.25em;

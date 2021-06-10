@@ -1,17 +1,15 @@
 // jshint esversion:9
 
 import React, { useState, useContext } from 'react';
-
+import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
-import { FormControl, Modal } from 'react-bootstrap';
-
-import classes from './Signup.module.scss';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from '../../../components/UI/Card/Card';
 
 import Axios from '../../../axiosIns';
-import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
+import classes from './Signup.module.scss';
+
+import SignUpImage from '../../../assets/Images/signup.svg';
 import { Link } from 'react-router-dom';
+import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({
@@ -28,22 +26,6 @@ const Signup = () => {
 
     const [showModal, setShowModal] = useState(false);
     const { websiteName } = useContext(WebsiteDetail);
-
-    const submitHandler = async (e) => {
-        e.preventDefault();
-
-        const url = '/signup';
-
-        const { data } = await Axios.post(url, { ...userDetails });
-        console.log(data.status);
-
-        if (data.status === 'failed' || data.status === 'Failed') {
-            setErrorMsg(data.errorMsg);
-            setShowError(true);
-        }
-
-        setShowModal(true);
-    };
 
     const firstNameChangeHandler = (e) => {
         setUserDetails((preState) => ({
@@ -102,35 +84,51 @@ const Signup = () => {
         setShowModal(false);
     };
 
+    const submitHandler = async (e) => {
+        e.preventDefault();
+
+        try {
+            const url = '/signup';
+            await Axios.post(url, { ...userDetails });
+            setShowModal(true);
+        } catch (err) {
+            setErrorMsg(err.response.data.message);
+            setShowError(true);
+        }
+    };
+
     const successModal = (
         <Modal show={showModal} onHide={handleClose} centered>
             <Modal.Body>
                 <div className={classes.successModal}>
                     <div className="centered">
                         <img
-                            className={classes.signUp__success__img}
+                            className={classes.successModal__img}
                             src="/images/success.svg"
                             alt="successImage"
                         />
                     </div>
-                    <h3 className={classes.signUp__success__heading}>
+                    <h3 className={classes.successModal__heading}>
                         Congratulations!
                     </h3>
 
-                    <p className={classes.signUp__success__paragraph}>
-                        Your account have been created successfully! Please{' '}
+                    <p className={classes.successModal__paragraph}>
+                        You have successfully created your account! Please{' '}
                         <Link
-                            className={classes.signUp__success__paragraph__link}
+                            className={classes.successModal__link}
                             to={'/login'}
                         >
                             Login
                         </Link>{' '}
-                        to your account to use our panel.
+                        to your your account to use our website.
                     </p>
 
                     <div className="centered">
                         <button
-                            className="btn btn-primary"
+                            className={[
+                                'btn btn-primary',
+                                classes.successModal__btn,
+                            ].join(' ')}
                             onClick={handleClose}
                         >
                             Okay!
@@ -149,7 +147,187 @@ const Signup = () => {
 
             {successModal}
 
-            <div className={classes.SignUp}>
+            <div className={classes.container}>
+                <div className={classes.singup}>
+                    <div className={classes.singup__form}>
+                        <div className={classes.homeLink}>
+                            <Link to="/">Home</Link>
+                        </div>
+
+                        <div className={classes.singup__form__line}></div>
+
+                        <h2
+                            className={[
+                                classes.singup__form__heading,
+                                showError ? 'u-mb-2' : 'u-mb-2',
+                            ].join(' ')}
+                        >
+                            Sing-Up
+                        </h2>
+
+                        {
+                            <h4
+                                className={
+                                    showError
+                                        ? classes.errorMsg
+                                        : classes.errorHidden
+                                }
+                            >
+                                {errorMsg}
+                            </h4>
+                        }
+
+                        <form onSubmit={submitHandler}>
+                            <div className={classes.formControl}>
+                                <div className={classes.inputGroup}>
+                                    <div className={classes.inputSection}>
+                                        <label className={classes.label}>
+                                            First Name
+                                        </label>
+                                        <input
+                                            className={
+                                                showError && classes.invalid
+                                            }
+                                            type="text"
+                                            id="fName"
+                                            placeholder="Jhon"
+                                            pattern="[a-z,A-Z]{1,}"
+                                            title="Only alphabet allowed"
+                                            value={userDetails.firstName}
+                                            onChange={firstNameChangeHandler}
+                                            spellCheck={false}
+                                            minLength={1}
+                                            autoFocus
+                                        />
+                                    </div>
+
+                                    <div className={classes.inputSection}>
+                                        <label className={classes.label}>
+                                            Last Name
+                                        </label>
+                                        <input
+                                            className={
+                                                showError && classes.invalid
+                                            }
+                                            type="text"
+                                            placeholder="Doe"
+                                            pattern="[a-z,A-Z]{1,}"
+                                            title="Only alphabet allowed"
+                                            value={userDetails.lastName}
+                                            onChange={lastNameChangeHandler}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className={classes.inputSection}>
+                                    <label className={classes.label}>
+                                        Email
+                                    </label>
+                                    <input
+                                        className={showError && classes.invalid}
+                                        type="email"
+                                        placeholder="example@gmail.com"
+                                        value={userDetails.email}
+                                        onChange={emailChangeHandler}
+                                        spellCheck={false}
+                                    />
+                                </div>
+
+                                <div className={classes.inputSection}>
+                                    <label className={classes.label}>
+                                        Contact
+                                    </label>
+                                    <input
+                                        className={showError && classes.invalid}
+                                        type="tel"
+                                        placeholder="Contact"
+                                        pattern="[0-9]{10,14}"
+                                        title="Enter valid phone number"
+                                        value={userDetails.contact}
+                                        onChange={contactChangeHandler}
+                                        spellCheck={false}
+                                    />
+                                </div>
+
+                                <div className={classes.inputGroup}>
+                                    <div className={classes.inputSection}>
+                                        <label className={classes.label}>
+                                            Password
+                                        </label>
+                                        <input
+                                            className={
+                                                showError && classes.invalid
+                                            }
+                                            type="password"
+                                            placeholder="Password"
+                                            minLength={6}
+                                            value={userDetails.password}
+                                            onChange={passwordChangeHandler}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+
+                                    <div className={classes.inputSection}>
+                                        <label className={classes.label}>
+                                            Confirm Password
+                                        </label>
+                                        <input
+                                            className={
+                                                showError && classes.invalid
+                                            }
+                                            type="password"
+                                            placeholder="Confirm Password"
+                                            value={userDetails.confirmPassword}
+                                            onChange={
+                                                confirmPasswordChangeHandler
+                                            }
+                                            minLength={6}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={classes.terms}>
+                                <input
+                                    className={showError && classes.invalid}
+                                    type="checkbox"
+                                    placeholder="Confirm Password"
+                                    value={userDetails.confirmPassword}
+                                    onChange={confirmPasswordChangeHandler}
+                                    minLength={6}
+                                    spellCheck={false}
+                                />
+                                I agree to all <Link to="">Terms</Link> &{' '}
+                                <Link to="">Policy</Link>.
+                            </div>
+
+                            <div className={classes.singup__form__submitButton}>
+                                <button type="submit">Sign-Up</button>
+                            </div>
+                            <p className={classes.singup__form__signupLink}>
+                                Already singed up?{' '}
+                                <Link to="/login">Login</Link>
+                            </p>
+                        </form>
+                    </div>
+
+                    <div className={classes.singup__image}>
+                        <img src={SignUpImage} alt="Login" />
+                        <h3 className={classes.singup__image__heading}>
+                            Wanna grow on social Media?
+                        </h3>
+                        <p className={classes.singup__image__paragraph}>
+                            Create an account and manage all your social media
+                            growth. We provide all services you need to grow
+                            your social media!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className={classes.SignUp}>
                 <Card>
                     <h2>Create a new account!</h2>
 
@@ -249,7 +427,7 @@ const Signup = () => {
                         </button>
                     </form>
                 </Card>
-            </div>
+            </div> */}
         </>
     );
 };

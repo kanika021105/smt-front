@@ -35,8 +35,13 @@ const Login = () => {
         setIsLoggedIn,
     } = useContext(AuthContext);
 
+    const emailChangeHandler = (e) => setLoginEmail(e.target.value);
+    const passwordChangeHandler = (e) => setPassword(e.target.value);
+
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        setShowError(false);
 
         const url = '/login';
         const loginData = { email: loginEmail, password: password };
@@ -80,136 +85,97 @@ const Login = () => {
                 <title>Login - {websiteName || 'SMT '}</title>
             </Helmet>
 
-            <div className={classes.login}>
-                <div className={[classes.login__container, 'row'].join(' ')}>
-                    <div
-                        className={['col-md-7', classes.image__section].join(
-                            ' '
-                        )}
-                    >
-                        <>
-                            <h3 className={classes.image__section__heading}>
-                                Good to see you back!
-                            </h3>
-
-                            <span
-                                className={classes.heading__bottomLine}
-                            ></span>
-
-                            <p className={classes.image__section__paragraph}>
-                                Welcome back! Please login to your account to
-                                start using our website. Have a great day!
-                            </p>
-
-                            <img src={LoginImage} alt="Login" />
-                        </>
-
-                        <div className={classes.circle}></div>
+            <div className={classes.container}>
+                <div className={classes.login}>
+                    <div className={classes.login__image}>
+                        <img src={LoginImage} alt="Login" />
+                        <h3 className={classes.login__image__heading}>
+                            Its good to see you back!
+                        </h3>
+                        <p className={classes.login__image__paragraph}>
+                            Welcome back!, Please log-in to your account to use
+                            our website... Welcome back!, Please log-in to your
+                            account to use our website...
+                        </p>
                     </div>
 
-                    <div className={['col-md-5', classes.form].join(' ')}>
-                        <div className={classes.shapeOne}></div>
+                    <div className={classes.login__form}>
+                        <div className={classes.homeLink}>
+                            <Link to="/">Home</Link>
+                        </div>
 
-                        <Link to="/">
-                            <div className={classes.homeLink__box}>
-                                <IconContext.Provider
-                                    value={{
-                                        style: {
-                                            fontSize: '2rem',
-                                            float: 'left',
-                                        },
-                                    }}
-                                >
-                                    <AiOutlineHome />
-                                </IconContext.Provider>
-                                <div className={classes.homeLink__text}>
-                                    Home
-                                </div>
-                            </div>
-                        </Link>
+                        <div className={classes.login__form__line}></div>
 
-                        <div className={classes.form__container}>
-                            <div className={classes.form__heading}>
-                                <h2>Sign-In now!</h2>
-                                <div className={classes.borderLine}></div>
-                            </div>
+                        <h2
+                            className={[
+                                classes.login__form__heading,
+                                showError ? 'u-mb-3' : 'u-mb-7',
+                            ].join(' ')}
+                        >
+                            Sing-In
+                        </h2>
 
-                            <div
-                                className={[
-                                    classes.form__input,
-                                    classes.email,
-                                ].join(' ')}
+                        {
+                            <h4
+                                className={
+                                    showError
+                                        ? classes.errorMsg
+                                        : classes.errorHidden
+                                }
                             >
-                                <input placeholder="Email" type="email" />
+                                {errorMsg}
+                            </h4>
+                        }
+
+                        <form onSubmit={submitHandler}>
+                            <div className={classes.inputSection}>
+                                <label className={classes.label}>Email</label>
+                                <input
+                                    className={
+                                        showError ? classes.invalid : ' '
+                                    }
+                                    type="email"
+                                    placeholder="example@gmail.com"
+                                    value={loginEmail}
+                                    onChange={emailChangeHandler}
+                                    autoFocus
+                                />
                             </div>
 
-                            <div className={classes.form__input}>
-                                <input placeholder="Password" type="password" />
-
-                                <span className={classes.forgetPasswordLink}>
-                                    <Link to="/forget-password">
-                                        Forget Password?
-                                    </Link>
-                                </span>
+                            <div className={classes.inputSection}>
+                                <label className={classes.label}>
+                                    Password
+                                </label>
+                                <input
+                                    className={
+                                        showError ? classes.invalid : ' '
+                                    }
+                                    type="password"
+                                    placeholder="Your Password"
+                                    value={password}
+                                    minLength="6"
+                                    onChange={passwordChangeHandler}
+                                />
                             </div>
 
-                            <button
-                                className={[
-                                    'btn btn-primary',
-                                    classes.login__button,
-                                ].join(' ')}
-                            >
-                                Login
-                            </button>
-
-                            <span className={classes.or}>or</span>
-
-                            <div className={classes.signupLink}>
-                                <Link to="/signup">Create account!</Link>
+                            <div className={classes.login__form__resetPassword}>
+                                <Link to="/forget-password">
+                                    Forget Password?
+                                </Link>
                             </div>
+
+                            <div className={classes.login__form__submitButton}>
+                                <button type="submit">Sign-In</button>
+                            </div>
+                        </form>
+
+                        <span className={classes.login__form__or}>or</span>
+
+                        <div className={classes.login__form__signupLink}>
+                            <Link to="/signup">Create account</Link>
                         </div>
                     </div>
                 </div>
-
-                {/*  <Card>
-                    <h2 className={classes.login__heading}>Please Login </h2>
-
-                    {showError && (
-                        <small className="errorMsg">{errorMsg}</small>
-                    )}
-
-                    <form onSubmit={submitHandler}>
-                        <div className={classes.formControl}>
-                            <label className="input__label">Email</label>
-                            <input
-                                className="input"
-                                id="email"
-                                type="email"
-                                value={loginEmail}
-                                placeholder="Email"
-                                onChange={(e) => setLoginEmail(e.target.value)}
-                            />
-                        </div>
-
-                        <div className={classes.formControl}>
-                            <label className="input__label">Password</label>
-                            <input
-                                className={[classes.password, 'input'].join(
-                                    ' '
-                                )}
-                                id="password"
-                                type="password"
-                                value={password}
-                                placeholder="Password"
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-
-                        <div>
-                            <button className="btn btn-primary">Login</button>
-                        </div>
-                    </form>
-                </Card>*/}
             </div>
         </>
     );
