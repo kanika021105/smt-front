@@ -1,43 +1,45 @@
-@import '../../../../sass/index';
+// @import '../../../../sass/index';
 
-.section__one {
-    &__dataTitle {
-        display: block;
-        font-size: 1.6rem;
-        font-weight: 500;
-        text-transform: capitalize;
-        color: darken($color-grey, 8);
-    }
+// .section__one {
+//     &__dataTitle {
+//         display: block;
+//         font-size: 1.6rem;
+//         font-weight: 500;
+//         text-transform: capitalize;
+//         color: darken($color-grey, 8);
+//     }
 
-    &__dataValue {
-        display: block;
-        font-size: 2.8rem;
-        color: lighten($color-grey, 5);
-    }
-}
+//     &__dataValue {
+//         display: block;
+//         font-size: 2.8rem;
+//         color: lighten($color-grey, 5);
+//     }
+// }
 
-.section__two {
-    &--graphHeight {
-        font-size: 20rem;
-    }
+// .section__two {
+//     &--graphHeight {
+//         // font-size: 20rem;
+//         // height: 31.5rem;
+//         width: 100%;
+//     }
 
-    &--summaryTitle {
-        @extend %titleStyle;
-    }
+//     &--summaryTitle {
+//         @extend %titleStyle;
+//     }
 
-    &--summaryData {
-        border-radius: 0.8rem;
-    }
+//     &--summaryData {
+//         border-radius: 0.8rem;
+//     }
 
-    &--statusTitle {
-        display: block;
-        padding: 0.7rem 0.1rem;
-        color: lighten($color-grey, 2);
-    }
+//     &--statusTitle {
+//         display: block;
+//         padding: 0.7rem 0.1rem;
+//         color: lighten($color-grey, 2);
+//     }
 
-    &--statusData {
-        display: block;
-        padding: 0.7rem 2rem;
-        color: lighten($color-grey, 2);
-    }
-}
+//     &--statusData {
+//         display: block;
+//         padding: 0.7rem 2rem;
+//         color: lighten($color-grey, 2);
+//     }
+// }

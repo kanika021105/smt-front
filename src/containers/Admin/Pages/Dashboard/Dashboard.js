@@ -5,6 +5,14 @@ import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+} from 'recharts';
 
 import Axios from '../../../../axiosIns';
 import Loading from '../../../../components/UI/Loading/Loading';
@@ -13,10 +21,12 @@ import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
 
 import './dashboard.scss';
+import classes from './dashboard.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
+    const [graphData, setGraphData] = useState();
     const { websiteName } = useContext(WebsiteDetail);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +39,7 @@ const Dashboard = () => {
             .then((res) => {
                 setIsLoading(false);
 
+                setGraphData(res.data.graphData);
                 return setData(res.data);
             })
             .catch((err) => {
@@ -152,379 +163,331 @@ const Dashboard = () => {
             {<Loading show={isLoading} />}
 
             <div className="container">
-                <h2 className="pageTitle">
-                    <IconContext.Provider
-                        value={{
-                            style: {
-                                fontSize: '30px',
-                            },
-                        }}
-                    >
-                        <VscListSelection />
-                    </IconContext.Provider>{' '}
-                    Dashboard
-                </h2>
+                <div className={classes.dashboard}>
+                    <h2 className="pageTitle">
+                        <IconContext.Provider
+                            value={{
+                                style: {
+                                    fontSize: '30px',
+                                },
+                            }}
+                        >
+                            <VscListSelection />
+                        </IconContext.Provider>{' '}
+                        Dashboard
+                    </h2>
 
-                <section className="section__one">
-                    <div className="row">
-                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <span className={'section__one__dataTitle'}>
-                                    Total Amount
-                                </span>
-                                <span className={'section__one__dataValue'}>
-                                    {(totalAmount && totalAmount.toFixed(2)) ||
-                                        '0'}
-                                </span>
-                            </DashboardCard>
-                        </div>
-
-                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <span className={'section__one__dataTitle'}>
-                                    Total User
-                                </span>
-                                <span className={'section__one__dataValue'}>
-                                    {totalUsers || '0'}
-                                </span>
-                            </DashboardCard>
-                        </div>
-
-                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <span className={'section__one__dataTitle'}>
-                                    Total Order
-                                </span>
-                                <span className={'section__one__dataValue'}>
-                                    {totalOrders || '0'}
-                                </span>
-                            </DashboardCard>
-                        </div>
-
-                        <div className="col-lg-3 col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <span className={'section__one__dataTitle'}>
-                                    Total Ticket
-                                </span>
-                                <span className={'section__one__dataValue'}>
-                                    {totalTickets || '0'}
-                                </span>
-                            </DashboardCard>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="section__two">
-                    <div className="row">
-                        <div className="col-lg-9 col-md-8 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <span className={'section__two--graphHeight'}>
-                                    Graph
-                                </span>
-                            </DashboardCard>
-                        </div>
-
-                        <div className="col-lg-3 col-md-4 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <div className={'section__two--summaryTitle'}>
-                                    Orders
-                                </div>
-                                <div className={'section__two--summaryData'}>
-                                    <div className="row">
-                                        <div className="col-6">
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                Pending:-
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                Processing:-
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                InProgress:-
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                Completed:-
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                Partial:-
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                Cancelled:-
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusTitle'
-                                                }
-                                            >
-                                                Refunded:-
-                                            </span>
-                                        </div>
-
-                                        <div className="col-6">
-                                            <span
-                                                className={
-                                                    'section__two--statusData'
-                                                }
-                                            >
-                                                {data.pendingOrders || 0}
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusData'
-                                                }
-                                            >
-                                                {data.processingOrders || 0}
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusData'
-                                                }
-                                            >
-                                                {data.inprogressOrders || 0}
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusData completedColor'
-                                                }
-                                            >
-                                                {data.completedOrders || 0}
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusData partialColor'
-                                                }
-                                            >
-                                                {data.partialOrders || 0}
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusData cancelledColor'
-                                                }
-                                            >
-                                                {data.cancelledOrders || 0}
-                                            </span>
-
-                                            <span
-                                                className={
-                                                    'section__two--statusData refundedColor'
-                                                }
-                                            >
-                                                {data.refundedOrders || 0}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </DashboardCard>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="section__third">
-                    <div className="row">
-                        <div className="col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <div className="tableTitle">
-                                    Top 10 best selling services
-                                </div>
-
-                                <div>
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Title</th>
-                                                <th>status</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {lastServices &&
-                                                lastServices.map((service) => (
-                                                    <tr key={service.id}>
-                                                        <td>{service.id}</td>
-                                                        <td>
-                                                            {service.title
-                                                                .length > 30
-                                                                ? service.title.substr(
-                                                                      0,
-                                                                      31
-                                                                  ) + '...'
-                                                                : service.title}
-                                                        </td>
-                                                        <td>
-                                                            {checkStatus(
-                                                                service.status
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </DashboardCard>
-                        </div>
-
-                        <div className="col-md-6 col-sm-12 u-mb-2 u-sm-mb-1">
-                            <DashboardCard>
-                                <div className={'tableTitle'}>
-                                    Last 10 Account created
-                                </div>
-
-                                <div>
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Email</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {lastUsers &&
-                                                lastUsers.map((user) => (
-                                                    <tr key={user.id}>
-                                                        <td>{user.id}</td>
-                                                        <td>
-                                                            {user.email.length >
-                                                            30
-                                                                ? user.email.substr(
-                                                                      0,
-                                                                      31
-                                                                  ) + '...'
-                                                                : user.email}
-                                                        </td>
-
-                                                        <td>
-                                                            {checkStatus(
-                                                                user.status
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </DashboardCard>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="section__forth">
-                    <div className="row">
-                        <div className="col-md-12 u-mb-2 u-sm-mb-1">
-                            <div className="m-1">
+                    <section className={classes.section__one}>
+                        <div className={classes.section__one__container}>
+                            <div className={classes.section__one__item}>
                                 <DashboardCard>
-                                    <div className={'tableTitle'}>
-                                        Last 10 orders
+                                    <span
+                                        className={
+                                            classes.section__one__dataTitle
+                                        }
+                                    >
+                                        Total Amount
+                                    </span>
+                                    <span
+                                        className={
+                                            classes.section__one__dataValue
+                                        }
+                                    >
+                                        {(totalAmount &&
+                                            totalAmount.toFixed(2)) ||
+                                            '0'}
+                                    </span>
+                                </DashboardCard>
+                            </div>
+
+                            <div className={classes.section__one__item}>
+                                <DashboardCard>
+                                    <span
+                                        className={
+                                            classes.section__one__dataTitle
+                                        }
+                                    >
+                                        Total User
+                                    </span>
+                                    <span
+                                        className={
+                                            classes.section__one__dataValue
+                                        }
+                                    >
+                                        {totalUsers || '0'}
+                                    </span>
+                                </DashboardCard>
+                            </div>
+
+                            <div className={classes.section__one__item}>
+                                <DashboardCard>
+                                    <span
+                                        className={
+                                            classes.section__one__dataTitle
+                                        }
+                                    >
+                                        Total Order
+                                    </span>
+                                    <span
+                                        className={
+                                            classes.section__one__dataValue
+                                        }
+                                    >
+                                        {totalOrders || '0'}
+                                    </span>
+                                </DashboardCard>
+                            </div>
+
+                            <div className={classes.section__one__item}>
+                                <DashboardCard>
+                                    <span
+                                        className={
+                                            classes.section__one__dataTitle
+                                        }
+                                    >
+                                        Total Ticket
+                                    </span>
+                                    <span
+                                        className={
+                                            classes.section__one__dataValue
+                                        }
+                                    >
+                                        {totalTickets || '0'}
+                                    </span>
+                                </DashboardCard>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className={classes.section__two}>
+                        <div className={classes.section__two__container}>
+                            <div className={classes.section__two__graph}>
+                                <DashboardCard>
+                                    <div
+                                        className={
+                                            classes.section__two__graph_container
+                                        }
+                                    >
+                                        <ResponsiveContainer
+                                            width={'100%'}
+                                            height="100%"
+                                        >
+                                            <AreaChart
+                                                data={graphData}
+                                                margin={{
+                                                    top: 10,
+                                                    right: 30,
+                                                    left: 0,
+                                                    bottom: 0,
+                                                }}
+                                            >
+                                                <XAxis dataKey="name" />
+                                                <YAxis />
+                                                <Tooltip />
+
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="pending"
+                                                    stroke={0}
+                                                    fill="#ff632aed"
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="processing"
+                                                    stroke={0}
+                                                    fill="#5dc508"
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="inprogress"
+                                                    fill="#2172f3"
+                                                    stroke={0}
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="completed"
+                                                    fill="#268b4a"
+                                                    stroke={0}
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="partial"
+                                                    fill="#f34242"
+                                                    stroke={0}
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="cancelled"
+                                                    fill="#cc1f1f"
+                                                    stroke={0}
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="refunded"
+                                                    fill="#8F44FD"
+                                                    stroke={0}
+                                                />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
                                     </div>
+                                </DashboardCard>
+                            </div>
 
-                                    <div>
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Service</th>
-                                                    <th>Link</th>
-                                                    <th>Qty</th>
-                                                    <th>Price</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
+                            <div className={classes.section__two__summary}>
+                                <DashboardCard>
+                                    <div
+                                        className={
+                                            classes.section__two__summary_container
+                                        }
+                                    >
+                                        <div
+                                            className={
+                                                classes.section__two__summaryTitle
+                                            }
+                                        >
+                                            Summary
+                                        </div>
 
-                                            <tbody>
-                                                {lastOrders &&
-                                                    lastOrders.map((order) => (
-                                                        <tr key={order.id}>
-                                                            <td>{order.id}</td>
-                                                            <td>
-                                                                {getServiceTitle(
-                                                                    order.serviceId
-                                                                ) &&
-                                                                getServiceTitle(
-                                                                    order.serviceId
-                                                                ).length > 35
-                                                                    ? getServiceTitle(
-                                                                          order.serviceId
-                                                                      ).slice(
-                                                                          0,
-                                                                          35
-                                                                      ) + '...'
-                                                                    : getServiceTitle(
-                                                                          order.serviceId
-                                                                      )}
-                                                            </td>
-                                                            <td>
-                                                                {order.link
-                                                                    .length > 35
-                                                                    ? order.link.slice(
-                                                                          0,
-                                                                          35
-                                                                      ) + '...'
-                                                                    : order.link}
-                                                            </td>
-                                                            <td>
-                                                                {order.quantity}
-                                                            </td>
-                                                            <td>
-                                                                {order.charge}
-                                                            </td>
-                                                            <td>
-                                                                {getStatus(
-                                                                    order.status
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                            </tbody>
-                                        </table>
+                                        <div
+                                            className={
+                                                classes.section__two__summaryData
+                                            }
+                                        >
+                                            <div
+                                                className={
+                                                    classes.section__two__summaryData_items
+                                                }
+                                            >
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    Pending:-
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    Processing:-
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    InProgress:-
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    Completed:-
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    Partial:-
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    Cancelled:-
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusTitle
+                                                    }
+                                                >
+                                                    Refunded:-
+                                                </span>
+                                            </div>
+
+                                            <div
+                                                className={
+                                                    classes.section__two__summaryData_item
+                                                }
+                                            >
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.pendingOrders || 0}
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.processingOrders || 0}
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.inprogressOrders || 0}
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.completedOrders || 0}
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.partialOrders || 0}
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.cancelledOrders || 0}
+                                                </span>
+
+                                                <span
+                                                    className={
+                                                        classes.section__two_statusData
+                                                    }
+                                                >
+                                                    {data.refundedOrders || 0}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </DashboardCard>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <section className="section__fifth">
-                    <div className="row">
-                        <div className="col-md-12 u-mb-2 u-sm-mb-1">
-                            <div className="m-1">
+                    <section className={classes.section__three}>
+                        <div className={classes.section__three__container}>
+                            <div className={classes.section__three__item}>
                                 <DashboardCard>
-                                    <div className={'tableTitle'}>
+                                    <div className="tableTitle">
                                         Top 10 best selling services
                                     </div>
 
@@ -534,7 +497,7 @@ const Dashboard = () => {
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Title</th>
-                                                    <th>Status</th>
+                                                    <th>status</th>
                                                 </tr>
                                             </thead>
 
@@ -548,11 +511,10 @@ const Dashboard = () => {
                                                                 <td>
                                                                     {service.id}
                                                                 </td>
-
                                                                 <td>
                                                                     {service
                                                                         .title
-                                                                        .length >=
+                                                                        .length >
                                                                     30
                                                                         ? service.title.substr(
                                                                               0,
@@ -561,7 +523,6 @@ const Dashboard = () => {
                                                                           '...'
                                                                         : service.title}
                                                                 </td>
-
                                                                 <td>
                                                                     {checkStatus(
                                                                         service.status
@@ -575,7 +536,156 @@ const Dashboard = () => {
                                     </div>
                                 </DashboardCard>
                             </div>
+
+                            <div className={classes.section__three__item}>
+                                <DashboardCard>
+                                    <div className={'tableTitle'}>
+                                        Last 10 Account created
+                                    </div>
+
+                                    <div>
+                                        <table className="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Email</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {lastUsers &&
+                                                    lastUsers.map((user) => (
+                                                        <tr key={user.id}>
+                                                            <td>{user.id}</td>
+                                                            <td>
+                                                                {user.email
+                                                                    .length > 30
+                                                                    ? user.email.substr(
+                                                                          0,
+                                                                          31
+                                                                      ) + '...'
+                                                                    : user.email}
+                                                            </td>
+
+                                                            <td>
+                                                                {checkStatus(
+                                                                    user.status
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </DashboardCard>
+                            </div>
                         </div>
+                    </section>
+
+                    <section className={classes.section__four}>
+                        <DashboardCard>
+                            <div className={'tableTitle'}>Last 10 orders</div>
+
+                            <div>
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Service</th>
+                                            <th>Link</th>
+                                            <th>Qty</th>
+                                            <th>Price</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {lastOrders &&
+                                            lastOrders.map((order) => (
+                                                <tr key={order.id}>
+                                                    <td>{order.id}</td>
+                                                    <td>
+                                                        {getServiceTitle(
+                                                            order.serviceId
+                                                        ) &&
+                                                        getServiceTitle(
+                                                            order.serviceId
+                                                        ).length > 35
+                                                            ? getServiceTitle(
+                                                                  order.serviceId
+                                                              ).slice(0, 35) +
+                                                              '...'
+                                                            : getServiceTitle(
+                                                                  order.serviceId
+                                                              )}
+                                                    </td>
+                                                    <td>
+                                                        {order.link.length > 35
+                                                            ? order.link.slice(
+                                                                  0,
+                                                                  35
+                                                              ) + '...'
+                                                            : order.link}
+                                                    </td>
+                                                    <td>{order.quantity}</td>
+                                                    <td>{order.charge}</td>
+                                                    <td>
+                                                        {getStatus(
+                                                            order.status
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </DashboardCard>
+                    </section>
+
+                    <section className={classes.section__five}>
+                        <DashboardCard>
+                            <div className={'tableTitle'}>
+                                Top 10 best selling services
+                            </div>
+
+                            <div>
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {lastServices &&
+                                            lastServices.map((service) => (
+                                                <tr key={service.id}>
+                                                    <td>{service.id}</td>
+
+                                                    <td>
+                                                        {service.title.length >=
+                                                        30
+                                                            ? service.title.substr(
+                                                                  0,
+                                                                  31
+                                                              ) + '...'
+                                                            : service.title}
+                                                    </td>
+
+                                                    <td>
+                                                        {checkStatus(
+                                                            service.status
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </DashboardCard>
 
                         {/* <div className="col-md-3">
                                 <div className="m-1">
@@ -592,8 +702,8 @@ const Dashboard = () => {
                                     </DashboardCard>
                                 </div>
                             </div> */}
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
         </>
     );

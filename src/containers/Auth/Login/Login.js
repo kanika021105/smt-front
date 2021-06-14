@@ -74,6 +74,7 @@ const Login = () => {
                 return (window.location = '/dashboard');
             }
         } catch (err) {
+            console.log(err);
             setErrorMsg(err.response.data.message);
             setShowError(true);
         }

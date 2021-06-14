@@ -1,0 +1,34 @@
+@import '../../sass/index';
+
+.footer {
+    width: 100%;
+    height: 100%;
+    font-size: 1.6rem;
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    background-color: #fff;
+
+    box-shadow: 0 0 2rem 0 rgba(41, 48, 66, 0.1%);
+
+    &__container {
+        max-width: 120rem;
+        margin: 0 auto;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        @media only screen and (max-width: $bp-5) {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+
+    & a {
+        color: #6c757d;
+        padding: 0 0.5rem;
+        text-decoration: none;
+    }
+}

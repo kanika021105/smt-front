@@ -1,0 +1,145 @@
+@import '../../../../sass/index';
+
+.dashboard {
+    margin: 0 6rem;
+
+    @media only screen and (max-width: $bp-10) {
+        margin: 0 4rem;
+    }
+
+    @media only screen and (max-width: $bp-8) {
+        margin: 0 2rem;
+    }
+
+    @media only screen and (max-width: $bp-5) {
+        margin: 0 1rem;
+    }
+
+    .section__one {
+        margin-bottom: 2rem;
+
+        &__container {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        &__item {
+            flex: 1;
+            justify-content: space-around;
+
+            @media only screen and (max-width: $bp-8) {
+                min-width: calc(50% - (2rem));
+            }
+
+            @media only screen and (max-width: $bp-4) {
+                min-width: calc(100%);
+            }
+        }
+
+        &__dataTitle {
+            font-size: 1.6rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            color: darken($color-grey, 8);
+            display: block;
+        }
+
+        &__dataValue {
+            font-size: 2.8rem;
+            color: lighten($color-grey, 5);
+        }
+    }
+
+    .section__two {
+        margin-bottom: 2rem;
+
+        &__container {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+
+            @media only screen and (max-width: $bp-9) {
+                flex-direction: column;
+            }
+        }
+
+        &__graph {
+            width: 78%;
+
+            @media only screen and (max-width: $bp-12) {
+                width: 75%;
+            }
+
+            @media only screen and (max-width: $bp-9) {
+                width: 100%;
+            }
+
+            &_container {
+                height: 31rem;
+            }
+        }
+
+        &__summary {
+            flex: 1;
+
+            &_container {
+                height: 31rem;
+            }
+        }
+
+        &__summaryTitle {
+            @extend %titleStyle;
+            margin-bottom: 1rem;
+        }
+
+        &__summaryData {
+            display: flex;
+            flex-direction: row;
+
+            &_items {
+                flex: 1;
+            }
+        }
+
+        &_statusTitle {
+            display: block;
+            padding: 0.7rem 0.1rem;
+            color: lighten($color-grey, 2);
+        }
+
+        &_statusData {
+            display: flex;
+            text-align: left;
+            padding: 0.7rem 0;
+            color: lighten($color-grey, 2);
+        }
+    }
+}
+
+.section__three {
+    margin-bottom: 2rem;
+
+    &__container {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+
+        @media only screen and (max-width: $bp-9) {
+            flex-direction: column;
+        }
+    }
+
+    &__item {
+        flex: 1;
+    }
+}
+
+.section__four {
+    margin-bottom: 2rem;
+}
+
+.section__five {
+    margin-bottom: 2rem;
+}
