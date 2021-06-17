@@ -37,6 +37,9 @@
     border: 0.1rem solid $color-primary;
     color: $color-primary;
     border-radius: 0;
+
+    // display: flex;
+    // flex-direction: row;
 }
 
 .apiActionButtonFirst {
@@ -45,4 +48,12 @@
 
 .apiActionButtonLast {
     border-radius: 0 0.4rem 0.4rem 0;
+}
+
+.table thead th {
+    text-align: center;
+}
+
+.table tbody tr {
+    text-align: center;
 }

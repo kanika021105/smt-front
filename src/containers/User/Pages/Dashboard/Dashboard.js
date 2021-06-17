@@ -1,7 +1,8 @@
 // jshint esversion:9
 
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Helmet } from 'react-helmet';
+import { Chart } from 'chart.js';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
@@ -20,6 +21,8 @@ const Dashboard = () => {
 
     const { websiteName } = useContext(WebsiteDetail);
 
+    const graphDiv = useRef(null);
+
     useEffect(() => {
         setIsLoading(true);
 
@@ -36,6 +39,89 @@ const Dashboard = () => {
     }, []);
 
     const { totalOrders, services, totalTickets, balance, spent } = data;
+
+    console.log(graphDiv.current);
+    // const ctx = document.getElementById('chart').getContext('2d');
+    // const gradient = ctx.createLinearGradient(0, 0, 0, 450);
+
+    // gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)');
+    // gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
+    // gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
+    // var chartData = {
+    //     labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    //     datasets: [
+    //         {
+    //             label: 'Custom Label Name',
+    //             backgroundColor: gradient,
+    //             pointBackgroundColor: 'white',
+    //             borderWidth: 1,
+    //             borderColor: '#911215',
+    //             data: [50, 55, 80, 81, 54, 50],
+    //         },
+    //         {
+    //             label: 'Custom Label Name',
+    //             backgroundColor: gradient,
+    //             pointBackgroundColor: 'white',
+    //             borderWidth: 1,
+    //             borderColor: '#911215',
+    //             data: [10, 45, 60, 101, 64, 20],
+    //         },
+    //     ],
+    // };
+
+    // var options = {
+    //     responsive: true,
+    //     maintainAspectRatio: true,
+    //     animation: {
+    //         easing: 'easeInOutQuad',
+    //         duration: 520,
+    //     },
+    //     scales: {
+    //         xAxes: [
+    //             {
+    //                 gridLines: {
+    //                     color: 'rgba(200, 200, 200, 0.05)',
+    //                     lineWidth: 1,
+    //                 },
+    //             },
+    //         ],
+    //         yAxes: [
+    //             {
+    //                 gridLines: {
+    //                     color: 'rgba(200, 200, 200, 0.08)',
+    //                     lineWidth: 1,
+    //                 },
+    //             },
+    //         ],
+    //     },
+    //     elements: {
+    //         line: {
+    //             tension: 0.4,
+    //         },
+    //     },
+    //     legend: {
+    //         display: false,
+    //     },
+    //     point: {
+    //         backgroundColor: 'white',
+    //     },
+    //     tooltips: {
+    //         titleFontFamily: 'Open Sans',
+    //         backgroundColor: 'rgba(0,0,0,0.3)',
+    //         titleFontColor: 'red',
+    //         caretSize: 5,
+    //         cornerRadius: 2,
+    //         xPadding: 10,
+    //         yPadding: 10,
+    //     },
+    // };
+
+    // var chartInstance = new Chart(ctx, {
+    //     type: 'line',
+    //     data: chartData,
+    //     options: options,
+    // });
 
     // TODO Change title to dynamic
     return (
@@ -114,11 +200,15 @@ const Dashboard = () => {
                         <div className="row">
                             <div className="col-lg-9 col-md-8 col-sm-12 u-mb-2 u-sm-mb-1">
                                 <DashboardCard>
-                                    <span
-                                        className={'section__two--graphHeight'}
-                                    >
-                                        Graph
-                                    </span>
+                                    <div class="line-chart">
+                                        <div class="aspect-ratio">
+                                            <canvas
+                                                id="myChart"
+                                                width="400"
+                                                height="400"
+                                            ></canvas>
+                                        </div>
+                                    </div>
                                 </DashboardCard>
                             </div>
 

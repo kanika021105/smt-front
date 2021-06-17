@@ -8,6 +8,8 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Razorpay from './RazorPay/Razorpay';
+import Paytm from './Paytm/Paytm';
+
 import Card from '../../../../components/UI/Card/Card';
 
 import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
@@ -71,7 +73,7 @@ const AddFund = () => {
                                         Paytm - {websiteName || 'SMT'}{' '}
                                     </title>
                                 </Helmet>
-                                {'Coming Soon...'}
+                                <Paytm />
                             </Route>
                         </div>
                         <p>*All payment are 100% safe and secure.</p>

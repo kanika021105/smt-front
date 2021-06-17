@@ -90,7 +90,7 @@ const Support = () => {
         </Card>
     );
 
-    const isSupportEmpty = Support && Support.length <= 0;
+    const isSupportEmpty = tickets && tickets.length <= 0;
 
     const DataToShow = isSupportEmpty ? (
         <DataNotFound message="Please wait for users to create support Tickets." />

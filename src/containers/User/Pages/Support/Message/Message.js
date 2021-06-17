@@ -9,7 +9,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
-import '../../../../../sass/pages/user/messages.scss';
+import classes from './messages.module.scss';
 import { AuthContext } from '../../../../Context/AuthContext';
 
 import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
@@ -91,33 +91,34 @@ const Message = () => {
     const ticketMessage =
         messages &&
         ticket &&
-        messages.map((message) => {
-            return +userId === +message.userId ? (
-                <div key={keyNum++} className="containerMsg darker">
-                    <img
-                        style={{
-                            width: '100%',
-                        }}
-                        src={customerSVG}
-                        alt="Avatar"
-                        className="imageRight"
-                    />
-                    <p>{message.message}</p>
-                    <span className="timeLeft">
-                        {new Date(ticket.createdAt).toLocaleString('en-us')}
-                    </span>
+        messages.map((msg) => {
+            return +userId === +msg.userId ? (
+                <div
+                    key={keyNum++}
+                    className={classes.message__sent__container}
+                >
+                    <div className={classes.message__container}>
+                        <span className={classes.message}>{msg.message}</span>
+                        <img src={customerSVG} alt="user Avatar" />
+                    </div>
+
+                    <div className={classes.sentTime}>
+                        {new Date(msg.createdAt).toLocaleString('en-us')}
+                    </div>
                 </div>
             ) : (
-                <div key={keyNum++} className="containerMsg">
-                    <img
-                        style={{ width: '100%' }}
-                        src={supportSVG}
-                        alt="Avatar"
-                    />
-                    <p>{message.message}</p>
-                    <span className="timeRight">
-                        {new Date(ticket.createdAt).toLocaleString('en-us')}
-                    </span>
+                <div
+                    key={keyNum++}
+                    className={classes.message__received__container}
+                >
+                    <div className={classes.message__container}>
+                        <img src={supportSVG} alt="user Avatar" />
+                        <span className={classes.message}>{msg.message}</span>
+                    </div>
+
+                    <div className={classes.sentTime}>
+                        {new Date(msg.createdAt).toLocaleString('en-us')}
+                    </div>
                 </div>
             );
         });
@@ -130,7 +131,7 @@ const Message = () => {
             </Helmet>
 
             <div className="container">
-                <div className="Support">
+                <div className={classes.support}>
                     <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
