@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
@@ -9,10 +7,11 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
+import Table from '../../../../components/UI/Table/Table';
 
 import Loading from '../../../../components/UI/Loading/Loading';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import './support.scss';
 
@@ -20,7 +19,7 @@ const Support = () => {
     const history = useHistory();
 
     const [tickets, setTickets] = useState();
-    const [users, setUsers] = useState();
+    const [clients, setClients] = useState();
 
     const { websiteName } = useContext(WebsiteDetail);
     const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +35,7 @@ const Support = () => {
                 const { data } = res;
 
                 setTickets(data.tickets);
-                setUsers(data.users);
+                setClients(data.clients);
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -50,12 +49,11 @@ const Support = () => {
         return history.push(path);
     };
 
-    const ticketList =
-        tickets &&
-        users &&
-        tickets.map((ticket) => {
-            const userDetail = users.filter(
-                (user) => user.id === ticket.userId
+    const ticketList = tickets
+        && clients
+        && tickets.map((ticket) => {
+            const clientDetail = clients.filter(
+                (client) => client.id === ticket.clientId,
             );
 
             return (
@@ -65,7 +63,7 @@ const Support = () => {
                         onClick={() => ticketClickHandler(ticket.id)}
                     >
                         <td>{ticket.id}</td>
-                        <td>{userDetail[0] && userDetail[0].email}</td>
+                        <td>{clientDetail[0] && clientDetail[0].email}</td>
                         <td>{ticket.subject}</td>
                         <td>{ticket.status}</td>
                     </tr>
@@ -75,18 +73,18 @@ const Support = () => {
 
     const supportDataTable = (
         <Card>
-            <table className="table">
-                <thead>
+            <Table>
+                <Table.Head>
                     <tr>
                         <th>ID</th>
                         <th>Email</th>
                         <th>Subject</th>
                         <th>Status</th>
                     </tr>
-                </thead>
+                </Table.Head>
 
-                <tbody>{ticketList}</tbody>
-            </table>
+                <Table.Body>{ticketList}</Table.Body>
+            </Table>
         </Card>
     );
 
@@ -102,10 +100,14 @@ const Support = () => {
     return (
         <>
             <Helmet>
-                <title>Support - {websiteName || 'SMT'}</title>
+                <title>
+                    Support -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className="Support">
@@ -118,7 +120,8 @@ const Support = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Support
                     </h2>
 

@@ -3,13 +3,13 @@
 import React, { useState, useContext } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
 
 import SignUpImage from '../../../assets/Images/signup.svg';
-import { Link } from 'react-router-dom';
-import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
+import WebsiteDetail from '../../Context/WebsiteDetailContext';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({
@@ -89,7 +89,10 @@ const Signup = () => {
 
         try {
             const url = '/signup';
-            await Axios.post(url, { ...userDetails });
+            await Axios.post(url, {
+                ...userDetails,
+            });
+
             setShowModal(true);
         } catch (err) {
             setErrorMsg(err.response.data.message);
@@ -113,18 +116,21 @@ const Signup = () => {
                     </h3>
 
                     <p className={classes.successModal__paragraph}>
-                        You have successfully created your account! Please{' '}
+                        You have successfully created your account! Please
+                        {' '}
                         <Link
                             className={classes.successModal__link}
-                            to={'/login'}
+                            to="/login"
                         >
                             Login
-                        </Link>{' '}
+                        </Link>
+                        {' '}
                         to your your account to use our website.
                     </p>
 
                     <div className="centered">
                         <button
+                            type="button"
                             className={[
                                 'btn btn-primary',
                                 classes.successModal__btn,
@@ -142,7 +148,11 @@ const Signup = () => {
     return (
         <>
             <Helmet>
-                <title>SignUp - {websiteName || 'SMT'}</title>
+                <title>
+                    SignUp -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {successModal}
@@ -153,9 +163,7 @@ const Signup = () => {
                         <div className={classes.homeLink}>
                             <Link to="/">Home</Link>
                         </div>
-
-                        <div className={classes.singup__form__line}></div>
-
+                        <div className={classes.singup__form__line} />
                         <h2
                             className={[
                                 classes.singup__form__heading,
@@ -165,17 +173,15 @@ const Signup = () => {
                             Sing-Up
                         </h2>
 
-                        {
-                            <h4
-                                className={
-                                    showError
-                                        ? classes.errorMsg
-                                        : classes.errorHidden
-                                }
-                            >
-                                {errorMsg}
-                            </h4>
-                        }
+                        <h4
+                            className={
+                                showError
+                                    ? classes.errorMsg
+                                    : classes.errorHidden
+                            }
+                        >
+                            {errorMsg}
+                        </h4>
 
                         <form onSubmit={submitHandler}>
                             <div className={classes.formControl}>
@@ -197,7 +203,6 @@ const Signup = () => {
                                             onChange={firstNameChangeHandler}
                                             spellCheck={false}
                                             minLength={1}
-                                            autoFocus
                                         />
                                     </div>
 
@@ -299,15 +304,22 @@ const Signup = () => {
                                     minLength={6}
                                     spellCheck={false}
                                 />
-                                I agree to all <Link to="">Terms</Link> &{' '}
-                                <Link to="">Policy</Link>.
+                                I agree to all
+                                {' '}
+                                <Link to="/#">Terms</Link>
+                                {' '}
+                                &
+                                {' '}
+                                <Link to="/#">Policy</Link>
+                                .
                             </div>
 
                             <div className={classes.singup__form__submitButton}>
                                 <button type="submit">Sign-Up</button>
                             </div>
                             <p className={classes.singup__form__signupLink}>
-                                Already singed up?{' '}
+                                Already singed up?
+                                {' '}
                                 <Link to="/login">Login</Link>
                             </p>
                         </form>

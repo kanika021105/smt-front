@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useContext } from 'react';
 import { Nav, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';

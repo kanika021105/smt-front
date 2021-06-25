@@ -4,7 +4,7 @@ import React, { useContext, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Loading from '../../../../../components/UI/Loading/Loading';
-import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
 
 import './General.scss';
 
@@ -17,15 +17,21 @@ const General = () => {
 
     const siteNameChangeHandler = (e) => {
         setSiteName(e.target.value);
+        setWebsiteDescription('');
+        setIsLoading(false);
     };
 
     return (
         <>
             <Helmet>
-                <title>General - {websiteName || 'SMT'}</title>
+                <title>
+                    General -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className=" border p-4">
                 <div>
@@ -61,7 +67,9 @@ const General = () => {
                     />
                 </div>
 
-                <button className="mt-3 btn btn-primary">Save</button>
+                <button type="button" className="mt-3 btn btn-primary">
+                    Save
+                </button>
             </div>
         </>
     );

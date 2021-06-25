@@ -1,10 +1,7 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Modal from 'react-bootstrap/Modal';
-
 import { IconContext } from 'react-icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
@@ -12,12 +9,14 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Table, { TBody, THead } from '../../../../components/UI/Table/Table';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
-import './services.scss';
+import classes from './services.module.scss';
 
 const Services = () => {
     const [services, setServices] = useState();
@@ -54,13 +53,7 @@ const Services = () => {
         description: '',
     });
 
-    const [editingService, setEditingService] = useState();
-
-    const [errorMsg, setErrorMsg] = useState('');
-    const [addError, setAddError] = useState(false);
-
     const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -159,8 +152,6 @@ const Services = () => {
     };
 
     const handleBackdropClick = () => {
-        setErrorMsg('');
-        setAddError(false);
         setShowAddModal(false);
 
         setAddServiceDetails({
@@ -180,9 +171,6 @@ const Services = () => {
     const addFormSubmitHandler = async (e) => {
         e.preventDefault();
 
-        setErrorMsg('');
-        setAddError(false);
-
         try {
             const url = '/admin/service/add';
             const { data } = await Axios.post(url, {
@@ -194,14 +182,14 @@ const Services = () => {
             }
 
             setServices((preState) => [
-                { ...data.createdService },
+                {
+                    ...data.createdService,
+                },
                 ...preState,
             ]);
 
             handleBackdropClick();
         } catch (err) {
-            setErrorMsg(err.response);
-            setAddError(true);
             console.log(err);
         }
     };
@@ -217,7 +205,7 @@ const Services = () => {
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
                     <div>
-                        <label className="input__label">Category</label>
+                        <label className={classes.input__label}>Category</label>
                         <select
                             className="select"
                             value={addServiceDetails.categoryId}
@@ -229,8 +217,8 @@ const Services = () => {
                                     ? 'No category to choose!'
                                     : 'Choose a Category'}
                             </option>
-                            {categories &&
-                                categories.map((category) => (
+                            {categories
+                                && categories.map((category) => (
                                     <option
                                         key={category.id}
                                         value={category.id}
@@ -241,20 +229,35 @@ const Services = () => {
                         </select>
                     </div>
 
-                    <div className="pt-3">
-                        <label className="input__label">Title</label>
-                        <input
-                            className="input"
-                            placeholder="Title"
-                            type="text"
-                            value={addServiceDetails.title}
-                            onChange={addTitleChangeHandler}
-                        />
-                    </div>
+                    <Input
+                        label="Title"
+                        placeholder="Title"
+                        type="text"
+                        value={addServiceDetails.title}
+                        onChange={addTitleChangeHandler}
+                    />
 
-                    <div className="row pt-3">
+                    <InputGroup>
+                        <Input
+                            label="Api Provider"
+                            placeholder="Api Provider"
+                            type="text"
+                            value={addServiceDetails.provider}
+                            onChange={addApiProviderChange}
+                        />
+
+                        <Input
+                            label="Api Service Id"
+                            placeholder="Api Service Id"
+                            type="number"
+                            value={addServiceDetails.apiServiceId}
+                            onChange={addApiServiceIdChangeHandler}
+                        />
+                    </InputGroup>
+
+                    <div className={classes.inputGroup}>
                         <div className="col-md-6">
-                            <label className="input__label">Api Provider</label>
+                            <label className={classes.input__label}>Api Provider</label>
                             <input
                                 placeholder="Api Provider"
                                 className="input"
@@ -264,7 +267,7 @@ const Services = () => {
                         </div>
 
                         <div className="col-md-6">
-                            <label className="input__label">
+                            <label className={classes.input__label}>
                                 Api Service Id
                             </label>
                             <input
@@ -279,7 +282,7 @@ const Services = () => {
 
                     <div className="row pt-3">
                         <div className="col-md-6">
-                            <label className="input__label">Min</label>
+                            <label className={classes.input__label}>Min</label>
                             <input
                                 className="input"
                                 placeholder="Min"
@@ -290,7 +293,7 @@ const Services = () => {
                         </div>
 
                         <div className="col-md-6">
-                            <label className="input__label">Max</label>
+                            <label className={classes.input__label}>Max</label>
                             <input
                                 className="input"
                                 placeholder="Max"
@@ -303,7 +306,7 @@ const Services = () => {
 
                     <div className="row pt-3">
                         <div className="col-md-4">
-                            <label className="input__label">Price</label>
+                            <label className={classes.input__label}>Price</label>
                             <input
                                 className="input"
                                 value={addServiceDetails.rate}
@@ -313,7 +316,7 @@ const Services = () => {
                         </div>
 
                         <div className="col-md-4">
-                            <label className="input__label">Status</label>
+                            <label className={classes.input__label}>Status</label>
                             <select
                                 className="select"
                                 value={addServiceDetails.status}
@@ -325,7 +328,7 @@ const Services = () => {
                         </div>
 
                         <div className="col-md-4">
-                            <label className="input__label">Drip Feed</label>
+                            <label className={classes.input__label}>Drip Feed</label>
                             <select
                                 className="select"
                                 value={addServiceDetails.dripFeed}
@@ -338,7 +341,7 @@ const Services = () => {
                     </div>
 
                     <div>
-                        <label className="input__label">Desc</label>
+                        <label className={classes.input__label}>Desc</label>
                         <textarea
                             className="input"
                             placeholder="Description..."
@@ -350,7 +353,11 @@ const Services = () => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <div style={{ margin: '0 auto 0 0' }}></div>
+                    <div
+                        style={{
+                            margin: '0 auto 0 0',
+                        }}
+                    />
 
                     <button
                         type="button"
@@ -375,20 +382,20 @@ const Services = () => {
     // Editing Services
     const editButtonHandler = (e) => {
         const id = +e.target.value;
-        const service = services.filter((service) => service.id === +id);
+        const serviceDetails = services.filter((service) => service.id === +id);
 
         setEditingServiceDetails({
-            id: service[0].id,
-            categoryId: service[0].categoryId,
-            title: service[0].title,
-            provider: service[0].provider,
-            apiServiceId: service[0].api_service_id,
-            min: service[0].min,
-            max: service[0].max,
-            rate: service[0].rate,
-            status: service[0].status,
-            dripFeed: service[0].dripFeed,
-            description: service[0].description,
+            id: serviceDetails[0].id,
+            categoryId: serviceDetails[0].categoryId,
+            title: serviceDetails[0].title,
+            provider: serviceDetails[0].provider,
+            apiServiceId: serviceDetails[0].api_service_id,
+            min: serviceDetails[0].min,
+            max: serviceDetails[0].max,
+            rate: serviceDetails[0].rate,
+            status: serviceDetails[0].status,
+            dripFeed: serviceDetails[0].dripFeed,
+            description: serviceDetails[0].description,
         });
 
         setShowEditModal(true);
@@ -487,7 +494,7 @@ const Services = () => {
 
         const url = `admin/service/update/${editingServiceDetails.id}`;
         const newList = services.filter(
-            (service) => service.id !== editingServiceDetails.id
+            (service) => service.id !== editingServiceDetails.id,
         );
 
         try {
@@ -495,7 +502,12 @@ const Services = () => {
                 ...editingServiceDetails,
             });
 
-            setServices((preState) => [{ ...data.updatedService }, ...newList]);
+            setServices(() => [
+                {
+                    ...data.updatedService,
+                },
+                ...newList,
+            ]);
             handleClose();
         } catch (err) {
             console.log(err.response.data);
@@ -518,8 +530,8 @@ const Services = () => {
                             value={editingServiceDetails.categoryId}
                             onChange={categoryChangeHandler}
                         >
-                            {categories &&
-                                categories.map((category) => (
+                            {categories
+                                && categories.map((category) => (
                                     <option
                                         key={category.id}
                                         value={category.id}
@@ -674,9 +686,8 @@ const Services = () => {
     };
 
     const getProviderName = (provider, apiServiceId) => {
-        const providerDetail =
-            providers &&
-            providers.filter((apiProvider) => apiProvider.id === +provider);
+        const providerDetail = providers
+            && providers.filter((apiProvider) => apiProvider.id === +provider);
 
         return (
             <td>
@@ -688,10 +699,37 @@ const Services = () => {
         );
     };
 
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return (
+                    <button
+                        type="button"
+                        className="btn btn-active btn-disabled"
+                        disabled
+                    >
+                        {status}
+                    </button>
+                );
+
+            case 'disable':
+                return (
+                    <button
+                        type="button"
+                        className="btn btn-inactive btn-disabled"
+                        disabled
+                    >
+                        {status}
+                    </button>
+                );
+            default:
+                break;
+        }
+    };
+
     const getServiceByCategory = (id) => {
-        const servicesList =
-            services &&
-            services.filter((service) => +service.categoryId === +id);
+        const servicesList = services
+            && services.filter((service) => +service.categoryId === +id);
         console.log(servicesList);
 
         return servicesList.map((service) => (
@@ -699,12 +737,16 @@ const Services = () => {
                 <td>{service.id}</td>
                 <td>
                     {service.title.length > 35
-                        ? service.title.slice(0, 35) + '...'
+                        ? `${service.title.slice(0, 35)}...`
                         : service.title}
                 </td>
                 {getProviderName(service.provider, service.apiServiceId)}
                 <td>
-                    {service.min} / {service.max}
+                    {service.min}
+                    {' '}
+                    /
+                    {' '}
+                    {service.max}
                 </td>
                 <td>{parseFloat(service.rate).toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
@@ -718,7 +760,7 @@ const Services = () => {
                             },
                         }}
                     >
-                        <div className="dropdown">
+                        <div className={classes.dropdown}>
                             <span
                                 id="option"
                                 data-bs-toggle="dropdown"
@@ -732,6 +774,7 @@ const Services = () => {
                             >
                                 <li>
                                     <button
+                                        type="button"
                                         className="btn btn-edit"
                                         style={{
                                             width: '100%',
@@ -745,6 +788,7 @@ const Services = () => {
 
                                 <li>
                                     <button
+                                        type="button"
                                         className="btn btn-delete"
                                         style={{
                                             width: '100%',
@@ -763,26 +807,6 @@ const Services = () => {
         ));
     };
 
-    const checkStatus = (status) => {
-        switch (status) {
-            case 'active':
-                return (
-                    <button className="btn btn-active btn-disabled" disabled>
-                        {status}
-                    </button>
-                );
-
-            case 'disable':
-                return (
-                    <button className="btn btn-inactive btn-disabled" disabled>
-                        {status}
-                    </button>
-                );
-            default:
-                break;
-        }
-    };
-
     const servicesData = () => {
         if (services && services.length <= 0) {
             return (
@@ -797,8 +821,8 @@ const Services = () => {
         }
 
         return (
-            categories &&
-            categories.map((category) => {
+            categories
+            && categories.map((category) => {
                 const serviceLength = getServiceByCategory(category.id);
 
                 if (serviceLength.length <= 0) return '';
@@ -809,11 +833,11 @@ const Services = () => {
                 }
 
                 return (
-                    <div key={category.id} className="serviceListCard">
+                    <div key={category.id} className={classes.services__card}>
                         <Card>
-                            <h3 className="categoryTitle">{category.title}</h3>
-                            <table className="table">
-                                <thead>
+                            <h3 className={classes.category__title}>{category.title}</h3>
+                            <Table>
+                                <THead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Title</th>
@@ -824,11 +848,12 @@ const Services = () => {
                                         <th>Status</th>
                                         <th>Option</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                </THead>
+
+                                <TBody>
                                     {getServiceByCategory(category.id)}
-                                </tbody>
-                            </table>
+                                </TBody>
+                            </Table>
                         </Card>
                     </div>
                 );
@@ -840,15 +865,19 @@ const Services = () => {
     return (
         <>
             <Helmet>
-                <title>Services - {websiteName || 'SMT'}</title>
+                <title>
+                    Services -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {addModal}
             {editModal}
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
-                <div className="Services">
+                <div className={classes.Services}>
                     <div>
                         <h2 className="pageTitle">
                             <IconContext.Provider
@@ -859,10 +888,12 @@ const Services = () => {
                                 }}
                             >
                                 <VscListSelection />
-                            </IconContext.Provider>{' '}
+                            </IconContext.Provider>
+                            {' '}
                             Services
                         </h2>
                         <button
+                            type="button"
                             className="add-button"
                             onClick={handleAddButtonClick}
                         >

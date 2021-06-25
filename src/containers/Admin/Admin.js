@@ -12,78 +12,76 @@ const Categories = lazy(() => import('./Pages/Categories/Categories'));
 const Dashboard = lazy(() => import('./Pages/Dashboard/Dashboard'));
 const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
 const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
-const ApiProviders = lazy(() => import('./Pages/ApiProvider/ApiProvider'));
+const ApiProvider = lazy(() => import('./Pages/ApiProvider/ApiProvider'));
 const ApiServices = lazy(() => import('./Pages/ApiServices/ApiServices'));
 const Settings = lazy(() => import('./Pages/Settings/Settings'));
 
-const Admin = () => {
-    return (
-        <Suspense
-            fallback={
-                <div className="loading">
-                    <div className="loading__1">
-                        <div></div>
-                    </div>
+const Admin = () => (
+    <Suspense
+        fallback={(
+            <div className="loading">
+                <div className="loading__1">
+                    <div />
                 </div>
-            }
-        >
-            <Layout>
-                <Switch>
-                    <Route
-                        path="/"
-                        render={() => {
-                            window.location.href = '/admin/dashboard';
-                        }}
-                        exact
-                    />
+            </div>
+        )}
+    >
+        <Layout>
+            <Switch>
+                <Route
+                    path="/"
+                    render={() => {
+                        window.location.href = '/admin/dashboard';
+                    }}
+                    exact
+                />
 
-                    <Route path="/admin/support/ticket/:id" exact>
-                        <TicketMessage />
-                    </Route>
+                <Route path="/admin/support/ticket/:id" exact>
+                    <TicketMessage />
+                </Route>
 
-                    <Route path="/admin/transactions" exact>
-                        <Transactions />
-                    </Route>
+                <Route path="/admin/transactions" exact>
+                    <Transactions />
+                </Route>
 
-                    <Route path="/admin/dashboard" exact>
-                        <Dashboard />
-                    </Route>
+                <Route path="/admin/dashboard" exact>
+                    <Dashboard />
+                </Route>
 
-                    <Route path="/admin/categories" exact>
-                        <Categories />
-                    </Route>
+                <Route path="/admin/categories" exact>
+                    <Categories />
+                </Route>
 
-                    <Route path="/admin/services" exact>
-                        <Services />
-                    </Route>
+                <Route path="/admin/services" exact>
+                    <Services />
+                </Route>
 
-                    <Route path="/admin/support" exact>
-                        <Support />
-                    </Route>
+                <Route path="/admin/support" exact>
+                    <Support />
+                </Route>
 
-                    <Route path="/admin/clients" exact>
-                        <Clients />
-                    </Route>
+                <Route path="/admin/clients" exact>
+                    <Clients />
+                </Route>
 
-                    <Route path="/admin/orders" exact>
-                        <Orders />
-                    </Route>
+                <Route path="/admin/orders" exact>
+                    <Orders />
+                </Route>
 
-                    <Route path="/admin/api-provider" exact>
-                        <ApiProviders />
-                    </Route>
+                <Route path="/admin/api-provider" exact>
+                    <ApiProvider />
+                </Route>
 
-                    <Route path="/admin/api-provider/:id/services" exact>
-                        <ApiServices />
-                    </Route>
+                <Route path="/admin/api-provider/:id/services" exact>
+                    <ApiServices />
+                </Route>
 
-                    <Route path="/admin/settings">
-                        <Settings />
-                    </Route>
-                </Switch>
-            </Layout>
-        </Suspense>
-    );
-};
+                <Route path="/admin/settings">
+                    <Settings />
+                </Route>
+            </Switch>
+        </Layout>
+    </Suspense>
+);
 
 export default Admin;

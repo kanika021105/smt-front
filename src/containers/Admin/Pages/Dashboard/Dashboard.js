@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
@@ -9,18 +7,17 @@ import {
     AreaChart,
     Area,
     XAxis,
-    YAxis,
     Tooltip,
     ResponsiveContainer,
 } from 'recharts';
 
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Axios from '../../../../axiosIns';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
-import './dashboard.scss';
 import classes from './dashboard.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -37,10 +34,12 @@ const Dashboard = () => {
         const url = '/admin/dashboard';
         Axios.get(url)
             .then((res) => {
+                console.log();
+
                 setIsLoading(false);
 
                 setGraphData(res.data.graphData);
-                return setData(res.data);
+                setData(res.data);
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -50,8 +49,8 @@ const Dashboard = () => {
     }, []);
 
     const {
-        lastUsers,
-        totalUsers,
+        lastClients,
+        totalClients,
         lastOrders,
         totalOrders,
         lastServices,
@@ -61,12 +60,12 @@ const Dashboard = () => {
 
     const getServiceTitle = (id) => {
         if (lastServices) {
-            const service = lastServices.filter(
-                (service) => +service.id === +id
+            const { title } = lastServices.filter(
+                (service) => +service.id === +id,
             );
 
-            if (!service[0]) return null;
-            return service[0].title;
+            if (title) return title;
+            return null;
         }
         return null;
     };
@@ -75,7 +74,11 @@ const Dashboard = () => {
         switch (status) {
             case 'pending':
                 return (
-                    <button className={'btn btn-pending btn-disabled'} disabled>
+                    <button
+                        type="button"
+                        className="btn btn-pending btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -83,7 +86,8 @@ const Dashboard = () => {
             case 'processing':
                 return (
                     <button
-                        className={'btn btn-processing btn-disabled'}
+                        type="button"
+                        className="btn btn-processing btn-disabled"
                         disabled
                     >
                         {status}
@@ -93,7 +97,8 @@ const Dashboard = () => {
             case 'inprogress':
                 return (
                     <button
-                        className={'btn btn-inprogress btn-disabled'}
+                        type="button"
+                        className="btn btn-inprogress btn-disabled"
                         disabled
                     >
                         {status}
@@ -103,7 +108,8 @@ const Dashboard = () => {
             case 'completed':
                 return (
                     <button
-                        className={'btn btn-completed btn-disabled'}
+                        type="button"
+                        className="btn btn-completed btn-disabled"
                         disabled
                     >
                         {status}
@@ -113,7 +119,8 @@ const Dashboard = () => {
             case 'cancelled':
                 return (
                     <button
-                        className={'btn btn-cancelled btn-disabled'}
+                        type="button"
+                        className="btn btn-cancelled btn-disabled"
                         disabled
                     >
                         {status}
@@ -122,7 +129,11 @@ const Dashboard = () => {
 
             case 'partial':
                 return (
-                    <button className={'btn btn-partial btn-disabled'} disabled>
+                    <button
+                        type="button"
+                        className="btn btn-partial btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -136,14 +147,22 @@ const Dashboard = () => {
         switch (status) {
             case 'active':
                 return (
-                    <button className="btn btn-active btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-active btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
 
             case 'disable':
                 return (
-                    <button className="btn btn-inactive btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-inactive btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -157,10 +176,14 @@ const Dashboard = () => {
     return (
         <>
             <Helmet>
-                <title>Dashboard - {websiteName || 'SMT'}</title>
+                <title>
+                    Dashboard -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className={classes.dashboard}>
@@ -173,7 +196,8 @@ const Dashboard = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Dashboard
                     </h2>
 
@@ -193,9 +217,9 @@ const Dashboard = () => {
                                             classes.section__one__dataValue
                                         }
                                     >
-                                        {(totalAmount &&
-                                            totalAmount.toFixed(2)) ||
-                                            '0'}
+                                        {(totalAmount
+                                            && totalAmount.toFixed(2))
+                                            || '0'}
                                     </span>
                                 </DashboardCard>
                             </div>
@@ -214,7 +238,7 @@ const Dashboard = () => {
                                             classes.section__one__dataValue
                                         }
                                     >
-                                        {totalUsers || '0'}
+                                        {totalClients || '0'}
                                     </span>
                                 </DashboardCard>
                             </div>
@@ -269,63 +293,119 @@ const Dashboard = () => {
                                         }
                                     >
                                         <ResponsiveContainer
-                                            width={'100%'}
+                                            width="100%"
                                             height="100%"
                                         >
                                             <AreaChart
                                                 data={graphData}
                                                 margin={{
-                                                    top: 10,
-                                                    right: 30,
+                                                    top: 0,
+                                                    right: 0,
                                                     left: 0,
                                                     bottom: 0,
                                                 }}
                                             >
+
+                                                <defs>
+                                                    <linearGradient id="colorPending" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#ff750ced" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#ff632aed" stopOpacity={0} />
+                                                    </linearGradient>
+
+                                                    <linearGradient id="colorProcessing" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#5ef108ed" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#5dc508" stopOpacity={0} />
+                                                    </linearGradient>
+
+                                                    <linearGradient id="colorInprogress" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#0983f3ed" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#2172f3" stopOpacity={0} />
+                                                    </linearGradient>
+
+                                                    <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#099e7aed" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#268b4a" stopOpacity={0} />
+                                                    </linearGradient>
+
+                                                    <linearGradient id="colorPartial" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#f86444ed" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#f34242" stopOpacity={0} />
+                                                    </linearGradient>
+
+                                                    <linearGradient id="colorCancelled" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#cf3558ed" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#cc1f1f" stopOpacity={0} />
+                                                    </linearGradient>
+
+                                                    <linearGradient id="colorRefunded" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="10%" stopColor="#8F66f4ed" stopOpacity={0.8} />
+                                                        <stop offset="90%" stopColor="#8F44FD" stopOpacity={0} />
+                                                    </linearGradient>
+                                                </defs>
+
                                                 <XAxis dataKey="name" />
-                                                <YAxis />
                                                 <Tooltip />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="pending"
-                                                    stroke={0}
-                                                    fill="#ff632aed"
+                                                    stroke="url(#colorPending)"
+                                                    fill="url(#colorPending)"
+                                                    fillOpacity="1"
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
+
                                                 <Area
                                                     type="monotone"
                                                     dataKey="processing"
-                                                    stroke={0}
-                                                    fill="#5dc508"
+                                                    stroke="url(#colorProcessing)"
+                                                    fill="url(#colorProcessing)"
+                                                    fillOpacity="1"
                                                 />
+
                                                 <Area
                                                     type="monotone"
                                                     dataKey="inprogress"
-                                                    fill="#2172f3"
-                                                    stroke={0}
+                                                    stroke="url(#colorInprogress)"
+                                                    fill="url(#colorInprogress)"
+                                                    fillOpacity="1"
+
                                                 />
+
                                                 <Area
                                                     type="monotone"
                                                     dataKey="completed"
-                                                    fill="#268b4a"
-                                                    stroke={0}
+                                                    stroke="url(#colorCompleted)"
+                                                    fill="url(#colorCompleted)"
+                                                    fillOpacity="1"
+
                                                 />
+
                                                 <Area
                                                     type="monotone"
                                                     dataKey="partial"
-                                                    fill="#f34242"
-                                                    stroke={0}
+                                                    stroke="url(#colorPartial)"
+                                                    fill="url(#colorPartial)"
+                                                    fillOpacity="1"
+
                                                 />
+
                                                 <Area
                                                     type="monotone"
                                                     dataKey="cancelled"
-                                                    fill="#cc1f1f"
-                                                    stroke={0}
+                                                    stroke="url(#colorCancelled)"
+                                                    fill="url(#colorCancelled)"
+                                                    fillOpacity="1"
                                                 />
+
                                                 <Area
                                                     type="monotone"
                                                     dataKey="refunded"
-                                                    fill="#8F44FD"
-                                                    stroke={0}
+                                                    stroke="url(#colorRefunded)"
+                                                    fill="url(#colorRefunded)"
+                                                    fillOpacity="1"
                                                 />
                                             </AreaChart>
                                         </ResponsiveContainer>
@@ -491,93 +571,80 @@ const Dashboard = () => {
                                         Top 10 best selling services
                                     </div>
 
-                                    <div>
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Title</th>
-                                                    <th>status</th>
-                                                </tr>
-                                            </thead>
+                                    <Table>
+                                        <THead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>status</th>
+                                            </tr>
+                                        </THead>
 
-                                            <tbody>
-                                                {lastServices &&
-                                                    lastServices.map(
-                                                        (service) => (
-                                                            <tr
-                                                                key={service.id}
-                                                            >
-                                                                <td>
-                                                                    {service.id}
-                                                                </td>
-                                                                <td>
-                                                                    {service
-                                                                        .title
-                                                                        .length >
-                                                                    30
-                                                                        ? service.title.substr(
-                                                                              0,
-                                                                              31
-                                                                          ) +
-                                                                          '...'
-                                                                        : service.title}
-                                                                </td>
-                                                                <td>
-                                                                    {checkStatus(
-                                                                        service.status
-                                                                    )}
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    )}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        <TBody>
+                                            {lastServices
+                                                && lastServices.map((service) => (
+                                                    <tr key={service.id}>
+                                                        <td>{service.id}</td>
+                                                        <td>
+                                                            {service.title
+                                                                .length > 30
+                                                                ? `${service.title.substr(
+                                                                    0,
+                                                                    31,
+                                                                )}...`
+                                                                : service.title}
+                                                        </td>
+                                                        <td>
+                                                            {checkStatus(
+                                                                service.status,
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                        </TBody>
+                                    </Table>
                                 </DashboardCard>
                             </div>
 
                             <div className={classes.section__three__item}>
                                 <DashboardCard>
-                                    <div className={'tableTitle'}>
+                                    <div className="tableTitle">
                                         Last 10 Account created
                                     </div>
 
-                                    <div>
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Email</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
+                                    <Table>
+                                        <THead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </THead>
 
-                                            <tbody>
-                                                {lastUsers &&
-                                                    lastUsers.map((user) => (
-                                                        <tr key={user.id}>
-                                                            <td>{user.id}</td>
-                                                            <td>
-                                                                {user.email
-                                                                    .length > 30
-                                                                    ? user.email.substr(
-                                                                          0,
-                                                                          31
-                                                                      ) + '...'
-                                                                    : user.email}
-                                                            </td>
+                                        <TBody>
+                                            {lastClients
+                                                && lastClients.map((user) => (
+                                                    <tr key={user.id}>
+                                                        <td>{user.id}</td>
+                                                        <td>
+                                                            {user.email.length
+                                                            > 30
+                                                                ? `${user.email.substr(
+                                                                    0,
+                                                                    31,
+                                                                )}...`
+                                                                : user.email}
+                                                        </td>
 
-                                                            <td>
-                                                                {checkStatus(
-                                                                    user.status
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                        <td>
+                                                            {checkStatus(
+                                                                user.status,
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                        </TBody>
+                                    </Table>
                                 </DashboardCard>
                             </div>
                         </div>
@@ -585,106 +652,98 @@ const Dashboard = () => {
 
                     <section className={classes.section__four}>
                         <DashboardCard>
-                            <div className={'tableTitle'}>Last 10 orders</div>
+                            <div className="tableTitle">Last 10 orders</div>
 
-                            <div>
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Service</th>
-                                            <th>Link</th>
-                                            <th>Qty</th>
-                                            <th>Price</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
+                            <Table>
+                                <THead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Service</th>
+                                        <th>Link</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </THead>
 
-                                    <tbody>
-                                        {lastOrders &&
-                                            lastOrders.map((order) => (
-                                                <tr key={order.id}>
-                                                    <td>{order.id}</td>
-                                                    <td>
-                                                        {getServiceTitle(
-                                                            order.serviceId
-                                                        ) &&
-                                                        getServiceTitle(
-                                                            order.serviceId
-                                                        ).length > 35
-                                                            ? getServiceTitle(
-                                                                  order.serviceId
-                                                              ).slice(0, 35) +
-                                                              '...'
-                                                            : getServiceTitle(
-                                                                  order.serviceId
-                                                              )}
-                                                    </td>
-                                                    <td>
-                                                        {order.link.length > 35
-                                                            ? order.link.slice(
-                                                                  0,
-                                                                  35
-                                                              ) + '...'
-                                                            : order.link}
-                                                    </td>
-                                                    <td>{order.quantity}</td>
-                                                    <td>{order.charge}</td>
-                                                    <td>
-                                                        {getStatus(
-                                                            order.status
+                                <TBody>
+                                    {lastOrders
+                                        && lastOrders.map((order) => (
+                                            <tr key={order.id}>
+                                                <td>{order.id}</td>
+                                                <td>
+                                                    {getServiceTitle(
+                                                        order.serviceId,
+                                                    )
+                                                    && getServiceTitle(
+                                                        order.serviceId,
+                                                    ).length > 35
+                                                        ? `${getServiceTitle(
+                                                            order.serviceId,
+                                                        ).slice(0, 35)}...`
+                                                        : getServiceTitle(
+                                                            order.serviceId,
                                                         )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </td>
+                                                <td>
+                                                    {order.link.length > 35
+                                                        ? `${order.link.slice(
+                                                            0,
+                                                            35,
+                                                        )}...`
+                                                        : order.link}
+                                                </td>
+                                                <td>{order.quantity}</td>
+                                                <td>{order.charge}</td>
+                                                <td>
+                                                    {getStatus(order.status)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </TBody>
+                            </Table>
                         </DashboardCard>
                     </section>
 
                     <section className={classes.section__five}>
                         <DashboardCard>
-                            <div className={'tableTitle'}>
+                            <div className="tableTitle">
                                 Top 10 best selling services
                             </div>
 
-                            <div>
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
+                            <Table>
+                                <THead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </THead>
 
-                                    <tbody>
-                                        {lastServices &&
-                                            lastServices.map((service) => (
-                                                <tr key={service.id}>
-                                                    <td>{service.id}</td>
+                                <TBody>
+                                    {lastServices
+                                        && lastServices.map((service) => (
+                                            <tr key={service.id}>
+                                                <td>{service.id}</td>
 
-                                                    <td>
-                                                        {service.title.length >=
-                                                        30
-                                                            ? service.title.substr(
-                                                                  0,
-                                                                  31
-                                                              ) + '...'
-                                                            : service.title}
-                                                    </td>
+                                                <td>
+                                                    {service.title.length >= 30
+                                                        ? `${service.title.substr(
+                                                            0,
+                                                            31,
+                                                        )}...`
+                                                        : service.title}
+                                                </td>
 
-                                                    <td>
-                                                        {checkStatus(
-                                                            service.status
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                                <td>
+                                                    {checkStatus(
+                                                        service.status,
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </TBody>
+                            </Table>
                         </DashboardCard>
 
                         {/* <div className="col-md-3">

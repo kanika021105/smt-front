@@ -5,46 +5,46 @@ import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
 import { AuthContext } from '../../../../Context/AuthContext';
-import Loading from '../../../../../components/UI/Loading/Loading';
+// import Loading from '../../../../../components/UI/Loading/Loading';
 
-import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
 
 import '../../../../../sass/pages/user/Razorpay.scss';
 
 const Razorpay = () => {
     const [amount, setAmount] = useState(0);
-    const { userId, fName } = useContext(AuthContext);
+    const { clientId, fName } = useContext(AuthContext);
     const [publicKey, setPublicKey] = useState('');
 
     const { websiteName } = useContext(WebsiteDetail);
 
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         // setIsLoading(true);
         const url = '';
-        // Axios.get(url).then((res) => {
-        //     const { data } = res;
+        Axios.get(url).then((res) => {
+            const { data } = res;
 
-        //     setPublicKey(data.publicKey);
-        // });
+            setPublicKey(data.publicKey);
+        });
     }, []);
 
     const razorpayHandler = async (e) => {
         e.preventDefault();
 
-        let orderData = {
+        const orderData = {
             amount,
-            userId,
+            clientId,
             fName,
         };
 
         let url = '/razorpay/order';
-        let orderId = await Axios.post(url, { ...orderData }).then(
-            (res) => res.data.sub.id
-        );
+        const orderId = await Axios.post(url, {
+            ...orderData,
+        }).then((res) => res.data.sub.id);
 
-        let options = {
+        const options = {
             currency: 'INR',
             order_id: orderId,
             name: 'Tabish Alam',
@@ -53,13 +53,15 @@ const Razorpay = () => {
 
             handler: async (response) => {
                 try {
-                    let url = '/razorpay/payment/verify';
-                    let params = {
+                    url = '/razorpay/payment/verify';
+                    const params = {
                         razorpay_order_id: orderId,
                         razorpay_signature: response.razorpay_signature,
                         razorpay_payment_id: response.razorpay_payment_id,
                     };
-                    await Axios.post(url, { ...params });
+                    await Axios.post(url, {
+                        ...params,
+                    });
                 } catch (err) {
                     console.log(err);
                 }
@@ -69,22 +71,26 @@ const Razorpay = () => {
             },
         };
 
-        let rzp1 = new window.Razorpay(options);
+        const rzp1 = new window.Razorpay(options);
         rzp1.open();
     };
 
     const amountChangeHandler = (e) => {
         setAmount(e.target.value);
-        return;
     };
     return (
         <>
             <Helmet>
-                <title>RazorPay - {websiteName || 'SMT'} </title>
-                <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                <title>
+                    RazorPay -
+                    {' '}
+                    {websiteName || 'SMT'}
+                    {' '}
+                </title>
+                <script src="https://checkout.razorpay.com/v1/checkout.js" />
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            {/* <Loading show={isLoading} /> */}
 
             <div className="Razorpay">
                 <input
@@ -97,10 +103,11 @@ const Razorpay = () => {
 
                 <div className="mt-3 Razorpay__checkbox">
                     <input type="checkbox" />
-                    <p>I'm paying for services and its non refundable!</p>
+                    <p>I&apos;m paying for services and its non refundable!</p>
                 </div>
 
                 <button
+                    type="button"
                     className="btn btn-primary Razorpay_button"
                     onClick={(e) => {
                         razorpayHandler(e);

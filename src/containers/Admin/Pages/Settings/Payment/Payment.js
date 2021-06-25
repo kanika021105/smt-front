@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
 import Loading from '../../../../../components/UI/Loading/Loading';
-import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
 
 import './Payment.scss';
 
@@ -63,10 +63,14 @@ const Payment = () => {
     return (
         <>
             <Helmet>
-                <title>Payment - {websiteName || 'SMT'}</title>
+                <title>
+                    Payment -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="border p-4">
                 <form onSubmit={formSubmitHandler}>
@@ -78,7 +82,7 @@ const Payment = () => {
                                 className="input"
                                 type="text"
                                 value={secretKey}
-                                placeholder={'Key Secret'}
+                                placeholder="Key Secret"
                                 onChange={secretChangeHandler}
                             />
                         </div>
@@ -89,7 +93,7 @@ const Payment = () => {
                                 className="input"
                                 type="text"
                                 value={keyId}
-                                placeholder={'Key Id'}
+                                placeholder="Key Id"
                                 onChange={keyIdChangeHandler}
                             />
                         </div>

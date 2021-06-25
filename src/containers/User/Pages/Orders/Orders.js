@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 // jshint esversion:9
 
 import React, { useEffect, useState, useContext } from 'react';
@@ -9,8 +10,9 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/orders.scss';
 
@@ -28,14 +30,14 @@ const Orders = () => {
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/orders';
+        const url = '/orders';
         Axios.get(url).then((res) => {
-            let { data } = res;
+            const { data } = res;
 
             if (data.status !== 'success') {
                 setShowError(true);
                 setErrorMsg(
-                    'Failed to load order history please try again... If error continue contact support team...'
+                    'Failed to load order history please try again... If error continue contact support team...',
                 );
                 return;
             }
@@ -43,29 +45,33 @@ const Orders = () => {
 
             setOrders(data.orders.reverse());
             setServices(data.services);
-            return;
         });
     }, []);
 
-    let getServiceTitle = (id) => {
+    const getServiceTitle = (id) => {
         if (!services) return;
-        const service = services.filter((service) => service.id === id);
-        console.log(service);
-        if (service[0]) return service[0].title;
+        const { title } = services.filter((service) => service.id === id);
+        console.log(title);
+        if (title) return title;
     };
 
     const getStatus = (status) => {
         switch (status) {
             case 'pending':
                 return (
-                    <button className={'btn btn-pending btn-disabled'} disabled>
+                    <button
+                        type="button"
+                        className="btn btn-pending btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
             case 'processing':
                 return (
                     <button
-                        className={'btn btn-processing btn-disabled'}
+                        type="button"
+                        className="btn btn-processing btn-disabled"
                         disabled
                     >
                         {status}
@@ -75,7 +81,8 @@ const Orders = () => {
             case 'inprogress':
                 return (
                     <button
-                        className={'btn btn-inprogress btn-disabled'}
+                        type="button"
+                        className="btn btn-inprogress btn-disabled"
                         disabled
                     >
                         {status}
@@ -85,7 +92,8 @@ const Orders = () => {
             case 'completed':
                 return (
                     <button
-                        className={'btn btn-completed btn-disabled'}
+                        type="button"
+                        className="btn btn-completed btn-disabled"
                         disabled
                     >
                         {status}
@@ -95,7 +103,8 @@ const Orders = () => {
             case 'cancelled':
                 return (
                     <button
-                        className={'btn btn-cancelled btn-disabled'}
+                        type="button"
+                        className="btn btn-cancelled btn-disabled"
                         disabled
                     >
                         {status}
@@ -104,7 +113,11 @@ const Orders = () => {
 
             case 'partial':
                 return (
-                    <button className={'btn btn-partial btn-disabled'} disabled>
+                    <button
+                        type="button"
+                        className="btn btn-partial btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -118,10 +131,14 @@ const Orders = () => {
     return (
         <>
             <Helmet>
-                <title>Orders - {websiteName || 'SMT '}</title>
+                <title>
+                    Orders -
+                    {' '}
+                    {websiteName || 'SMT '}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container Orders">
                 <h2 className="pageTitle">
@@ -133,7 +150,8 @@ const Orders = () => {
                         }}
                     >
                         <VscListSelection />
-                    </IconContext.Provider>{' '}
+                    </IconContext.Provider>
+                    {' '}
                     Orders
                 </h2>
 
@@ -144,8 +162,8 @@ const Orders = () => {
                         )}
                     </div>
 
-                    <table className="table">
-                        <thead>
+                    <Table>
+                        <THead>
                             <tr>
                                 <th>ID</th>
                                 <th>Service</th>
@@ -155,33 +173,36 @@ const Orders = () => {
                                 <th>Start Counter</th>
                                 <th>Status</th>
                             </tr>
-                        </thead>
+                        </THead>
 
-                        <tbody>
-                            {orders &&
-                                orders.map((order) => (
+                        <TBody>
+                            {orders
+                                && orders.map((order) => (
                                     <tr key={order.id}>
                                         <td>{order.id}</td>
                                         <td>
-                                            {getServiceTitle(order.serviceId) &&
-                                            getServiceTitle(order.serviceId)
+                                            {getServiceTitle(order.serviceId)
+                                            && getServiceTitle(order.serviceId)
                                                 .length > 30
-                                                ? order.serviceId +
-                                                  '- ' +
-                                                  getServiceTitle(
+                                                ? `${
                                                       order.serviceId
-                                                  ).slice(0, 30) +
-                                                  '...'
-                                                : order.serviceId +
-                                                  '- ' +
-                                                  getServiceTitle(
+                                                      - getServiceTitle(
+                                                          order.serviceId,
+                                                      ).slice(0, 30)
+                                                  }...`
+                                                : `${
                                                       order.serviceId
-                                                  )}
+                                                  } - ${getServiceTitle(
+                                                      order.serviceId,
+                                                  )}`}
+                                            {' '}
                                         </td>
                                         <td>
                                             {order.link.length > 20
-                                                ? order.link.slice(0, 25) +
-                                                  '...'
+                                                ? `${order.link.slice(
+                                                      0,
+                                                      25,
+                                                  )}...`
                                                 : order.link}
                                         </td>
                                         <td>{order.charge}</td>
@@ -190,8 +211,8 @@ const Orders = () => {
                                         <td>{getStatus(order.status)}</td>
                                     </tr>
                                 ))}
-                        </tbody>
-                    </table>
+                        </TBody>
+                    </Table>
                 </Card>
             </div>
         </>

@@ -2,4 +2,6 @@
 
 import { createContext } from 'react';
 
-export const WebsiteDetail = createContext({});
+const WebsiteDetail = createContext();
+
+export default WebsiteDetail;

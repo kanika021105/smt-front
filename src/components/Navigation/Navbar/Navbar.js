@@ -1,7 +1,4 @@
-// jshint esversion:9
-
 import React, { useContext } from 'react';
-
 import { Navbar } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,7 +13,7 @@ const NavbarComponent = () => {
         e.preventDefault();
 
         localStorage.clear();
-        return (window.location = '/login');
+        window.location = '/login';
     };
 
     return (
@@ -41,6 +38,7 @@ const NavbarComponent = () => {
                         <NavigationItems />
                         {isLoggedIn && (
                             <button
+                                type="button"
                                 className="btn btn-danger"
                                 onClick={logoutClickHandler}
                             >

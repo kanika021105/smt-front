@@ -12,7 +12,7 @@ import Paytm from './Paytm/Paytm';
 
 import Card from '../../../../components/UI/Card/Card';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/AddFund.scss';
 
@@ -32,7 +32,8 @@ const AddFund = () => {
                         }}
                     >
                         <VscListSelection />
-                    </IconContext.Provider>{' '}
+                    </IconContext.Provider>
+                    {' '}
                     Add Fund
                 </h2>
 
@@ -42,7 +43,7 @@ const AddFund = () => {
                             <ul>
                                 <li>
                                     <NavLink
-                                        to={'/add-fund'}
+                                        to="/add-fund"
                                         activeClassName="active"
                                         exact
                                     >
@@ -52,7 +53,7 @@ const AddFund = () => {
 
                                 <li>
                                     <NavLink
-                                        to={'/add-fund/paytm'}
+                                        to="/add-fund/paytm"
                                         activeClassName="active"
                                         exact
                                     >
@@ -70,7 +71,10 @@ const AddFund = () => {
                             <Route path="/add-fund/paytm" exact>
                                 <Helmet>
                                     <title>
-                                        Paytm - {websiteName || 'SMT'}{' '}
+                                        Paytm -
+                                        {' '}
+                                        {websiteName || 'SMT'}
+                                        {' '}
                                     </title>
                                 </Helmet>
                                 <Paytm />

@@ -3,24 +3,24 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import Modal from 'react-bootstrap/Modal';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-
-import Modal from 'react-bootstrap/Modal';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import './clients.scss';
 
 const Clients = () => {
-    const [users, setUsers] = useState();
+    const [clients, setClients] = useState();
     const [showEditModal, setShowEditModal] = useState(false);
 
     const [editingUserDetails, setEditingUserDetails] = useState({
@@ -45,7 +45,7 @@ const Clients = () => {
             .then((res) => {
                 setIsLoading(false);
 
-                setUsers(res.data.users.reverse());
+                setClients(res.data.clients);
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -56,7 +56,7 @@ const Clients = () => {
 
     const editButtonHandler = async (e) => {
         const id = e.target.value;
-        const user = await users.filter((user) => user.id === +id);
+        const user = await clients.filter((client) => client.id === +id);
 
         setEditingUserDetails({
             id: user[0].id,
@@ -139,9 +139,9 @@ const Clients = () => {
     const eSubmitHandler = async (e) => {
         e.preventDefault();
 
-        const id = editingUserDetails.id;
+        const { id } = editingUserDetails;
         const url = `/admin/client/update/${id}`;
-        const newList = users.filter((user) => user.id !== id);
+        const newList = clients.filter((user) => user.id !== id);
         const userData = {
             id,
             role: editingUserDetails.role,
@@ -153,8 +153,16 @@ const Clients = () => {
             f_name: editingUserDetails.fName,
         };
 
-        await Axios.patch(url, { ...userData });
-        setUsers([{ ...userData }, ...newList]);
+        await Axios.patch(url, {
+            ...userData,
+        });
+
+        setClients([
+            {
+                ...userData,
+            },
+            ...newList,
+        ]);
         handleClose();
     };
 
@@ -168,8 +176,11 @@ const Clients = () => {
                 <Modal.Body>
                     <div className="row">
                         <div className="col-md-6">
-                            <label className="input__label">First Name</label>
+                            <label htmlFor="firstName" className="input__label">
+                                First Name
+                            </label>
                             <input
+                                id="firstName"
                                 placeholder="First Name"
                                 type="text"
                                 className="input"
@@ -273,24 +284,32 @@ const Clients = () => {
         const id = e.target.value;
 
         const url = `/admin/client/delete/${id}`;
-        const newList = users.filter((user) => user.id !== +id);
+        const newList = clients.filter((user) => user.id !== +id);
 
         await Axios.delete(url);
-        setUsers([...newList]);
+        setClients([...newList]);
     };
 
     const checkStatus = (status) => {
         switch (status) {
             case 'active':
                 return (
-                    <button className="btn btn-active btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-active btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
 
             case 'disable':
                 return (
-                    <button className="btn btn-inactive btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-inactive btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -301,8 +320,8 @@ const Clients = () => {
 
     const clientDataTable = (
         <Card>
-            <table className="table">
-                <thead>
+            <Table className="table">
+                <THead>
                     <tr>
                         <th>ID</th>
                         <th>Email</th>
@@ -312,19 +331,21 @@ const Clients = () => {
                         <th>Status</th>
                         <th>Option</th>
                     </tr>
-                </thead>
-                <tbody>
-                    {users &&
-                        users.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.email}</td>
+                </THead>
+
+                <TBody>
+                    {clients
+                        && clients.map((client) => (
+                            <tr key={client.id}>
+                                <td>{client.id}</td>
+                                <td>{client.email}</td>
                                 <td>
-                                    {user.f_name} {user.l_name}
+                                    {client.f_name}
+                                    {client.l_name}
                                 </td>
-                                <td>{user.role}</td>
-                                <td>{user.balance}</td>
-                                <td>{checkStatus(user.status)}</td>
+                                <td>{client.role}</td>
+                                <td>{client.balance}</td>
+                                <td>{checkStatus(client.status)}</td>
                                 <td>
                                     <IconContext.Provider
                                         value={{
@@ -342,16 +363,17 @@ const Clients = () => {
                                                 <BsThreeDotsVertical />
                                             </span>
                                             <ul
-                                                class="dropdown-menu"
+                                                className="dropdown-menu"
                                                 aria-labelledby="options"
                                             >
                                                 <li>
                                                     <button
+                                                        type="button"
                                                         className="btn btn-edit"
                                                         style={{
                                                             width: '100%',
                                                         }}
-                                                        value={user.id}
+                                                        value={client.id}
                                                         onClick={
                                                             editButtonHandler
                                                         }
@@ -359,13 +381,15 @@ const Clients = () => {
                                                         Edit
                                                     </button>
                                                 </li>
+
                                                 <li>
                                                     <button
+                                                        type="button"
                                                         className="btn btn-delete"
                                                         style={{
                                                             width: '100%',
                                                         }}
-                                                        value={user.id}
+                                                        value={client.id}
                                                         onClick={
                                                             deleteButtonHandler
                                                         }
@@ -379,23 +403,27 @@ const Clients = () => {
                                 </td>
                             </tr>
                         ))}
-                </tbody>
-            </table>
+                </TBody>
+            </Table>
         </Card>
     );
 
-    const isClientsEmpty = users && users.length <= 0;
+    const isClientsEmpty = clients && clients.length <= 0;
     const toShow = isClientsEmpty ? <DataNotFound /> : clientDataTable;
 
     // TODO Change title to dynamic
     return (
         <>
             <Helmet>
-                <title>Clients - {websiteName || 'SMT'}</title>
+                <title>
+                    Clients -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {editModal}
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className="Clients">
@@ -408,7 +436,7 @@ const Clients = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
                         Clients
                     </h2>
 

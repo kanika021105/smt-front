@@ -1,6 +1,8 @@
 // jshint esversion:9
 
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, {
+    Suspense, lazy, useEffect, useState,
+} from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import Axios from './axiosIns';
@@ -8,14 +10,14 @@ import User from './containers/User/User';
 import Admin from './containers/Admin/Admin';
 import Layout from './containers/Layout/Layout';
 import { AuthContext } from './containers/Context/AuthContext';
-import { WebsiteDetail } from './containers/Context/WebsiteDetailContext';
+import WebsiteDetail from './containers/Context/WebsiteDetailContext';
 
 const Login = lazy(() => import('./containers/Auth/Login/Login'));
 const Signup = lazy(() => import('./containers/Auth/Signup/Signup'));
 
 const App = () => {
     const [email, setEmail] = useState();
-    const [userId, setUserId] = useState();
+    const [clientId, setClientId] = useState();
     const [role, setRole] = useState(false);
     const [fName, setFName] = useState();
     const [lName, setLName] = useState();
@@ -37,43 +39,45 @@ const App = () => {
         }
 
         // checking if token is present
-        if (!token) return setIsLoggedIn(false);
+        if (!token) {
+            console.log('token not found');
+            setIsLoggedIn(false);
+            return;
+        }
 
-        // sending verification request
-        Axios.post('/verify-token', { token })
+        const url = '/verify-token';
+        Axios.post(url, {
+            token,
+        })
             .then((res) => {
+                console.log('called');
                 const { data } = res;
 
-                // Showing error if data not found
-                if (!data) {
-                    return console.log('something went wrong!');
-                }
-
-                // Setting context state
+                console.log(data);
                 setRole(data.role);
                 setIsLoggedIn(true);
                 setEmail(data.email);
-                setRole(res.data.role);
-                setUserId(data.userId);
+                setRole(data.role);
+                setClientId(data.clientId);
                 setFName(data.fName);
                 setLName(data.lName);
                 setBalance(data.balance);
             })
             .catch((err) => {
-                console.log(err.response.msg);
+                console.log(err);
             });
     }, []);
 
     // Route for not logged in User
     let route = (
         <Suspense
-            fallback={
+            fallback={(
                 <div className="loading">
                     <div className="loading__1">
-                        <div></div>
+                        <div />
                     </div>
                 </div>
-            }
+            )}
         >
             <Switch>
                 <Route path="/signup" exact>
@@ -85,7 +89,7 @@ const App = () => {
                 <Layout>
                     <Route
                         path="/"
-                        render={(e) => {
+                        render={() => {
                             // e.preventDefault();
                         }}
                         exact
@@ -104,15 +108,20 @@ const App = () => {
     }
 
     return (
-        <WebsiteDetail.Provider value={{ websiteName, setWebsiteName }}>
+        <WebsiteDetail.Provider
+            value={{
+                websiteName,
+                setWebsiteName,
+            }}
+        >
             <AuthContext.Provider
                 value={{
                     role,
                     setRole,
                     email,
                     setEmail,
-                    userId,
-                    setUserId,
+                    clientId,
+                    setClientId,
                     fName,
                     setFName,
                     lName,

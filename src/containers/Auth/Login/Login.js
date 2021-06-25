@@ -3,12 +3,9 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-
-import { AiOutlineHome } from 'react-icons/ai';
 
 import { AuthContext } from '../../Context/AuthContext';
-import { WebsiteDetail } from '../../Context/WebsiteDetailContext';
+import WebsiteDetail from '../../Context/WebsiteDetailContext';
 
 import Axios from '../../../axiosIns';
 import classes from './Login.module.scss';
@@ -28,7 +25,7 @@ const Login = () => {
     const {
         setRole,
         setEmail,
-        setUserId,
+        setClientId,
         setFName,
         setLName,
         setBalance,
@@ -44,10 +41,17 @@ const Login = () => {
         setShowError(false);
 
         const url = '/login';
-        const loginData = { email: loginEmail, password: password };
+        const loginData = {
+            email: loginEmail,
+            password,
+        };
 
         try {
-            const { data } = await Axios.post(url, { ...loginData });
+            const { data } = await Axios.post(url, {
+                ...loginData,
+            });
+            setErrorMsg('');
+            console.log(data);
 
             const remainingMilliseconds = 24 * 60 * 60 * 1000;
             const expiryDate = Date.now() + remainingMilliseconds;
@@ -55,35 +59,42 @@ const Login = () => {
             localStorage.setItem('expiryDate', expiryDate);
             localStorage.setItem('token', data.token);
 
-            const { user } = data;
-            if (!user) throw new Error('Something went wrong!');
+            const { client } = data;
+            if (!client) throw new Error('Something went wrong!');
 
-            setRole(user.role);
-            setEmail(user.email);
-            setUserId(user.userId);
-            setFName(user.firstName);
-            setLName(user.lastName);
-            setBalance(user.balance);
-            setIsLoggedIn(user.isLoggedIn);
+            setRole(client.role);
+            setEmail(client.email);
+            setClientId(client.clientId);
+            setFName(client.firstName);
+            setLName(client.lastName);
+            setBalance(client.balance);
+            setIsLoggedIn(client.isLoggedIn);
 
-            if (user.role === 'admin') {
-                return (window.location = '/admin/dashboard');
+            if (client.role === 'admin') {
+                window.location = '/admin/dashboard';
+                return;
             }
 
-            if (user.role === 'user') {
-                return (window.location = '/dashboard');
+            if (client.role === 'user') {
+                window.location = '/dashboard';
+                return;
             }
         } catch (err) {
-            console.log(err);
-            setErrorMsg(err.response.data.message);
+            // setErrorMsg(err.response.data.message);
+
             setShowError(true);
+            console.log(err);
         }
     };
 
     return (
         <>
             <Helmet>
-                <title>Login - {websiteName || 'SMT '}</title>
+                <title>
+                    Login -
+                    {' '}
+                    {websiteName || 'SMT '}
+                </title>
             </Helmet>
 
             <div className={classes.container}>
@@ -104,9 +115,7 @@ const Login = () => {
                         <div className={classes.homeLink}>
                             <Link to="/">Home</Link>
                         </div>
-
-                        <div className={classes.login__form__line}></div>
-
+                        <div className={classes.login__form__line}> </div>
                         <h2
                             className={[
                                 classes.login__form__heading,
@@ -115,18 +124,15 @@ const Login = () => {
                         >
                             Sing-In
                         </h2>
-
-                        {
-                            <h4
-                                className={
-                                    showError
-                                        ? classes.errorMsg
-                                        : classes.errorHidden
-                                }
-                            >
-                                {errorMsg}
-                            </h4>
-                        }
+                        <h4
+                            className={
+                                showError
+                                    ? classes.errorMsg
+                                    : classes.errorHidden
+                            }
+                        >
+                            {errorMsg}
+                        </h4>
 
                         <form onSubmit={submitHandler}>
                             <div className={classes.inputSection}>
@@ -139,15 +145,18 @@ const Login = () => {
                                     placeholder="example@gmail.com"
                                     value={loginEmail}
                                     onChange={emailChangeHandler}
-                                    autoFocus
                                 />
                             </div>
 
                             <div className={classes.inputSection}>
-                                <label className={classes.label}>
+                                <label
+                                    htmlFor="password"
+                                    className={classes.label}
+                                >
                                     Password
                                 </label>
                                 <input
+                                    id="password"
                                     className={
                                         showError ? classes.invalid : ' '
                                     }
@@ -169,9 +178,7 @@ const Login = () => {
                                 <button type="submit">Sign-In</button>
                             </div>
                         </form>
-
                         <span className={classes.login__form__or}>or</span>
-
                         <div className={classes.login__form__signupLink}>
                             <Link to="/signup">Create account</Link>
                         </div>

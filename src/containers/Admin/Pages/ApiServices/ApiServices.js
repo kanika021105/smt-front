@@ -12,9 +12,10 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import './apiServices.scss';
 import 'bootstrap/js/dist/dropdown';
@@ -58,7 +59,7 @@ const ApiServices = () => {
         const serviceId = e.target.value;
 
         const service = await services.filter(
-            (ser) => ser.service === serviceId
+            (ser) => ser.service === serviceId,
         );
 
         setSelectedService({
@@ -71,14 +72,12 @@ const ApiServices = () => {
             rate: +service[0].rate,
             refill: service[0].refill,
         });
-        return;
     };
 
-    const handleClose = (e) => {
+    const handleClose = () => {
         setShowAddModal(false);
 
         setSelectedService('');
-        return;
     };
 
     const titleChangeHandler = (e) => {
@@ -86,7 +85,6 @@ const ApiServices = () => {
             ...preState,
             title: e.target.value,
         }));
-        return;
     };
 
     const categoryChangeHandler = (e) => {
@@ -127,7 +125,11 @@ const ApiServices = () => {
     const formSubmitHandler = (e) => {
         e.preventDefault();
 
-        const serviceData = { ...selectedService, profitMargin, provider: +id };
+        const serviceData = {
+            ...selectedService,
+            profitMargin,
+            provider: +id,
+        };
         const url = '/admin/api-provider/service/add';
         try {
             Axios.post(url, serviceData);
@@ -141,7 +143,7 @@ const ApiServices = () => {
         let count = 0;
         while (count <= 500) {
             countList.push(count);
-            count++;
+            count = +1;
         }
         return countList;
     };
@@ -176,8 +178,8 @@ const ApiServices = () => {
                             required
                         >
                             <option>Choose a category</option>
-                            {categories &&
-                                categories.map((category) => (
+                            {categories
+                                && categories.map((category) => (
                                     <option
                                         key={category.id}
                                         value={category.id}
@@ -239,8 +241,8 @@ const ApiServices = () => {
                                 value={profitMargin}
                                 onChange={profitMarginChangeHandler}
                             >
-                                {counter &&
-                                    counter.map((count) => (
+                                {counter
+                                    && counter.map((count) => (
                                         <option key={count} value={count}>
                                             {`${count}%`}
                                         </option>
@@ -262,7 +264,11 @@ const ApiServices = () => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button className="btn btn-secondary" onClick={handleClose}>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleClose}
+                    >
                         Close
                     </button>
 
@@ -276,8 +282,8 @@ const ApiServices = () => {
 
     const apiServicesTable = (
         <Card>
-            <table className="table">
-                <thead>
+            <Table>
+                <THead>
                     <tr>
                         <th>ID</th>
                         <th>Category</th>
@@ -286,10 +292,11 @@ const ApiServices = () => {
                         <th>Price</th>
                         <th>Options</th>
                     </tr>
-                </thead>
-                <tbody>
-                    {services &&
-                        services.map((service) => (
+                </THead>
+
+                <TBody>
+                    {services
+                        && services.map((service) => (
                             <tr key={service.service}>
                                 <td>{service.service}</td>
                                 <td>{service.category}</td>
@@ -318,6 +325,7 @@ const ApiServices = () => {
                                             >
                                                 <li>
                                                     <button
+                                                        type="button"
                                                         className="btn btn-info"
                                                         style={{
                                                             width: '100%',
@@ -336,8 +344,8 @@ const ApiServices = () => {
                                 </td>
                             </tr>
                         ))}
-                </tbody>
-            </table>
+                </TBody>
+            </Table>
         </Card>
     );
 
@@ -352,11 +360,15 @@ const ApiServices = () => {
     return (
         <>
             <Helmet>
-                <title>Api Services - {websiteName || 'SMT'}</title>
+                <title>
+                    Api Services -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {addUpdateModal}
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className="apiServices">
@@ -369,7 +381,8 @@ const ApiServices = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Services From Api
                     </h2>
 

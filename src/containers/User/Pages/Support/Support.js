@@ -11,8 +11,9 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/support.scss';
 
@@ -20,7 +21,7 @@ const Support = () => {
     const history = useHistory();
 
     const [errorMsg, setErrorMsg] = useState('');
-    const [addError, setAddError] = useState(false);
+    // const [addError, setAddError] = useState(false);
     const [showError, setShowError] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
 
@@ -45,14 +46,14 @@ const Support = () => {
         setShowError(false);
         setErrorMsg('');
 
-        let url = '/support';
+        const url = '/support';
         Axios.get(url).then((res) => {
-            let { data } = res;
+            const { data } = res;
 
             if (data.status !== 'success') {
                 setShowError(true);
                 setErrorMsg(
-                    'Failed to load tickets, Please try again or contact support team'
+                    'Failed to load tickets, Please try again or contact support team',
                 );
                 return;
             }
@@ -67,30 +68,23 @@ const Support = () => {
         setShowError(false);
         setErrorMsg('');
 
-        let path = `/support/ticket/${id}`;
+        const path = `/support/ticket/${id}`;
         return history.push(path);
     };
 
-    let ticketList =
-        tickets &&
-        user &&
-        tickets.map((ticket) => {
-            return (
-                <tr
-                    key={ticket.id}
-                    onClick={() => ticketClickHandler(ticket.id)}
-                >
-                    <td>{ticket.id}</td>
-                    <td>{user.email}</td>
-                    <td>{ticket.subject}</td>
-                    <td>{ticket.status}</td>
-                </tr>
-            );
-        });
+    const ticketList = tickets
+        && user
+        && tickets.map((ticket) => (
+            <tr key={ticket.id} onClick={() => ticketClickHandler(ticket.id)}>
+                <td>{ticket.id}</td>
+                <td>{user.email}</td>
+                <td>{ticket.subject}</td>
+                <td>{ticket.status}</td>
+            </tr>
+        ));
 
     const handleAddButtonClick = () => {
         setShowAddModal(true);
-        return;
     };
 
     const subjectChangeHandler = (e) => {
@@ -103,44 +97,36 @@ const Support = () => {
         setPaymentMethod('');
 
         setSelectedSubject(e.target.value);
-        return;
     };
 
     const orderIdChangeHandler = (e) => {
         setOrderId(e.target.value);
-        return;
     };
 
     const requestChangeHandler = (e) => {
         setSelectedRequest(e.target.value);
-        return;
     };
 
     const messageChangeHandler = (e) => {
         setMessage(e.target.value);
-        return;
     };
 
     const serviceIdChangeHandler = (e) => {
         setServiceId(e.target.value);
-        return;
     };
 
     const paymentMethodChangeHandler = (e) => {
         setPaymentMethod(e.target.value);
-        return;
     };
 
     const transactionIdChangeHandler = (e) => {
         setTransactionId(e.target.value);
-        return;
     };
 
     const addFormSubmitHandler = async (e) => {
         e.preventDefault();
 
         setErrorMsg('');
-        setAddError(false);
 
         const url = '/support/create-ticket';
 
@@ -184,9 +170,16 @@ const Support = () => {
         }
 
         try {
-            const { data } = await Axios.post(url, { ...ticketData });
+            const { data } = await Axios.post(url, {
+                ...ticketData,
+            });
 
-            setTickets((preState) => [{ ...data.ticket }, ...preState]);
+            setTickets((preState) => [
+                {
+                    ...data.ticket,
+                },
+                ...preState,
+            ]);
             setShowAddModal(false);
 
             setOrderId('');
@@ -201,8 +194,6 @@ const Support = () => {
             console.log(err.response.data);
 
             setErrorMsg(err.response.data.message);
-            setAddError(true);
-            return;
         }
     };
 
@@ -216,9 +207,7 @@ const Support = () => {
         setPaymentMethod('');
 
         setErrorMsg('');
-        setAddError(false);
         setShowAddModal(false);
-        return;
     };
 
     const selectedSubjectSection = () => {
@@ -410,12 +399,14 @@ const Support = () => {
 
                 <Modal.Footer>
                     <button
+                        type="button"
                         className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
                         Close
                     </button>
                     <button
+                        type="button"
                         className="btn btn-primary"
                         onClick={addFormSubmitHandler}
                     >
@@ -429,11 +420,15 @@ const Support = () => {
     return (
         <>
             <Helmet>
-                <title>Support - {websiteName || 'SMT'}</title>
+                <title>
+                    Support -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
-
             {addModal}
-            {<Loading show={isLoading} />}
+
+            <Loading show={isLoading} />
 
             <div className="container Support">
                 <div>
@@ -446,10 +441,15 @@ const Support = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Services
                     </h2>
-                    <button className="btn-add" onClick={handleAddButtonClick}>
+                    <button
+                        type="button"
+                        className="btn-add"
+                        onClick={handleAddButtonClick}
+                    >
                         +
                     </button>
                 </div>
@@ -460,17 +460,18 @@ const Support = () => {
                             <small className="errorMsg">{errorMsg}</small>
                         </div>
                     )}
-                    <table className="table">
-                        <thead>
+                    <Table className="table">
+                        <Table.Head>
                             <tr>
                                 <th>ID</th>
                                 <th>Email</th>
                                 <th>Subject</th>
                                 <th>Status</th>
                             </tr>
-                        </thead>
-                        <tbody>{ticketList}</tbody>
-                    </table>
+                        </Table.Head>
+
+                        <Table.Body>{ticketList}</Table.Body>
+                    </Table>
                 </Card>
             </div>
         </>

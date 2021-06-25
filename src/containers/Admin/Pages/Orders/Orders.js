@@ -1,18 +1,18 @@
-/*jshint esversion: 9 */
-
+/* eslint-disable indent */
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import Modal from 'react-bootstrap/Modal';
 
 import Axios from '../../../../axiosIns';
-import Modal from 'react-bootstrap/Modal';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import classes from './orders.module.scss';
 import 'bootstrap/js/dist/dropdown';
@@ -20,7 +20,7 @@ import 'bootstrap/js/dist/dropdown';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
 const Orders = () => {
-    const [users, setUsers] = useState();
+    const [clients, setClients] = useState();
     const [orders, setOrders] = useState();
     const [services, setServices] = useState();
 
@@ -48,7 +48,7 @@ const Orders = () => {
                 const { data } = res;
                 if (!data) return console.log('something went wrong!');
 
-                setUsers(data.users);
+                setClients(data.clients);
                 setServices(data.services);
                 setOrders(data.orders);
             })
@@ -61,9 +61,9 @@ const Orders = () => {
 
     const getServiceTitle = (id) => {
         if (services) {
-            const service = services.filter((service) => service.id === id);
+            const details = services.filter((service) => service.id === id);
 
-            if (service[0]) return service[0].title;
+            if (details[0]) return details[0].title;
             return null;
         }
 
@@ -71,14 +71,12 @@ const Orders = () => {
     };
 
     const getUserEmail = (id) => {
-        if (users) {
-            const user = users.filter((user) => user.id === id);
+        if (clients) {
+            const { email } = clients.filter((client) => client.id === id);
 
-            if (user[0]) return user[0].email;
+            if (email) return email;
             return null;
         }
-
-        return null;
     };
 
     // Deleting Order
@@ -151,28 +149,6 @@ const Orders = () => {
         }));
     };
 
-    const editingSubmitHandler = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-
-        const orderId = editingOrder.id;
-        const url = `/admin/order/edit/${orderId}`;
-        const newList = orders.filter((order) => order.id !== editingOrder.id);
-
-        try {
-            const { data } = await Axios.patch(url, { ...editedDetails });
-            if (data.status !== 'success') {
-                return console.log('Something went wrong');
-            }
-
-            handleClose();
-            setIsLoading(false);
-            setOrders((preState) => [{ ...data.updatedOrder }, ...newList]);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     const handleClose = () => {
         setEditedDetails({
             link: '',
@@ -182,6 +158,35 @@ const Orders = () => {
         });
         setEditingOrder('');
         setShowEditModal(false);
+    };
+
+    const editingSubmitHandler = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        const orderId = editingOrder.id;
+        const url = `/admin/order/edit/${orderId}`;
+        const newList = orders.filter((order) => order.id !== editingOrder.id);
+
+        try {
+            const { data } = await Axios.patch(url, {
+                ...editedDetails,
+            });
+            if (data.status !== 'success') {
+                return console.log('Something went wrong');
+            }
+
+            handleClose();
+            setIsLoading(false);
+            setOrders(() => [
+                {
+                    ...data.updatedOrder,
+                },
+                ...newList,
+            ]);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const editModal = (
@@ -226,7 +231,7 @@ const Orders = () => {
                                     className="input input--disabled"
                                     value={
                                         getServiceTitle(
-                                            editingOrder.serviceId
+                                            editingOrder.serviceId,
                                         ) || ''
                                     }
                                     disabled
@@ -250,8 +255,9 @@ const Orders = () => {
                                     <input
                                         className="input input--disabled"
                                         value={
-                                            getUserEmail(editingOrder.userId) ||
-                                            ''
+                                            getUserEmail(
+                                                editingOrder.clientId,
+                                            ) || ''
                                         }
                                         disabled
                                     />
@@ -372,7 +378,11 @@ const Orders = () => {
         switch (status) {
             case 'pending':
                 return (
-                    <button className={'btn btn-pending btn-disabled'} disabled>
+                    <button
+                        type="button"
+                        className="btn btn-pending btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -380,7 +390,8 @@ const Orders = () => {
             case 'processing':
                 return (
                     <button
-                        className={'btn btn-processing btn-disabled'}
+                        type="button"
+                        className="btn btn-processing btn-disabled"
                         disabled
                     >
                         {status}
@@ -390,7 +401,8 @@ const Orders = () => {
             case 'inprogress':
                 return (
                     <button
-                        className={'btn btn-inprogress btn-disabled'}
+                        type="button"
+                        className="btn btn-inprogress btn-disabled"
                         disabled
                     >
                         {status}
@@ -400,7 +412,8 @@ const Orders = () => {
             case 'completed':
                 return (
                     <button
-                        className={'btn btn-completed btn-disabled'}
+                        type="button"
+                        className="btn btn-completed btn-disabled"
                         disabled
                     >
                         {status}
@@ -410,7 +423,8 @@ const Orders = () => {
             case 'cancelled':
                 return (
                     <button
-                        className={'btn btn-cancelled btn-disabled'}
+                        type="button"
+                        className="btn btn-cancelled btn-disabled"
                         disabled
                     >
                         {status}
@@ -419,7 +433,11 @@ const Orders = () => {
 
             case 'partial':
                 return (
-                    <button className={'btn btn-partial btn-disabled'} disabled>
+                    <button
+                        type="button"
+                        className="btn btn-partial btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -429,13 +447,12 @@ const Orders = () => {
         }
     };
 
-    const ordersTable =
-        orders && orders.length <= 0 ? (
-            <DataNotFound message="Please wait for users to create some order." />
+    const ordersTable = orders && orders.length <= 0 ? (
+        <DataNotFound message="Please wait for clients to create some order." />
         ) : (
             <Card>
-                <table className="table">
-                    <thead>
+                <Table>
+                    <Table.Head>
                         <tr>
                             <th>ID</th>
                             <th>Service</th>
@@ -446,32 +463,28 @@ const Orders = () => {
                             <th>Status</th>
                             <th>Options</th>
                         </tr>
-                    </thead>
+                    </Table.Head>
 
-                    <tbody>
-                        {orders &&
-                            orders.map((order) => (
+                    <Table.Body>
+                        {orders
+                            && orders.map((order) => (
                                 <tr key={order.id}>
                                     <td>{order.id}</td>
 
                                     <td>
-                                        {getServiceTitle(order.serviceId) &&
-                                        getServiceTitle(order.serviceId)
+                                        {getServiceTitle(order.serviceId)
+                                        && getServiceTitle(order.serviceId)
                                             .length > 30
-                                            ? order.serviceId +
-                                              '- ' +
-                                              getServiceTitle(
-                                                  order.serviceId
-                                              ).slice(0, 30) +
-                                              '...'
-                                            : order.serviceId +
-                                              '- ' +
-                                              getServiceTitle(order.serviceId)}
+                                            ? `${order.serviceId} 
+                                            - ${getServiceTitle(
+                                                order.serviceId,
+                                            ).slice(0, 30)}...`
+                                            : `${order.serviceId} - getServiceTitle(order.serviceId)`}
                                     </td>
 
                                     <td>
                                         {order.link.length > 20
-                                            ? order.link.slice(0, 20) + '...'
+                                            ? `${order.link.slice(0, 20)}...`
                                             : order.link}
                                     </td>
 
@@ -503,6 +516,7 @@ const Orders = () => {
                                                 >
                                                     <li>
                                                         <button
+                                                            type="button"
                                                             className="btn btn-edit"
                                                             style={{
                                                                 width: '100%',
@@ -518,6 +532,7 @@ const Orders = () => {
 
                                                     <li>
                                                         <button
+                                                            type="button"
                                                             className="btn btn-delete"
                                                             style={{
                                                                 width: '100%',
@@ -536,8 +551,8 @@ const Orders = () => {
                                     </td>
                                 </tr>
                             ))}
-                    </tbody>
-                </table>
+                    </Table.Body>
+                </Table>
             </Card>
         );
 
@@ -545,11 +560,15 @@ const Orders = () => {
     return (
         <>
             <Helmet>
-                <title>Orders - {websiteName || 'SMT'} </title>
+                <title>
+                    Orders -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {editModal}
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className={classes.Orders}>
@@ -562,7 +581,8 @@ const Orders = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Orders
                     </h2>
 

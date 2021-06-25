@@ -10,8 +10,10 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 
-import DataNotFound from '.././../../../components/UI/DataNotFound/DataNotFound';
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import Table from '../../../../components/UI/Table/Table';
+
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import './Transactions.scss';
 
@@ -40,8 +42,8 @@ const Transactions = () => {
 
     const transactionDataTable = (
         <Card>
-            <table className="table">
-                <thead>
+            <Table className="table">
+                <Table.Head>
                     <tr>
                         <th>ID</th>
                         <th>Email</th>
@@ -50,11 +52,11 @@ const Transactions = () => {
                         <th>Method</th>
                         <th>Status</th>
                     </tr>
-                </thead>
+                </Table.Head>
 
-                <tbody>
-                    {transactions &&
-                        transactions.map((transaction) => (
+                <Table.Body>
+                    {transactions
+                        && transactions.map((transaction) => (
                             <tr key={transaction.id}>
                                 <td>{transaction.id}</td>
                                 <td>{transaction.email}</td>
@@ -63,9 +65,8 @@ const Transactions = () => {
                                 <td>{transaction.paymentMethod}</td>
                                 <td>
                                     <button
-                                        className={
-                                            'btn btn-success btn-disabled'
-                                        }
+                                        type="button"
+                                        className="btn btn-success btn-disabled"
                                         disabled
                                     >
                                         {transaction.status}
@@ -73,8 +74,8 @@ const Transactions = () => {
                                 </td>
                             </tr>
                         ))}
-                </tbody>
-            </table>
+                </Table.Body>
+            </Table>
         </Card>
     );
 
@@ -90,10 +91,14 @@ const Transactions = () => {
     return (
         <>
             <Helmet>
-                <title>Transactions - {websiteName || 'SMT'}</title>
+                <title>
+                    Transactions -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className="Transactions">
@@ -106,7 +111,8 @@ const Transactions = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Transactions
                     </h2>
 

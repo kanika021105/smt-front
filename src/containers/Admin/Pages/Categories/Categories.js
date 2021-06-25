@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Modal from 'react-bootstrap/Modal';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -12,9 +11,10 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import './categories.scss';
@@ -38,9 +38,6 @@ const Categories = () => {
         short: '',
         status: '',
     });
-
-    const [errorMsg, setErrorMsg] = useState('');
-    const [addError, setAddError] = useState(false);
 
     const { websiteName } = useContext(WebsiteDetail);
 
@@ -99,9 +96,6 @@ const Categories = () => {
     const formSubmitHandler = async (e) => {
         e.preventDefault();
 
-        setErrorMsg('');
-        setAddError(false);
-
         const url = '/admin/category/add';
         const cateData = {
             ...newCategoryDetails,
@@ -111,13 +105,13 @@ const Categories = () => {
             const { data } = await Axios.post(url, cateData);
 
             if (data.status !== 'success') {
-                setErrorMsg(data.error);
-                setAddError(true);
                 return;
             }
 
             setCategories((preState) => [
-                { ...data.createdCategory },
+                {
+                    ...data.createdCategory,
+                },
                 ...preState,
             ]);
             setShowAddModal(false);
@@ -126,7 +120,7 @@ const Categories = () => {
         }
     };
 
-    const handleBackdropClick = (e) => {
+    const handleBackdropClick = () => {
         setShowAddModal(false);
         setNewCategoryDetails({
             title: '',
@@ -134,7 +128,6 @@ const Categories = () => {
             description: '',
             status: 'active',
         });
-        setAddError(false);
     };
 
     const addModal = (
@@ -218,7 +211,7 @@ const Categories = () => {
 
         const categoryId = +e.target.value;
         const category = await categories.filter(
-            (cate) => cate.id === categoryId
+            (cate) => cate.id === categoryId,
         );
 
         setEditingCategoryDetails({
@@ -258,6 +251,17 @@ const Categories = () => {
         }));
     };
 
+    const handleClose = () => {
+        setEditingCategoryDetails({
+            id: '',
+            title: '',
+            description: '',
+            short: '',
+            status: '',
+        });
+        setShowEditModal(false);
+    };
+
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
 
@@ -274,22 +278,16 @@ const Categories = () => {
                 console.log('Failed to update Category!');
             }
 
-            setCategories([{ ...editingCategoryDetails }, ...newList]);
+            setCategories([
+                {
+                    ...editingCategoryDetails,
+                },
+                ...newList,
+            ]);
             handleClose();
         } catch (err) {
             console.log(err);
         }
-    };
-
-    const handleClose = () => {
-        setEditingCategoryDetails({
-            id: '',
-            title: '',
-            description: '',
-            short: '',
-            status: '',
-        });
-        setShowEditModal(false);
     };
 
     const editModal = (
@@ -373,27 +371,36 @@ const Categories = () => {
         const newList = categories.filter((category) => category.id !== +id);
 
         try {
-            await Axios.delete(url, { id });
+            await Axios.delete(url, {
+                id,
+            });
         } catch (err) {
             console.log(err.response.data);
         }
 
         setCategories([...newList]);
-        return;
     };
 
     const checkStatus = (status) => {
         switch (status) {
             case 'active':
                 return (
-                    <button className="btn btn-active btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-active btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
 
             case 'disable':
                 return (
-                    <button className="btn btn-inactive btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-inactive btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -402,26 +409,25 @@ const Categories = () => {
         }
     };
 
-    const categoriesTable =
-        categories && categories.length <= 0 ? (
-            <DataNotFound message="Please addd some categories to show here." />
-        ) : (
-            <Card>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Desc</th>
-                            <th>Short</th>
-                            <th>Status</th>
-                            <th>Options</th>
-                        </tr>
-                    </thead>
+    const categoriesTable = categories && categories.length <= 0 ? (
+        <DataNotFound message="Please addd some categories to show here." />
+    ) : (
+        <Card>
+            <Table>
+                <THead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Desc</th>
+                        <th>Short</th>
+                        <th>Status</th>
+                        <th>Options</th>
+                    </tr>
+                </THead>
 
-                    <tbody>
-                        {categories &&
-                            categories.map((category) => (
+                <TBody>
+                    {categories
+                            && categories.map((category) => (
                                 <tr key={category.id}>
                                     <td>{category.id}</td>
                                     <td>{category.title}</td>
@@ -454,6 +460,7 @@ const Categories = () => {
                                                 >
                                                     <li>
                                                         <button
+                                                            type="button"
                                                             className="btn btn-edit"
                                                             style={{
                                                                 width: '100%',
@@ -469,6 +476,7 @@ const Categories = () => {
 
                                                     <li>
                                                         <button
+                                                            type="button"
                                                             className="btn btn-delete"
                                                             style={{
                                                                 width: '100%',
@@ -487,21 +495,25 @@ const Categories = () => {
                                     </td>
                                 </tr>
                             ))}
-                    </tbody>
-                </table>
-            </Card>
-        );
+                </TBody>
+            </Table>
+        </Card>
+    );
 
     // TODO
     return (
         <>
             <Helmet>
-                <title>Categories - {websiteName || 'SMT'}</title>
+                <title>
+                    Categories -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {editModal}
             {addModal}
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <main className="categories">
                 <div className="container">
@@ -515,10 +527,12 @@ const Categories = () => {
                                 }}
                             >
                                 <VscListSelection />
-                            </IconContext.Provider>{' '}
+                            </IconContext.Provider>
+                            {' '}
                             Categories
                         </h2>
                         <button
+                            type="button"
                             className="add-button"
                             onClick={handleAddButtonClick}
                         >

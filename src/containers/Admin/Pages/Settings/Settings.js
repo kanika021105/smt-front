@@ -1,5 +1,3 @@
-/*jshint esversion: 9 */
-
 import React, { useEffect, lazy } from 'react';
 import { Route, Link } from 'react-router-dom';
 
@@ -7,7 +5,6 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { Helmet } from 'react-helmet';
 
-import './Settings';
 import Card from '../../../../components/UI/Card/Card';
 
 const General = lazy(() => import('./General/General'));
@@ -23,7 +20,11 @@ const Settings = () => {
     return (
         <>
             <Helmet>
-                <title>Settings - {process.env.REACT_APP_WEBSITE_NAME}</title>
+                <title>
+                    Settings -
+                    {' '}
+                    {process.env.REACT_APP_WEBSITE_NAME}
+                </title>
             </Helmet>
 
             <div className="container">
@@ -36,7 +37,8 @@ const Settings = () => {
                         }}
                     >
                         <VscListSelection />
-                    </IconContext.Provider>{' '}
+                    </IconContext.Provider>
+                    {' '}
                     Settings
                 </h2>
 
@@ -44,13 +46,13 @@ const Settings = () => {
                     <div className="row">
                         <div className="col-md-3 border p-4">
                             <li>
-                                <Link to={'/admin/settings/general'}>
+                                <Link to="/admin/settings/general">
                                     General
                                 </Link>
                             </li>
 
                             <li>
-                                <Link to={'/admin/settings/payment'}>
+                                <Link to="/admin/settings/payment">
                                     Payment
                                 </Link>
                             </li>

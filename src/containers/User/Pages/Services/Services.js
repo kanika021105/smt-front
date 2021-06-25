@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
@@ -9,8 +7,9 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/services.scss';
 
@@ -28,14 +27,14 @@ export default function Services() {
     useEffect(() => {
         setIsLoading(false);
 
-        let url = '/services';
+        const url = '/services';
         Axios.get(url)
             .then((res) => {
-                let { data } = res;
+                const { data } = res;
 
                 if (data.status !== 'success') {
                     setErrorMsg(
-                        'Failed to load services... Please try again or contact support team!'
+                        'Failed to load services... Please try again or contact support team!',
                     );
                     setShowError(true);
                     return;
@@ -44,38 +43,39 @@ export default function Services() {
 
                 setServices(res.data.services);
                 setCategories(res.data.categories);
-                return;
             })
             .catch((err) => console.log(err));
     }, []);
 
     const getServiceByCateId = (cateId) => {
-        let servicesList =
-            services &&
-            services.filter((service) => service.categoryId === cateId);
+        const servicesList = services
+            && services.filter((service) => service.categoryId === cateId);
 
         return servicesList.map((service) => (
             <tr key={service.id}>
                 <td>{service.id}</td>
                 <td>
                     {service.title.length > 35
-                        ? service.title.slice(0, 35) + '...'
+                        ? `${service.title.slice(0, 35)}...`
                         : service.title}
                 </td>
                 <td>
-                    {service.min} / {service.max}
+                    {service.min}
+                    {' '}
+                    /
+                    {' '}
+                    {service.max}
                 </td>
                 <td>{service.rate.toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
                 <td>
-                    {
-                        <button
-                            className="btn btn-active btn-disabled"
-                            disabled
-                        >
-                            {service.status}
-                        </button>
-                    }
+                    <button
+                        type="button"
+                        className="btn btn-active btn-disabled"
+                        disabled
+                    >
+                        {service.status}
+                    </button>
                 </td>
             </tr>
         ));
@@ -85,10 +85,14 @@ export default function Services() {
     return (
         <>
             <Helmet>
-                <title>Services - {websiteName || 'SMT'}</title>
+                <title>
+                    Services -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container Services">
                 <h2 className="pageTitle">
@@ -100,7 +104,8 @@ export default function Services() {
                         }}
                     >
                         <VscListSelection />
-                    </IconContext.Provider>{' '}
+                    </IconContext.Provider>
+                    {' '}
                     Services
                 </h2>
 
@@ -112,8 +117,8 @@ export default function Services() {
                     </Card>
                 )}
 
-                {categories &&
-                    categories.map((category) => (
+                {categories
+                    && categories.map((category) => (
                         <div className="serviceListCard" key={category.id}>
                             <Card>
                                 <div>
@@ -128,8 +133,8 @@ export default function Services() {
                                     {category.title}
                                 </h3>
 
-                                <table className="table">
-                                    <thead>
+                                <Table>
+                                    <THead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Title</th>
@@ -138,12 +143,12 @@ export default function Services() {
                                             <th>Drip Feed</th>
                                             <th>Status</th>
                                         </tr>
-                                    </thead>
+                                    </THead>
 
-                                    <tbody>
+                                    <TBody>
                                         {getServiceByCateId(category.id)}
-                                    </tbody>
-                                </table>
+                                    </TBody>
+                                </Table>
                             </Card>
                         </div>
                     ))}

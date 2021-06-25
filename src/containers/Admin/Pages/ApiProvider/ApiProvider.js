@@ -1,11 +1,12 @@
+/* eslint-disable */
 // jshint esversion:9
 
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-import { FiEdit } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
+import { FiEdit } from 'react-icons/fi';
 import { IoMdSync } from 'react-icons/io';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { VscListSelection } from 'react-icons/vsc';
@@ -17,8 +18,9 @@ import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table, {THead,TBody} from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import './apiProvider.scss';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
@@ -56,7 +58,9 @@ const ApiProvider = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showSyncModal, setShowSyncModal] = useState(false);
 
+    // eslint-disable-next-line no-unused-vars
     const [errorMsg, setErrorMsg] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [addError, setAddError] = useState(false);
     // const [showError, setShowError] = useState(false);
 
@@ -121,11 +125,15 @@ const ApiProvider = () => {
 
         const url = '/admin/api-provider/add';
         try {
-            const { data } = await Axios.post(url, { ...addApiDetails });
+            const { data } = await Axios.post(url, {
+                ...addApiDetails,
+            });
             if (data.status === 'success') {
                 setApiProviders((preState) => [
                     ...preState,
-                    { ...data.createdApi },
+                    {
+                        ...data.createdApi,
+                    },
                 ]);
                 setShowAddModal(false);
             }
@@ -203,6 +211,7 @@ const ApiProvider = () => {
 
                 <Modal.Footer>
                     <button
+                        type="button"
                         className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
@@ -210,6 +219,7 @@ const ApiProvider = () => {
                     </button>
 
                     <button
+                        type="button"
                         className="btn btn-primary"
                         onClick={addFormSubmitHandler}
                     >
@@ -224,11 +234,11 @@ const ApiProvider = () => {
         setShowEditModal(true);
 
         const apiProvider = await apiProviders.filter(
-            (provider) => +provider.id === +id
+            (provider) => +provider.id === +id,
         );
 
         console.log(apiProvider[0]);
-        setEditingApiDetails((preState) => ({
+        setEditingApiDetails(() => ({
             id: apiProvider[0].id,
             name: apiProvider[0].name,
             url: apiProvider[0].url,
@@ -273,11 +283,15 @@ const ApiProvider = () => {
 
         const url = '/admin/api-provider/update';
         try {
-            const { data } = await Axios.post(url, { ...addApiDetails });
+            const { data } = await Axios.post(url, {
+                ...addApiDetails,
+            });
             if (data.status === 'success') {
                 setApiProviders((preState) => [
                     ...preState,
-                    { ...data.createdApi },
+                    {
+                        ...data.createdApi,
+                    },
                 ]);
                 setShowAddModal(false);
             }
@@ -346,12 +360,14 @@ const ApiProvider = () => {
 
                 <Modal.Footer>
                     <button
+                        type="button"
                         className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
                         Close
                     </button>
                     <button
+                        type="button"
                         className="btn btn-primary"
                         onClick={addFormSubmitHandler}
                     >
@@ -366,7 +382,7 @@ const ApiProvider = () => {
         setShowSyncModal(true);
 
         const apiProvider = await apiProviders.filter(
-            (provider) => +provider.id === +id
+            (provider) => +provider.id === +id,
         );
 
         setSyncData((preState) => ({
@@ -391,14 +407,14 @@ const ApiProvider = () => {
         let count = 0;
         while (count <= 500) {
             countList.push(count);
-            count++;
+            count += 1;
         }
         return countList;
     };
 
     const syncFormSubmitHandler = async (e) => {
         e.preventDefault();
-        const id = syncData.api.id;
+        const { id } = syncData.api;
         const url = `/admin/api-provider/sync_services/${id}`;
 
         const data = await Axios.post(url, syncData.profitMargin);
@@ -465,6 +481,7 @@ const ApiProvider = () => {
 
                 <Modal.Footer>
                     <button
+                        type="button"
                         className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
@@ -472,6 +489,7 @@ const ApiProvider = () => {
                     </button>
 
                     <button
+                        type="button"
                         className="btn btn-primary"
                         onClick={syncFormSubmitHandler}
                     >
@@ -487,12 +505,15 @@ const ApiProvider = () => {
 
         const { data } = await Axios.get(url);
         const newList = await apiProviders.filter(
-            (provider) => provider.id !== id
+            (provider) => provider.id !== id,
         );
 
-        const updatedList = [{ ...data.updatedApi }, ...newList].sort((a, b) =>
-            a.id > b.id ? 1 : b.id > a.id ? -1 : 0
-        );
+        const updatedList = [
+            {
+                ...data.updatedApi,
+            },
+            ...newList,
+        ].sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0));
 
         try {
             return setApiProviders(() => [...updatedList]);
@@ -516,7 +537,7 @@ const ApiProvider = () => {
         }
 
         const newList = await apiProviders.filter(
-            (provider) => provider.id !== id
+            (provider) => provider.id !== id,
         );
 
         try {
@@ -530,14 +551,22 @@ const ApiProvider = () => {
         switch (status) {
             case 'active':
                 return (
-                    <button className="btn btn-active btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-active btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
 
             case 'disable':
                 return (
-                    <button className="btn btn-inactive btn-disabled" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-inactive btn-disabled"
+                        disabled
+                    >
                         {status}
                     </button>
                 );
@@ -548,8 +577,8 @@ const ApiProvider = () => {
 
     const apiProviderTable = (
         <Card>
-            <table className="table">
-                <thead>
+            <Table>
+                <THead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
@@ -557,9 +586,9 @@ const ApiProvider = () => {
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
-                </thead>
+                </THead>
 
-                <tbody>
+                <TBody>
                     {apiProviders &&
                         apiProviders.map((apiProvider) => (
                             <tr key={apiProvider.id}>
@@ -584,12 +613,13 @@ const ApiProvider = () => {
                                             }
                                         >
                                             <button
+                                                type="button"
                                                 value={apiProvider.id}
                                                 variant="none"
                                                 className="apiActionButton apiActionButtonFirst"
                                                 onClick={() =>
                                                     updateBalanceHandler(
-                                                        apiProvider.id
+                                                        apiProvider.id,
                                                     )
                                                 }
                                             >
@@ -611,7 +641,7 @@ const ApiProvider = () => {
                                             placement="top"
                                             overlay={
                                                 <Tooltip
-                                                    id={`tooltip-top`}
+                                                    id="tooltip-top"
                                                     style={{
                                                         fontSize: '1.6rem',
                                                     }}
@@ -621,11 +651,12 @@ const ApiProvider = () => {
                                             }
                                         >
                                             <button
+                                                type="button"
                                                 variant="none"
                                                 className="apiActionButton"
                                                 onClick={() =>
                                                     syncClickHandler(
-                                                        apiProvider.id
+                                                        apiProvider.id,
                                                     )
                                                 }
                                             >
@@ -647,7 +678,7 @@ const ApiProvider = () => {
                                             placement="top"
                                             overlay={
                                                 <Tooltip
-                                                    id={`tooltip-top`}
+                                                    id="tooltip-top"
                                                     style={{
                                                         fontSize: '1.6rem',
                                                     }}
@@ -657,11 +688,12 @@ const ApiProvider = () => {
                                             }
                                         >
                                             <button
+                                                type="button"
                                                 variant="none"
                                                 className="apiActionButton"
                                                 onClick={() =>
                                                     serviceListHandler(
-                                                        apiProvider.id
+                                                        apiProvider.id,
                                                     )
                                                 }
                                             >
@@ -683,7 +715,7 @@ const ApiProvider = () => {
                                             placement="top"
                                             overlay={
                                                 <Tooltip
-                                                    id={`tooltip-top`}
+                                                    id="tooltip-top"
                                                     style={{
                                                         fontSize: '1.6rem',
                                                     }}
@@ -693,11 +725,12 @@ const ApiProvider = () => {
                                             }
                                         >
                                             <button
+                                                type="button"
                                                 variant="none"
                                                 className="apiActionButton"
                                                 onClick={() =>
                                                     editButtonClickHandler(
-                                                        apiProvider.id
+                                                        apiProvider.id,
                                                     )
                                                 }
                                             >
@@ -719,7 +752,7 @@ const ApiProvider = () => {
                                             placement="top"
                                             overlay={
                                                 <Tooltip
-                                                    id={`tooltip-top`}
+                                                    id="tooltip-top"
                                                     style={{
                                                         fontSize: '1.6rem',
                                                     }}
@@ -729,12 +762,13 @@ const ApiProvider = () => {
                                             }
                                         >
                                             <button
+                                                type="button"
                                                 variant="none"
                                                 className="apiActionButton
                                                             apiActionButtonLast"
                                                 onClick={() =>
                                                     deleteHandler(
-                                                        apiProvider.id
+                                                        apiProvider.id,
                                                     )
                                                 }
                                             >
@@ -754,8 +788,8 @@ const ApiProvider = () => {
                                 </td>
                             </tr>
                         ))}
-                </tbody>
-            </table>
+                </TBody>
+            </Table>
         </Card>
     );
 
@@ -776,7 +810,7 @@ const ApiProvider = () => {
             {editModal}
             {syncModal}
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <div className="apiProvider">
@@ -794,6 +828,7 @@ const ApiProvider = () => {
                             Api Providers
                         </h2>
                         <button
+                            type="button"
                             className="add-button"
                             onClick={handleAddButtonClick}
                         >

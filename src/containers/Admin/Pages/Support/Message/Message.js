@@ -14,13 +14,13 @@ import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
 import { AuthContext } from '../../../../Context/AuthContext';
-import { WebsiteDetail } from '../../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classes from './messages.module.scss';
 
 const Message = () => {
-    const { userId } = useContext(AuthContext);
+    const { clientId } = useContext(AuthContext);
     const params = useParams();
     const { id } = params;
 
@@ -47,70 +47,117 @@ const Message = () => {
 
         const url = `/admin/support/ticket/update/${id}`;
         try {
-            await Axios.post(url, { message: inputMessage });
+            await Axios.post(url, {
+                message: inputMessage,
+            });
         } catch (err) {
             console.log(err.response.data.message);
         }
 
-        setMessages((prevState) => {
-            return [
-                ...prevState,
-                {
-                    userId,
-                    message: inputMessage,
-                    createdAt: Date.now(),
-                },
-            ];
-        });
+        setMessages((prevState) => [
+            ...prevState,
+            {
+                clientId,
+                message: inputMessage,
+                createdAt: Date.now(),
+            },
+        ]);
     };
 
     const inputChangeHandler = (e) => {
         setInputMessage(e.target.value);
-        return;
     };
 
     let keyNum = 0;
 
-    const ticketMessage =
-        messages &&
-        ticket &&
-        messages.map((msg) => {
-            return +userId === +msg.userId ? (
-                <div
-                    key={keyNum++}
-                    className={classes.message__sent__container}
-                >
-                    <div className={classes.message__container}>
-                        <span className={classes.message}>{msg.message}</span>
-                        <img src={supportSVG} alt="user Avatar" />
-                    </div>
+    const ticketMessage = () => {
+        if (messages && ticket) {
+            messages.map((msg) => {
+                keyNum = +1;
 
-                    <div className={classes.sentTime}>
-                        {new Date(msg.createdAt).toLocaleString('en-us')}
-                    </div>
-                </div>
-            ) : (
-                <div
-                    key={keyNum++}
-                    className={classes.message__received__container}
-                >
-                    <div className={classes.message__container}>
-                        <img src={customerSVG} alt="user Avatar" />
-                        <span className={classes.message}>{msg.message}</span>
-                    </div>
+                if (+clientId === +msg.clientId) {
+                    return (
+                        <div
+                            key={keyNum}
+                            className={classes.message__sent__container}
+                        >
+                            <div className={classes.message__container}>
+                                <span className={classes.message}>
+                                    {msg.message}
+                                </span>
+                                <img src={supportSVG} alt="user Avatar" />
+                            </div>
+                            <div className={classes.sentTime}>
+                                {new Date(msg.createdAt).toLocaleString(
+                                    'en-us',
+                                )}
+                            </div>
+                        </div>
+                    );
+                }
 
-                    <div className={classes.sentTime}>
-                        {new Date(msg.createdAt).toLocaleString('en-us')}
+                return (
+                    <div
+                        key={keyNum}
+                        className={classes.message__received__container}
+                    >
+                        <div className={classes.message__container}>
+                            <img src={customerSVG} alt="user Avatar" />
+                            <span className={classes.message}>
+                                {msg.message}
+                            </span>
+                        </div>
+                        <div className={classes.sentTime}>
+                            {new Date(msg.createdAt).toLocaleString('en-us')}
+                        </div>
                     </div>
-                </div>
-            );
-        });
+                );
+            });
+        }
+    };
+    // const ticketMessage =
+    //     messages &&
+    //     ticket &&
+    //     messages.map((msg) => {
+    //         return +clientId === +msg.clientId ? (
+    //             <div
+    //                 key={keyNum++}
+    //                 className={classes.message__sent__container}
+    //             >
+    //                 <div className={classes.message__container}>
+    //                     <span className={classes.message}>{msg.message}</span>
+    //                     <img src={supportSVG} alt="user Avatar" />
+    //                 </div>
+    //                 <div className={classes.sentTime}>
+    //                     {new Date(msg.createdAt).toLocaleString('en-us')}
+    //                 </div>
+    //             </div>
+    //         ) : (
+    //             <div
+    //                 key={keyNum++}
+    //                 className={classes.message__received__container}
+    //             >
+    //                 <div className={classes.message__container}>
+    //                     <img src={customerSVG} alt="user Avatar" />
+    //                     <span className={classes.message}>{msg.message}</span>
+    //                 </div>
+
+    //                 <div className={classes.sentTime}>
+    //                     {new Date(msg.createdAt).toLocaleString('en-us')}
+    //                 </div>
+    //             </div>
+    //         );
+    //     });
 
     // TODO
     return (
         <>
             <Helmet>
-                <title>Ticket - {websiteName || 'SMT'}</title>
+                <title>
+                    Ticket -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             <div className="container">
@@ -124,14 +171,18 @@ const Message = () => {
                             }}
                         >
                             <VscListSelection />
-                        </IconContext.Provider>{' '}
+                        </IconContext.Provider>
+                        {' '}
                         Ticket
                     </h2>
 
                     <Card>
                         <Card.Header>
                             <Card.Title>
-                                <h3>Subject -{ticket && ticket.subject}</h3>
+                                <h3>
+                                    Subject -
+                                    {ticket && ticket.subject}
+                                </h3>
                             </Card.Title>
                         </Card.Header>
 

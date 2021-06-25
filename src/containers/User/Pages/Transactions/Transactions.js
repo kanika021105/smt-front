@@ -1,5 +1,3 @@
-// jshint esversion: 9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
@@ -9,14 +7,15 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/transactions.scss';
 
 export default function Services() {
-    const [errorMsg, setErrorMsg] = useState('');
-    const [showError, setShowError] = useState(false);
+    // const [errorMsg, setErrorMsg] = useState('');
+    // const [showError, setShowError] = useState(false);
 
     const [transactions, setTransactions] = useState();
 
@@ -27,24 +26,15 @@ export default function Services() {
     useEffect(() => {
         setIsLoading(true);
 
-        let url = '/transactions';
+        const url = '/transactions';
         Axios.get(url)
             .then((res) => {
-                let { data } = res;
+                const { data } = res;
 
-                if (data.status !== 'success') {
-                    setErrorMsg(
-                        'Failed to load transactions please try again or contact support team.'
-                    );
-                    setShowError(true);
-                }
+                if (data.status !== 'success') return;
+
                 setIsLoading(false);
-
-                setErrorMsg('');
-                setShowError(false);
                 setTransactions(data.transactions.reverse());
-
-                return;
             })
             .catch((err) => console.log(err));
     }, []);
@@ -53,10 +43,14 @@ export default function Services() {
     return (
         <>
             <Helmet>
-                <title>Transactions - {websiteName || 'SMT'}</title>
+                <title>
+                    Transactions -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container Transactions">
                 <h2 className="pageTitle">
@@ -68,13 +62,14 @@ export default function Services() {
                         }}
                     >
                         <VscListSelection />
-                    </IconContext.Provider>{' '}
+                    </IconContext.Provider>
+                    {' '}
                     Services
                 </h2>
 
                 <Card>
-                    <table className="table">
-                        <thead>
+                    <Table>
+                        <THead>
                             <tr>
                                 <th>ID</th>
                                 <th>Email</th>
@@ -83,10 +78,11 @@ export default function Services() {
                                 <th>Method</th>
                                 <th>Status</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {transactions &&
-                                transactions.map((transaction) => (
+                        </THead>
+
+                        <TBody>
+                            {transactions
+                                && transactions.map((transaction) => (
                                     <tr key={transaction.id}>
                                         <td>{transaction.id}</td>
                                         <td>{transaction.email}</td>
@@ -95,6 +91,7 @@ export default function Services() {
                                         <td>{transaction.paymentMethod}</td>
                                         <td>
                                             <button
+                                                type="button"
                                                 className="btn btn-success btn-disabled"
                                                 disabled
                                             >
@@ -103,8 +100,8 @@ export default function Services() {
                                         </td>
                                     </tr>
                                 ))}
-                        </tbody>
-                    </table>
+                        </TBody>
+                    </Table>
                 </Card>
             </div>
         </>

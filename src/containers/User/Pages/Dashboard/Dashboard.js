@@ -1,8 +1,13 @@
+/* eslint-disable indent */
 // jshint esversion:9
 
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, {
+    useEffect,
+    useState,
+    useContext,
+    useRef,
+} from 'react';
 import { Helmet } from 'react-helmet';
-import { Chart } from 'chart.js';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
@@ -10,8 +15,9 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
-import { WebsiteDetail } from '../../../../containers/Context/WebsiteDetailContext';
+import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import '../../../../sass/pages/user/Dashboard.scss';
 
@@ -38,7 +44,13 @@ const Dashboard = () => {
             });
     }, []);
 
-    const { totalOrders, services, totalTickets, balance, spent } = data;
+    const {
+        totalOrders,
+        services,
+        totalTickets,
+        balance,
+        spent,
+    } = data;
 
     console.log(graphDiv.current);
     // const ctx = document.getElementById('chart').getContext('2d');
@@ -128,10 +140,14 @@ const Dashboard = () => {
         <>
             <Helmet>
                 <meta name="description" content="Helmet application" />
-                <title>Dashboard - {websiteName || 'SMT'}</title>
+                <title>
+                    Dashboard -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
-            {<Loading show={isLoading} />}
+            <Loading show={isLoading} />
 
             <div className="container">
                 <h2 className="pageTitle">
@@ -143,7 +159,8 @@ const Dashboard = () => {
                         }}
                     >
                         <VscListSelection />
-                    </IconContext.Provider>{' '}
+                    </IconContext.Provider>
+                    {' '}
                     Dashboard
                 </h2>
 
@@ -200,13 +217,13 @@ const Dashboard = () => {
                         <div className="row">
                             <div className="col-lg-9 col-md-8 col-sm-12 u-mb-2 u-sm-mb-1">
                                 <DashboardCard>
-                                    <div class="line-chart">
-                                        <div class="aspect-ratio">
+                                    <div className="line-chart">
+                                        <div className="aspect-ratio">
                                             <canvas
                                                 id="myChart"
                                                 width="400"
                                                 height="400"
-                                            ></canvas>
+                                            />
                                         </div>
                                     </div>
                                 </DashboardCard>
@@ -249,7 +266,7 @@ const Dashboard = () => {
                                                 </span>
                                             </div>
 
-                                            <div className={'col-6'}>
+                                            <div className="col-6">
                                                 <span className="section__two--statusData">
                                                     {data.pendingOrder || 0}
                                                 </span>
@@ -291,62 +308,59 @@ const Dashboard = () => {
                                 Top 10 best selling services
                             </div>
 
-                            <div>
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>status</th>
-                                        </tr>
-                                    </thead>
+                            <Table className="table">
+                                <THead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>status</th>
+                                    </tr>
+                                </THead>
 
-                                    <tbody>
-                                        {services &&
-                                            services.map((service) => (
-                                                <tr key={service.id}>
-                                                    <td>{service.id}</td>
-                                                    <td>
-                                                        {service.title.length >
-                                                        30
-                                                            ? service.title.substr(
-                                                                  0,
-                                                                  31
-                                                              ) + '...'
-                                                            : service.title}
-                                                    </td>
-                                                    <td>
-                                                        {service.status ===
-                                                            'active' && (
-                                                            <button
-                                                                className="btn btn-success btn-disabled"
-                                                                disabled
-                                                            >
-                                                                {service.status}
-                                                            </button>
-                                                        )}
-                                                        {service.status ===
-                                                            'deactive' && (
-                                                            <button
-                                                                className={
-                                                                    'btn btn-inactive btn-disabled'
-                                                                }
-                                                                disabled
-                                                            >
-                                                                {service.status[0].toUpperCase() +
-                                                                    service.status
-                                                                        .substring(
-                                                                            1
-                                                                        )
-                                                                        .toLowerCase()}
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                <TBody>
+                                    {services
+                                        && services.map((service) => (
+                                            <tr key={service.id}>
+                                                <td>{service.id}</td>
+                                                <td>
+                                                    {service.title.length > 30
+                                                        ? `${service.title.substr(
+                                                              0,
+                                                              31,
+                                                          )}...`
+                                                        : service.title}
+                                                </td>
+                                                <td>
+                                                    {service.status
+                                                        === 'active' && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-success btn-disabled"
+                                                            disabled
+                                                        >
+                                                            {service.status}
+                                                        </button>
+                                                    )}
+                                                    {service.status
+                                                        === 'deactive' && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-inactive btn-disabled"
+                                                            disabled
+                                                        >
+                                                            {service.status[0].toUpperCase()
+                                                                + service.status
+                                                                    .substring(
+                                                                        1,
+                                                                    )
+                                                                    .toLowerCase()}
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </TBody>
+                            </Table>
                         </DashboardCard>
                     </section>
                 </main>
