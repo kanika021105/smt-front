@@ -344,12 +344,19 @@ const Dashboard = () => {
                                                 </defs>
 
                                                 <XAxis dataKey="name" />
-                                                <Tooltip />
+                                                <Tooltip cursor={{
+                                                    stroke: '#0f89ff',
+                                                    strokeWidth: 8,
+                                                    strokeOpacity: '0.2',
+                                                }}
+                                                />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="pending"
                                                     stroke="url(#colorPending)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorPending)"
                                                     fillOpacity="1"
                                                     style={{
@@ -361,51 +368,78 @@ const Dashboard = () => {
                                                     type="monotone"
                                                     dataKey="processing"
                                                     stroke="url(#colorProcessing)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorProcessing)"
                                                     fillOpacity="1"
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="inprogress"
                                                     stroke="url(#colorInprogress)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorInprogress)"
                                                     fillOpacity="1"
-
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="completed"
                                                     stroke="url(#colorCompleted)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorCompleted)"
                                                     fillOpacity="1"
-
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="partial"
                                                     stroke="url(#colorPartial)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorPartial)"
                                                     fillOpacity="1"
-
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="cancelled"
                                                     stroke="url(#colorCancelled)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorCancelled)"
                                                     fillOpacity="1"
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
 
                                                 <Area
                                                     type="monotone"
                                                     dataKey="refunded"
                                                     stroke="url(#colorRefunded)"
+                                                    strokeOpacity="0.8"
+                                                    strokeWidth="2"
                                                     fill="url(#colorRefunded)"
                                                     fillOpacity="1"
+                                                    style={{
+                                                        strokeLinecap: 'round',
+                                                    }}
                                                 />
                                             </AreaChart>
                                         </ResponsiveContainer>

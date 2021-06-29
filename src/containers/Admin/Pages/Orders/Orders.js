@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-import Table from '../../../../components/UI/Table/Table';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
@@ -452,7 +452,7 @@ const Orders = () => {
         ) : (
             <Card>
                 <Table>
-                    <Table.Head>
+                    <THead>
                         <tr>
                             <th>ID</th>
                             <th>Service</th>
@@ -463,9 +463,9 @@ const Orders = () => {
                             <th>Status</th>
                             <th>Options</th>
                         </tr>
-                    </Table.Head>
+                    </THead>
 
-                    <Table.Body>
+                    <TBody>
                         {orders
                             && orders.map((order) => (
                                 <tr key={order.id}>
@@ -551,7 +551,7 @@ const Orders = () => {
                                     </td>
                                 </tr>
                             ))}
-                    </Table.Body>
+                    </TBody>
                 </Table>
             </Card>
         );

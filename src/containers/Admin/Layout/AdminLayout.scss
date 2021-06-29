@@ -1,0 +1,29 @@
+.layout-container{
+    overflow-x: hidden;
+}
+
+.sidebar.active ~ .main {
+    margin-left: 26rem;
+    transition: all .5s;
+}
+
+.sidebar.active ~ footer {
+    margin-left: 26rem;
+    transition: all .5s;
+}
+
+
+.sidebar ~ .main {
+    margin-left: 7.8rem;
+    transition: all .5s;
+}
+
+.sidebar ~ footer {
+    margin-left: 7.8rem;
+    transition: all .5s;
+}
+
+.main {
+    flex-direction: column;
+    flex: 1;
+}

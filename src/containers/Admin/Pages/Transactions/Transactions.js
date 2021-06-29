@@ -1,17 +1,12 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-
-import Table from '../../../../components/UI/Table/Table';
-
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
@@ -43,7 +38,7 @@ const Transactions = () => {
     const transactionDataTable = (
         <Card>
             <Table className="table">
-                <Table.Head>
+                <THead>
                     <tr>
                         <th>ID</th>
                         <th>Email</th>
@@ -52,9 +47,9 @@ const Transactions = () => {
                         <th>Method</th>
                         <th>Status</th>
                     </tr>
-                </Table.Head>
+                </THead>
 
-                <Table.Body>
+                <TBody>
                     {transactions
                         && transactions.map((transaction) => (
                             <tr key={transaction.id}>
@@ -74,7 +69,7 @@ const Transactions = () => {
                                 </td>
                             </tr>
                         ))}
-                </Table.Body>
+                </TBody>
             </Table>
         </Card>
     );

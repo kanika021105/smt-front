@@ -1,17 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
-import Table from '../../../../components/UI/Table/Table';
-
 import Loading from '../../../../components/UI/Loading/Loading';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import WebsiteDetail from '../../../Context/WebsiteDetailContext';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import './support.scss';
 
@@ -74,16 +72,16 @@ const Support = () => {
     const supportDataTable = (
         <Card>
             <Table>
-                <Table.Head>
+                <THead>
                     <tr>
                         <th>ID</th>
                         <th>Email</th>
                         <th>Subject</th>
                         <th>Status</th>
                     </tr>
-                </Table.Head>
+                </THead>
 
-                <Table.Body>{ticketList}</Table.Body>
+                <TBody>{ticketList}</TBody>
             </Table>
         </Card>
     );

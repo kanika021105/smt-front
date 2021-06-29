@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classes from './Footer.module.scss';
 
 const AdminFooter = () => (
-    <div className={classes.footer}>
+    <footer className={classes.footer}>
         <div className={classes.footer__container}>
             <div className={classes.footer__item}>
                 <span>
@@ -20,7 +20,7 @@ const AdminFooter = () => (
                 </span>
             </div>
         </div>
-    </div>
+    </footer>
 );
 
 export default AdminFooter;

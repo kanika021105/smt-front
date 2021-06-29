@@ -11,7 +11,7 @@ import Axios from '../../../axiosIns';
 import classes from './Login.module.scss';
 
 // import Logo from '../../../assets/Images/SMT-Logo.png';
-import LoginImage from '../../../assets/Images/login.svg';
+import LoginImage from '../../../assets/images/login.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {

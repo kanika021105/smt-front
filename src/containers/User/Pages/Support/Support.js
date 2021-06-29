@@ -3,7 +3,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import Modal from 'react-bootstrap/Modal';
@@ -11,9 +10,8 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-import Table from '../../../../components/UI/Table/Table';
-
 import WebsiteDetail from '../../../Context/WebsiteDetailContext';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import '../../../../sass/pages/user/support.scss';
 
@@ -21,7 +19,6 @@ const Support = () => {
     const history = useHistory();
 
     const [errorMsg, setErrorMsg] = useState('');
-    // const [addError, setAddError] = useState(false);
     const [showError, setShowError] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
 
@@ -461,16 +458,16 @@ const Support = () => {
                         </div>
                     )}
                     <Table className="table">
-                        <Table.Head>
+                        <THead>
                             <tr>
                                 <th>ID</th>
                                 <th>Email</th>
                                 <th>Subject</th>
                                 <th>Status</th>
                             </tr>
-                        </Table.Head>
+                        </THead>
 
-                        <Table.Body>{ticketList}</Table.Body>
+                        <TBody>{ticketList}</TBody>
                     </Table>
                 </Card>
             </div>

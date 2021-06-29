@@ -1,13 +1,16 @@
-/* eslint-disable indent */
-// jshint esversion:9
-
 import React, {
     useEffect,
     useState,
     useContext,
-    useRef,
 } from 'react';
 import { Helmet } from 'react-helmet';
+import {
+    ResponsiveContainer,
+    XAxis,
+    AreaChart,
+    Area,
+    Tooltip,
+} from 'recharts';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
@@ -16,18 +19,15 @@ import Axios from '../../../../axiosIns';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-
 import WebsiteDetail from '../../../Context/WebsiteDetailContext';
-
-import '../../../../sass/pages/user/Dashboard.scss';
+import classes from './Dashboard.module.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [graphData, setGraphData] = useState('');
 
     const { websiteName } = useContext(WebsiteDetail);
-
-    const graphDiv = useRef(null);
 
     useEffect(() => {
         setIsLoading(true);
@@ -36,6 +36,7 @@ const Dashboard = () => {
         Axios.get(url)
             .then((res) => {
                 setData(res.data);
+                setGraphData(res.data.graphData);
                 setIsLoading(false);
             })
             .catch((err) => {
@@ -52,90 +53,6 @@ const Dashboard = () => {
         spent,
     } = data;
 
-    console.log(graphDiv.current);
-    // const ctx = document.getElementById('chart').getContext('2d');
-    // const gradient = ctx.createLinearGradient(0, 0, 0, 450);
-
-    // gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)');
-    // gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)');
-    // gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-
-    // var chartData = {
-    //     labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    //     datasets: [
-    //         {
-    //             label: 'Custom Label Name',
-    //             backgroundColor: gradient,
-    //             pointBackgroundColor: 'white',
-    //             borderWidth: 1,
-    //             borderColor: '#911215',
-    //             data: [50, 55, 80, 81, 54, 50],
-    //         },
-    //         {
-    //             label: 'Custom Label Name',
-    //             backgroundColor: gradient,
-    //             pointBackgroundColor: 'white',
-    //             borderWidth: 1,
-    //             borderColor: '#911215',
-    //             data: [10, 45, 60, 101, 64, 20],
-    //         },
-    //     ],
-    // };
-
-    // var options = {
-    //     responsive: true,
-    //     maintainAspectRatio: true,
-    //     animation: {
-    //         easing: 'easeInOutQuad',
-    //         duration: 520,
-    //     },
-    //     scales: {
-    //         xAxes: [
-    //             {
-    //                 gridLines: {
-    //                     color: 'rgba(200, 200, 200, 0.05)',
-    //                     lineWidth: 1,
-    //                 },
-    //             },
-    //         ],
-    //         yAxes: [
-    //             {
-    //                 gridLines: {
-    //                     color: 'rgba(200, 200, 200, 0.08)',
-    //                     lineWidth: 1,
-    //                 },
-    //             },
-    //         ],
-    //     },
-    //     elements: {
-    //         line: {
-    //             tension: 0.4,
-    //         },
-    //     },
-    //     legend: {
-    //         display: false,
-    //     },
-    //     point: {
-    //         backgroundColor: 'white',
-    //     },
-    //     tooltips: {
-    //         titleFontFamily: 'Open Sans',
-    //         backgroundColor: 'rgba(0,0,0,0.3)',
-    //         titleFontColor: 'red',
-    //         caretSize: 5,
-    //         cornerRadius: 2,
-    //         xPadding: 10,
-    //         yPadding: 10,
-    //     },
-    // };
-
-    // var chartInstance = new Chart(ctx, {
-    //     type: 'line',
-    //     data: chartData,
-    //     options: options,
-    // });
-
-    // TODO Change title to dynamic
     return (
         <>
             <Helmet>
@@ -164,170 +81,314 @@ const Dashboard = () => {
                     Dashboard
                 </h2>
 
-                <main className="main">
-                    <section className="section__one">
-                        <div className="row">
-                            <div className="col-lg-3 col-md-6 col-sm-6 u-mb-2 u-sm-mb-1">
-                                <DashboardCard>
-                                    <span className="section__one__dataTitle">
-                                        Available Fund
-                                    </span>
-                                    <span className="section__one__dataValue">
-                                        {(balance && balance.toFixed(2)) || '0'}
-                                    </span>
-                                </DashboardCard>
-                            </div>
-
-                            <div className="col-lg-3 col-md-6 col-sm-6 u-mb-2 u-sm-mb-1">
-                                <DashboardCard>
-                                    <span className="section__one__dataTitle">
-                                        Total Spent
-                                    </span>
-                                    <span className="section__one__dataValue">
-                                        {(spent && spent.toFixed(2)) || '0'}
-                                    </span>
-                                </DashboardCard>
-                            </div>
-
-                            <div className="col-lg-3 col-md-6 col-sm-6 u-mb-2 u-sm-mb-1">
-                                <DashboardCard>
-                                    <span className="section__one__dataTitle">
-                                        Total Order
-                                    </span>
-                                    <span className="section__one__dataValue">
-                                        {totalOrders || '0'}
-                                    </span>
-                                </DashboardCard>
-                            </div>
-
-                            <div className="col-lg-3 col-md-6 col-sm-6 u-mb-2 u-sm-mb-1">
-                                <DashboardCard>
-                                    <span className="section__one__dataTitle">
-                                        Total Ticket
-                                    </span>
-                                    <span className="section__one__dataValue">
-                                        {totalTickets || '0'}
-                                    </span>
-                                </DashboardCard>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section className="section__two">
-                        <div className="row">
-                            <div className="col-lg-9 col-md-8 col-sm-12 u-mb-2 u-sm-mb-1">
-                                <DashboardCard>
-                                    <div className="line-chart">
-                                        <div className="aspect-ratio">
-                                            <canvas
-                                                id="myChart"
-                                                width="400"
-                                                height="400"
-                                            />
-                                        </div>
-                                    </div>
-                                </DashboardCard>
-                            </div>
-
-                            <div className="col-lg-3 col-md-4 col-sm-12 u-mb-2 u-sm-mb-1">
-                                <DashboardCard>
-                                    <div className="section__two--summaryTitle">
-                                        Orders
-                                    </div>
-                                    <div className="section__two--summaryData">
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <span className="section__two--statusTitle">
-                                                    Pending:-
-                                                </span>
-
-                                                <span className="section__two--statusTitle">
-                                                    Processing:-
-                                                </span>
-
-                                                <span className="section__two--statusTitle">
-                                                    InProgress:-
-                                                </span>
-
-                                                <span className="section__two--statusTitle">
-                                                    Completed:-
-                                                </span>
-
-                                                <span className="section__two--statusTitle">
-                                                    Partial:-
-                                                </span>
-
-                                                <span className="section__two--statusTitle">
-                                                    Cancelled:-
-                                                </span>
-
-                                                <span className="section__two--statusTitle">
-                                                    Refunded:-
-                                                </span>
-                                            </div>
-
-                                            <div className="col-6">
-                                                <span className="section__two--statusData">
-                                                    {data.pendingOrder || 0}
-                                                </span>
-
-                                                <span className="section__two--statusData">
-                                                    {data.processingOrder || 0}
-                                                </span>
-
-                                                <span className="section__two--statusData">
-                                                    {data.inprogressOrder || 0}
-                                                </span>
-
-                                                <span className="section__two--statusData">
-                                                    {data.completedOrder || 0}
-                                                </span>
-
-                                                <span className="section__two--statusData">
-                                                    {data.partialOrder || 0}
-                                                </span>
-
-                                                <span className="section__two--statusData">
-                                                    {data.cancelledOrder || 0}
-                                                </span>
-
-                                                <span className="section__two--statusData">
-                                                    {data.refundedOrder || 0}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </DashboardCard>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section className="section__third mt-2">
+                <section className={classes.section__one}>
+                    <div className={classes.section__one__item}>
                         <DashboardCard>
-                            <div className="tableTitle">
-                                Top 10 best selling services
+                            <span className={classes['section__one__item--title']}>
+                                Available Fund
+                            </span>
+                            <span className={classes['section__one__item--value']}>
+                                {(balance && balance.toFixed(2)) || '0'}
+                            </span>
+                        </DashboardCard>
+                    </div>
+
+                    <div className={classes.section__one__item}>
+                        <DashboardCard>
+                            <span className={classes['section__one__item--title']}>
+                                Total Spent
+                            </span>
+                            <span className={classes['section__one__item--value']}>
+                                {(spent && spent.toFixed(2)) || '0'}
+                            </span>
+                        </DashboardCard>
+                    </div>
+
+                    <div className={classes.section__one__item}>
+                        <DashboardCard>
+                            <span className={classes['section__one__item--title']}>
+                                Total Order
+                            </span>
+                            <span className={classes['section__one__item--value']}>
+                                {totalOrders || '0'}
+                            </span>
+                        </DashboardCard>
+                    </div>
+
+                    <div className={classes.section__one__item}>
+                        <DashboardCard>
+                            <span className={classes['section__one__item--title']}>
+                                Total Ticket
+                            </span>
+                            <span className={classes['section__one__item--value']}>
+                                {totalTickets || '0'}
+                            </span>
+                        </DashboardCard>
+                    </div>
+                </section>
+
+                <section className={classes.section__two}>
+                    <div className={classes.section__two__graph}>
+                        <DashboardCard>
+                            <div
+                                className={
+                                    classes.section__two__graph_container
+                                }
+                            >
+                                <ResponsiveContainer
+                                    width="100%"
+                                    height="100%"
+                                >
+                                    <AreaChart
+                                        data={graphData}
+                                        margin={{
+                                            top: 0,
+                                            right: 0,
+                                            left: 0,
+                                            bottom: 0,
+                                        }}
+                                    >
+
+                                        <defs>
+                                            <linearGradient id="colorPending" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#ff750ced" stopOpacity={0.8} />
+                                                <stop offset="90%" stopColor="#ff632aed" stopOpacity={0} />
+                                            </linearGradient>
+
+                                            <linearGradient id="colorProcessing" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#5ef108ed" stopOpacity={0.8} />
+                                                <stop offset="90%" stopColor="#5dc508" stopOpacity={0} />
+                                            </linearGradient>
+
+                                            <linearGradient id="colorInprogress" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#0983f3ed" stopOpacity={0.8} />
+                                                <stop offset="90%" stopColor="#2172f3" stopOpacity={0} />
+                                            </linearGradient>
+
+                                            <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#099e7aed" stopOpacity={0.8} />
+                                                <stop offset="90%" stopColor="#268b4a" stopOpacity={0} />
+                                            </linearGradient>
+
+                                            <linearGradient id="colorPartial" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#f86444ed" stopOpacity={0.8} />
+                                                <stop offset="90%" stopColor="#f34242" stopOpacity={0} />
+                                            </linearGradient>
+
+                                            <linearGradient id="colorCancelled" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#cf3558ed" stopOpacity={0.4} />
+                                                <stop offset="90%" stopColor="#cc1f1f" stopOpacity={0} />
+                                            </linearGradient>
+
+                                            <linearGradient id="colorRefunded" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="10%" stopColor="#8F66f4ed" stopOpacity={0.4} />
+                                                <stop offset="90%" stopColor="#8F44FD" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+
+                                        <XAxis dataKey="name" />
+                                        <Tooltip cursor={{
+                                            stroke: '#0f89ff',
+                                            strokeWidth: 8,
+                                            strokeOpacity: '0.2',
+                                        }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="pending"
+                                            stroke="url(#colorPending)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorPending)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="processing"
+                                            stroke="url(#colorProcessing)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorProcessing)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="inprogress"
+                                            stroke="url(#colorInprogress)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorInprogress)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="completed"
+                                            stroke="url(#colorCompleted)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorCompleted)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="partial"
+                                            stroke="url(#colorPartial)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorPartial)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="cancelled"
+                                            stroke="url(#colorCancelled)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorCancelled)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="refunded"
+                                            stroke="url(#colorRefunded)"
+                                            strokeOpacity="0.8"
+                                            strokeWidth="2"
+                                            fill="url(#colorRefunded)"
+                                            fillOpacity="1"
+                                            style={{
+                                                strokeLinecap: 'round',
+                                            }}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </DashboardCard>
+                    </div>
+
+                    <div className={classes.section__two__summary}>
+                        <DashboardCard>
+                            <div className={classes['section__two__summary--heading']}>
+                                Orders
                             </div>
 
-                            <Table className="table">
-                                <THead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>status</th>
-                                    </tr>
-                                </THead>
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    Pending:-
+                                </span>
 
-                                <TBody>
-                                    {services
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.pendingOrder || 0}
+                                </span>
+                            </div>
+
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    Processing:-
+                                </span>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.processingOrder || 0}
+                                </span>
+                            </div>
+
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    InProgress:-
+                                </span>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.inprogressOrder || 0}
+                                </span>
+                            </div>
+
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    Completed:-
+                                </span>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.completedOrder || 0}
+                                </span>
+                            </div>
+
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    Cancelled:-
+                                </span>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.cancelledOrder || 0}
+                                </span>
+                            </div>
+
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    Partial:-
+                                </span>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.partialOrder || 0}
+                                </span>
+                            </div>
+
+                            <div className={classes['section__two__summary--item']}>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    Refunded:-
+                                </span>
+                                <span className={classes['section__two__summary--item--value']}>
+                                    {data.refundedOrder || 0}
+                                </span>
+                            </div>
+                        </DashboardCard>
+                    </div>
+                </section>
+
+                <section className="section__third">
+                    <DashboardCard>
+                        <div className="tableTitle">
+                            Top 10 best selling services
+                        </div>
+
+                        <Table className="table">
+                            <THead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>status</th>
+                                </tr>
+                            </THead>
+
+                            <TBody>
+                                {services
                                         && services.map((service) => (
                                             <tr key={service.id}>
                                                 <td>{service.id}</td>
                                                 <td>
                                                     {service.title.length > 30
                                                         ? `${service.title.substr(
-                                                              0,
-                                                              31,
-                                                          )}...`
+                                                            0,
+                                                            31,
+                                                        )}...`
                                                         : service.title}
                                                 </td>
                                                 <td>
@@ -359,11 +420,10 @@ const Dashboard = () => {
                                                 </td>
                                             </tr>
                                         ))}
-                                </TBody>
-                            </Table>
-                        </DashboardCard>
-                    </section>
-                </main>
+                            </TBody>
+                        </Table>
+                    </DashboardCard>
+                </section>
             </div>
         </>
     );

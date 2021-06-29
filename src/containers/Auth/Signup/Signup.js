@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
 
-import SignUpImage from '../../../assets/Images/signup.svg';
+import SignUpImage from '../../../assets/images/signup.svg';
 import WebsiteDetail from '../../Context/WebsiteDetailContext';
 
 const Signup = () => {

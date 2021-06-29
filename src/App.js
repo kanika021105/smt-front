@@ -1,7 +1,10 @@
 // jshint esversion:9
 
 import React, {
-    Suspense, lazy, useEffect, useState,
+    Suspense,
+    lazy,
+    useEffect,
+    useState,
 } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
@@ -50,17 +53,15 @@ const App = () => {
             token,
         })
             .then((res) => {
-                console.log('called');
                 const { data } = res;
 
-                console.log(data);
                 setRole(data.role);
                 setIsLoggedIn(true);
                 setEmail(data.email);
                 setRole(data.role);
                 setClientId(data.clientId);
-                setFName(data.fName);
-                setLName(data.lName);
+                setFName(data.firstName);
+                setLName(data.lastName);
                 setBalance(data.balance);
             })
             .catch((err) => {
@@ -108,33 +109,35 @@ const App = () => {
     }
 
     return (
-        <WebsiteDetail.Provider
-            value={{
-                websiteName,
-                setWebsiteName,
-            }}
-        >
-            <AuthContext.Provider
+        <>
+            <WebsiteDetail.Provider
                 value={{
-                    role,
-                    setRole,
-                    email,
-                    setEmail,
-                    clientId,
-                    setClientId,
-                    fName,
-                    setFName,
-                    lName,
-                    setLName,
-                    balance,
-                    setBalance,
-                    isLoggedIn,
-                    setIsLoggedIn,
+                    websiteName,
+                    setWebsiteName,
                 }}
             >
-                {route}
-            </AuthContext.Provider>
-        </WebsiteDetail.Provider>
+                <AuthContext.Provider
+                    value={{
+                        role,
+                        setRole,
+                        email,
+                        setEmail,
+                        clientId,
+                        setClientId,
+                        fName,
+                        setFName,
+                        lName,
+                        setLName,
+                        balance,
+                        setBalance,
+                        isLoggedIn,
+                        setIsLoggedIn,
+                    }}
+                >
+                    {route}
+                </AuthContext.Provider>
+            </WebsiteDetail.Provider>
+        </>
     );
 };
 

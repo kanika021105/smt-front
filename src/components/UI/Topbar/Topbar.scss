@@ -1,0 +1,23 @@
+@import '../../../sass/index';
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 0 2rem 0 rgba(0, 0, 0 , .2);
+
+    & .sidebar-btn{
+        margin-left: 2rem;
+        font-size: 26px;
+        color: $color-secondary;
+    }
+
+    & .profile{
+        margin-right: 4rem;
+        text-transform: capitalize;
+    }
+}
