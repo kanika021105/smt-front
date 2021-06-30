@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import * as FiIcons from 'react-icons/fi';
 import { BiCollection, BiSupport } from 'react-icons/bi';
@@ -7,10 +7,10 @@ import { AiOutlineHistory } from 'react-icons/ai';
 import * as RiIcons from 'react-icons/ri';
 
 import { ReactComponent as Logo } from '../../../../assets/images/logo.min.svg';
-import { AuthContext } from '../../../Context/AuthContext';
+import AuthContext from '../../../../store/auth-context';
 
 function Links() {
-    const { fName, lName, role } = useContext(AuthContext);
+    const { firstName, lastName, role } = useContext(AuthContext);
 
     const logoutHandler = (e) => {
         e.preventDefault();
@@ -28,10 +28,10 @@ function Links() {
 
             <ul className="nav-links u-mt-4">
                 <li>
-                    <Link to="/admin/dashboard">
+                    <NavLink to="/admin/dashboard" activeClassName="active_link">
                         <RiIcons.RiDashboardLine />
                         <span className="link_name">Dashboard</span>
-                    </Link>
+                    </NavLink>
 
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Dashboard</span></li>
@@ -40,10 +40,10 @@ function Links() {
 
                 <li>
                     <div className="iocn-link">
-                        <Link to="/admin/orders">
+                        <NavLink to="/admin/orders" activeClassName="active_link">
                             <RiIcons.RiFileList3Line />
                             <span className="link_name">Order</span>
-                        </Link>
+                        </NavLink>
 
                         <ul className="sub-menu blank">
                             <li><span className="link_name">Orders</span></li>
@@ -53,10 +53,10 @@ function Links() {
 
                 <li>
                     <div className="iocn-link">
-                        <Link to="/admin/categories">
+                        <NavLink to="/admin/categories" activeClassName="active_link">
                             <BiCollection />
                             <span className="link_name">Categories</span>
-                        </Link>
+                        </NavLink>
 
                         <ul className="sub-menu blank">
                             <li><span className="link_name">Categories</span></li>
@@ -65,10 +65,10 @@ function Links() {
                 </li>
 
                 <li>
-                    <Link to="/admin/services">
+                    <NavLink to="/admin/services" activeClassName="active_link">
                         <RiIcons.RiListSettingsLine />
                         <span className="link_name">Services</span>
-                    </Link>
+                    </NavLink>
 
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Services</span></li>
@@ -76,50 +76,55 @@ function Links() {
                 </li>
 
                 <li>
-                    <Link to="/admin/transactions">
+                    <NavLink to="/admin/transactions" activeClassName="active_link">
                         <AiOutlineHistory />
                         <span className="link_name">Transactions</span>
-                    </Link>
+                    </NavLink>
+
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Transactions</span></li>
                     </ul>
                 </li>
 
                 <li>
-                    <Link to="/admin/support">
+                    <NavLink to="/admin/support" activeClassName="active_link">
                         <BiSupport />
                         <span className="link_name">Support</span>
-                    </Link>
+                    </NavLink>
+
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Support</span></li>
                     </ul>
                 </li>
 
                 <li>
-                    <Link to="/admin/clients">
+                    <NavLink to="/admin/clients" activeClassName="active_link">
                         <FiIcons.FiUsers />
                         <span className="link_name">Clients</span>
-                    </Link>
+                    </NavLink>
+
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Clients</span></li>
                     </ul>
                 </li>
 
                 <li>
-                    <Link to="/admin/settings">
+                    <NavLink to="/admin/settings" activeClassName="active_link">
                         <FiIcons.FiSettings />
                         <span className="link_name">Settings</span>
-                    </Link>
+                    </NavLink>
+
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Settings</span></li>
                     </ul>
                 </li>
 
                 <li>
-                    <Link to="/admin/api-provider">
+                    <NavLink to="/admin/api-provider" activeClassName="active_link">
                         <FiIcons.FiShare2 />
                         <span className="link_name">Api Provider</span>
-                    </Link>
+                    </NavLink>
+
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Api Provider</span></li>
                     </ul>
@@ -131,7 +136,7 @@ function Links() {
                             {/* <img src="image/profile.jpg" alt="profile" /> */}
                         </div>
                         <div className="name-role">
-                            <div className="profile_name">{`${fName} ${lName}`}</div>
+                            <div className="profile_name">{`${firstName} ${lastName}`}</div>
                             <div className="role">{role}</div>
                         </div>
                         <FiIcons.FiLogOut onClick={logoutHandler} />

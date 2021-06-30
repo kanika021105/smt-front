@@ -1,6 +1,3 @@
-/* eslint-disable */
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -14,11 +11,13 @@ import { MdAttachMoney } from 'react-icons/md';
 import { AiOutlineUnorderedList } from 'react-icons/ai';
 
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import Input from '../../../../components/UI/Input/Input';
+import Select from '../../../../components/UI/Select/Select';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-import Table, {THead,TBody} from '../../../../components/UI/Table/Table';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
@@ -81,6 +80,8 @@ const ApiProvider = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log(err.response.data.message);
             });
     }, []);
@@ -159,54 +160,42 @@ const ApiProvider = () => {
 
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
-                    <>
-                        <label className="input__label">Name</label>
-                        <input
-                            className="input"
-                            placeholder="Name"
-                            type="text"
-                            value={addApiDetails.name}
-                            onChange={nameChangeHandler}
-                        />
-                    </>
+                    <Input
+                        label="Name"
+                        placeholder="Name"
+                        type="text"
+                        value={addApiDetails.name}
+                        onChange={nameChangeHandler}
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">URL</label>
-                        <input
-                            className="input"
-                            placeholder="API URL"
-                            type="url"
-                            value={addApiDetails.url}
-                            onChange={urlChangeHandler}
-                        />
-                    </div>
+                    <Input
+                        label="URL"
+                        placeholder="API URL"
+                        type="url"
+                        value={addApiDetails.url}
+                        onChange={urlChangeHandler}
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">API Key</label>
-                        <input
-                            className="input"
-                            placeholder="API KEY"
-                            type="text"
-                            value={addApiDetails.key}
-                            onChange={apiKeyChangeHandler}
-                        />
-                    </div>
+                    <Input
+                        label="API Key"
+                        placeholder="API KEY"
+                        type="text"
+                        value={addApiDetails.key}
+                        onChange={apiKeyChangeHandler}
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">Status</label>
-                        <select
-                            className="select"
-                            value={addApiDetails.status}
-                            onChange={statusChangeHandler}
-                        >
-                            <option key="active" value="active">
-                                Active
-                            </option>
-                            <option key="disabled" value="disabled">
-                                Disable
-                            </option>
-                        </select>
-                    </div>
+                    <Select
+                        label="Status"
+                        value={addApiDetails.status}
+                        onChange={statusChangeHandler}
+                    >
+                        <option key="active" value="active">
+                            Active
+                        </option>
+                        <option key="disabled" value="disabled">
+                            Disable
+                        </option>
+                    </Select>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -237,6 +226,8 @@ const ApiProvider = () => {
             (provider) => +provider.id === +id,
         );
 
+        // TODO Remove this
+        // eslint-disable-next-line no-console
         console.log(apiProvider[0]);
         setEditingApiDetails(() => ({
             id: apiProvider[0].id,
@@ -308,54 +299,43 @@ const ApiProvider = () => {
             </Modal.Header>
             <form onSubmit={editFormSubmitHandler}>
                 <Modal.Body>
-                    <>
-                        <label className="input__label">Name</label>
-                        <input
-                            className="input"
-                            placeholder="Name"
-                            type="text"
-                            value={editingApiDetails.name}
-                            onChange={editingNameChangeHandler}
-                        />
-                    </>
 
-                    <div className="mt-2">
-                        <label className="input__label">URL</label>
-                        <input
-                            className="input"
-                            placeholder="API URL"
-                            type="url"
-                            value={editingApiDetails.url}
-                            onChange={editingUrlChangeHandler}
-                        />
-                    </div>
+                    <Input
+                        label="Name"
+                        placeholder="Name"
+                        type="text"
+                        value={editingApiDetails.name}
+                        onChange={editingNameChangeHandler}
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">API Key</label>
-                        <input
-                            className="input"
-                            placeholder="API KEY"
-                            type="text"
-                            value={editingApiDetails.key}
-                            onChange={editingKeyChangeHandler}
-                        />
-                    </div>
+                    <Input
+                        label="URL"
+                        placeholder="API URL"
+                        type="url"
+                        value={editingApiDetails.url}
+                        onChange={editingUrlChangeHandler}
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">Status</label>
-                        <select
-                            className="select"
-                            value={editingApiDetails.status}
-                            onChange={editingStatusChangeHandler}
-                        >
-                            <option key="active" value="active">
-                                Active
-                            </option>
-                            <option key="disabled" value="disabled">
-                                Disable
-                            </option>
-                        </select>
-                    </div>
+                    <Input
+                        label="API Key"
+                        placeholder="API KEY"
+                        type="text"
+                        value={editingApiDetails.key}
+                        onChange={editingKeyChangeHandler}
+                    />
+
+                    <Select
+                        label="Status"
+                        value={editingApiDetails.status}
+                        onChange={editingStatusChangeHandler}
+                    >
+                        <option key="active" value="active">
+                            Active
+                        </option>
+                        <option key="disabled" value="disabled">
+                            Disable
+                        </option>
+                    </Select>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -418,6 +398,9 @@ const ApiProvider = () => {
         const url = `/admin/api-provider/sync_services/${id}`;
 
         const data = await Axios.post(url, syncData.profitMargin);
+
+        // TODO Remove this
+        // eslint-disable-next-line no-console
         console.log(data);
     };
 
@@ -430,53 +413,39 @@ const ApiProvider = () => {
 
             <form onSubmit={syncFormSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className="input__label">Name</label>
-                        <input
-                            className="input input--disabled"
-                            value={syncData.api.name}
-                            placeholder="Name"
-                            disabled
-                        />
-                    </div>
+                    <Input
+                        label="Name"
+                        value={syncData.api.name}
+                        placeholder="Name"
+                        disabled
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">URL</label>
-                        <input
-                            className="input input--disabled"
-                            value={syncData.api.url}
-                            placeholder="API URL"
-                            disabled
-                        />
-                    </div>
+                    <Input
+                        label="URL"
+                        value={syncData.api.url}
+                        placeholder="URL"
+                        disabled
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">API Key</label>
-                        <input
-                            className="input input--disabled"
-                            value={syncData.api.key}
-                            placeholder="API KEY"
-                            disabled
-                        />
-                    </div>
+                    <Input
+                        label="API Key"
+                        value={syncData.api.key}
+                        placeholder="API KEY"
+                        disabled
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">
-                            Percentage Increase (Profit Margin)
-                        </label>
-                        <select
-                            className="select"
-                            value={syncData.profitMargin}
-                            onChange={profitMarginChangeHandler}
-                        >
-                            {counter &&
-                                counter.map((count) => (
+                    <Select
+                        label="Percentage Increase (Profit Margin)"
+                        value={syncData.profitMargin}
+                        onChange={profitMarginChangeHandler}
+                    >
+                        {counter
+                                && counter.map((count) => (
                                     <option key={count} value={count}>
                                         {`${count}%`}
                                     </option>
                                 ))}
-                        </select>
-                    </div>
+                    </Select>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -513,11 +482,14 @@ const ApiProvider = () => {
                 ...data.updatedApi,
             },
             ...newList,
+        // eslint-disable-next-line no-nested-ternary
         ].sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0));
 
         try {
             return setApiProviders(() => [...updatedList]);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             return console.log(err);
         }
     };
@@ -533,6 +505,8 @@ const ApiProvider = () => {
         const { data } = await Axios.delete(url);
 
         if (data.status !== 'deleted') {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             return console.log('Failed to delete message!');
         }
 
@@ -543,6 +517,8 @@ const ApiProvider = () => {
         try {
             return setApiProviders(() => [...newList]);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             return console.log(err.response.data.message);
         }
     };
@@ -589,8 +565,8 @@ const ApiProvider = () => {
                 </THead>
 
                 <TBody>
-                    {apiProviders &&
-                        apiProviders.map((apiProvider) => (
+                    {apiProviders
+                        && apiProviders.map((apiProvider) => (
                             <tr key={apiProvider.id}>
                                 <td>{apiProvider.id}</td>
                                 <td>{apiProvider.name}</td>
@@ -601,27 +577,25 @@ const ApiProvider = () => {
                                         <OverlayTrigger
                                             key="balance"
                                             placement="top"
-                                            overlay={
+                                            overlay={(
                                                 <Tooltip
-                                                    id={`tooltip-top`}
+                                                    id="tooltip-top"
                                                     style={{
                                                         fontSize: '1.6rem',
                                                     }}
                                                 >
                                                     Update Balance
                                                 </Tooltip>
-                                            }
+                                            )}
                                         >
                                             <button
                                                 type="button"
                                                 value={apiProvider.id}
                                                 variant="none"
                                                 className="apiActionButton apiActionButtonFirst"
-                                                onClick={() =>
-                                                    updateBalanceHandler(
-                                                        apiProvider.id,
-                                                    )
-                                                }
+                                                onClick={() => updateBalanceHandler(
+                                                    apiProvider.id,
+                                                )}
                                             >
                                                 <IconContext.Provider
                                                     value={{
@@ -639,7 +613,7 @@ const ApiProvider = () => {
                                         <OverlayTrigger
                                             key="sync"
                                             placement="top"
-                                            overlay={
+                                            overlay={(
                                                 <Tooltip
                                                     id="tooltip-top"
                                                     style={{
@@ -648,17 +622,15 @@ const ApiProvider = () => {
                                                 >
                                                     Sync Services
                                                 </Tooltip>
-                                            }
+                                            )}
                                         >
                                             <button
                                                 type="button"
                                                 variant="none"
                                                 className="apiActionButton"
-                                                onClick={() =>
-                                                    syncClickHandler(
-                                                        apiProvider.id,
-                                                    )
-                                                }
+                                                onClick={() => syncClickHandler(
+                                                    apiProvider.id,
+                                                )}
                                             >
                                                 <IconContext.Provider
                                                     value={{
@@ -676,7 +648,7 @@ const ApiProvider = () => {
                                         <OverlayTrigger
                                             key="service"
                                             placement="top"
-                                            overlay={
+                                            overlay={(
                                                 <Tooltip
                                                     id="tooltip-top"
                                                     style={{
@@ -685,17 +657,15 @@ const ApiProvider = () => {
                                                 >
                                                     Service List via API
                                                 </Tooltip>
-                                            }
+                                            )}
                                         >
                                             <button
                                                 type="button"
                                                 variant="none"
                                                 className="apiActionButton"
-                                                onClick={() =>
-                                                    serviceListHandler(
-                                                        apiProvider.id,
-                                                    )
-                                                }
+                                                onClick={() => serviceListHandler(
+                                                    apiProvider.id,
+                                                )}
                                             >
                                                 <IconContext.Provider
                                                     value={{
@@ -713,7 +683,7 @@ const ApiProvider = () => {
                                         <OverlayTrigger
                                             key="edit"
                                             placement="top"
-                                            overlay={
+                                            overlay={(
                                                 <Tooltip
                                                     id="tooltip-top"
                                                     style={{
@@ -722,17 +692,15 @@ const ApiProvider = () => {
                                                 >
                                                     Edit API
                                                 </Tooltip>
-                                            }
+                                            )}
                                         >
                                             <button
                                                 type="button"
                                                 variant="none"
                                                 className="apiActionButton"
-                                                onClick={() =>
-                                                    editButtonClickHandler(
-                                                        apiProvider.id,
-                                                    )
-                                                }
+                                                onClick={() => editButtonClickHandler(
+                                                    apiProvider.id,
+                                                )}
                                             >
                                                 <IconContext.Provider
                                                     value={{
@@ -750,7 +718,7 @@ const ApiProvider = () => {
                                         <OverlayTrigger
                                             key="delete"
                                             placement="top"
-                                            overlay={
+                                            overlay={(
                                                 <Tooltip
                                                     id="tooltip-top"
                                                     style={{
@@ -759,18 +727,16 @@ const ApiProvider = () => {
                                                 >
                                                     Delete API
                                                 </Tooltip>
-                                            }
+                                            )}
                                         >
                                             <button
                                                 type="button"
                                                 variant="none"
                                                 className="apiActionButton
                                                             apiActionButtonLast"
-                                                onClick={() =>
-                                                    deleteHandler(
-                                                        apiProvider.id,
-                                                    )
-                                                }
+                                                onClick={() => deleteHandler(
+                                                    apiProvider.id,
+                                                )}
                                             >
                                                 <IconContext.Provider
                                                     value={{
@@ -803,7 +769,11 @@ const ApiProvider = () => {
     return (
         <>
             <Helmet>
-                <title>Api Provider - {websiteName || 'SMT'}</title>
+                <title>
+                    Api Provider -
+                    {' '}
+                    {websiteName || 'SMT'}
+                </title>
             </Helmet>
 
             {addModal}
@@ -824,7 +794,8 @@ const ApiProvider = () => {
                                 }}
                             >
                                 <VscListSelection />
-                            </IconContext.Provider>{' '}
+                            </IconContext.Provider>
+                            {' '}
                             Api Providers
                         </h2>
                         <button

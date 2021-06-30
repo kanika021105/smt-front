@@ -1,22 +1,22 @@
-nav {
-    height: 8rem;
-    width: 100%;
-    background-color: $color-white !important;
+// nav {
+//     height: 8rem;
+//     width: 100%;
+//     background-color: $color-white !important;
 
-    box-shadow: 0 0 2rem 0 rgba($color-grey, 4 /10%);
-    z-index: 90;
+//     box-shadow: 0 0 2rem 0 rgba($color-grey, 4 /10%);
+//     z-index: 90;
 
-    &.navbar {
-        position: relative;
-    }
+//     &.navbar {
+//         position: relative;
+//     }
 
-    & .nav__custom {
-        background-color: $color-white !important;
-    }
+//     & .nav__custom {
+//         background-color: $color-white !important;
+//     }
 
-    & ul {
-        & a {
-            font-size: 1.8rem;
-        }
-    }
-}
+//     & ul {
+//         & a {
+//             font-size: 1.8rem;
+//         }
+//     }
+// }

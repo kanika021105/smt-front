@@ -11,6 +11,8 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Input from '../../../../components/UI/Input/Input';
+import Select from '../../../../components/UI/Select/Select';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
@@ -56,6 +58,8 @@ const Categories = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log(err.response);
             });
     }, []);
@@ -116,6 +120,8 @@ const Categories = () => {
             ]);
             setShowAddModal(false);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response.data);
         }
     };
@@ -138,27 +144,8 @@ const Categories = () => {
 
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className="input__label">Title</label>
-                        <input
-                            className="input"
-                            placeholder="Enter title"
-                            type="text"
-                            value={newCategoryDetails.title || ''}
-                            onChange={addTitleChangeHandler}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="input__label">Short</label>
-                        <input
-                            placeholder="Enter short number"
-                            className="input"
-                            type="number"
-                            value={newCategoryDetails.short || ''}
-                            onChange={addShortChangeHandler}
-                        />
-                    </div>
+                    <Input label="Title" placeholder="Enter title" type="text" value={newCategoryDetails.title} onChange={addTitleChangeHandler} />
+                    <Input label="Short" placeholder="Enter short number" type="number" value={newCategoryDetails.short} onChange={addShortChangeHandler} />
 
                     <div>
                         <label className="input__label">Desc</label>
@@ -171,17 +158,14 @@ const Categories = () => {
                         />
                     </div>
 
-                    <div>
-                        <label className="input__label">Status</label>
-                        <select
-                            className="select"
-                            value={newCategoryDetails.status}
-                            onChange={addStatusChangeHandler}
-                        >
-                            <option value="active">Active</option>
-                            <option value="disable">Disable</option>
-                        </select>
-                    </div>
+                    <Select
+                        label="Status"
+                        value={newCategoryDetails.status}
+                        onChange={addStatusChangeHandler}
+                    >
+                        <option value="active">Active</option>
+                        <option value="disable">Disable</option>
+                    </Select>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -275,6 +259,8 @@ const Categories = () => {
             });
 
             if (!data) {
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log('Failed to update Category!');
             }
 
@@ -286,6 +272,8 @@ const Categories = () => {
             ]);
             handleClose();
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err);
         }
     };
@@ -298,17 +286,8 @@ const Categories = () => {
 
             <form onSubmit={editingSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className="input__label">Title</label>
-                        <input
-                            className="input"
-                            placeholder="Title"
-                            type="text"
-                            value={editingCategoryDetails.title}
-                            onChange={titleChangeHandler}
-                            required
-                        />
-                    </div>
+
+                    <Input label="Title" placeholder="Title" type="text" value={editingCategoryDetails.title} onChange={titleChangeHandler} />
 
                     <div className="pt-3">
                         <label className="input__label">Description</label>
@@ -321,30 +300,16 @@ const Categories = () => {
                         />
                     </div>
 
-                    <div className="pt-3">
-                        <label className="input__label">Short</label>
-                        <input
-                            className="input"
-                            type="number"
-                            placeholder="short"
-                            value={editingCategoryDetails.short}
-                            onChange={shortChangeHandler}
-                            required
-                        />
-                    </div>
+                    <Input label="Short" placeholder="Short" type="number" value={editingCategoryDetails.short} onChange={shortChangeHandler} />
 
-                    <div className="pt-3">
-                        <label className="input__label">Status</label>
-                        <select
-                            className="select"
-                            value={editingCategoryDetails.status}
-                            onChange={statusChangeHandler}
-                            required
-                        >
-                            <option value="disable">Disable</option>
-                            <option value="active">Active</option>
-                        </select>
-                    </div>
+                    <Select
+                        label="Status"
+                        value={editingCategoryDetails.status}
+                        onChange={statusChangeHandler}
+                    >
+                        <option value="disable">Disable</option>
+                        <option value="active">Active</option>
+                    </Select>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -375,6 +340,8 @@ const Categories = () => {
                 id,
             });
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response.data);
         }
 

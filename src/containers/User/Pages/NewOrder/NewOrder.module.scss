@@ -1,0 +1,60 @@
+@import '../../../../sass/index';
+
+.newOrder {
+    min-height: calc(100vh - (8rem + 4.4rem));
+    
+    &__container {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;   
+        
+        @media only screen and (max-width: $bp-15) {
+            margin: 0 1rem;
+        }
+
+        @media only screen and (max-width: $bp-8) {
+            margin: 0 .2rem;
+        }
+
+        @media only screen and (max-width: $bp-10) {
+            // margin: 0 1rem;
+            flex-direction: column;
+        }
+    }
+
+    &__item {
+        flex: 1;
+    }
+
+    & .min-max__count {
+        margin-top: .4rem;
+    }
+
+    &__totalAmount {
+        padding: .4rem .6rem;
+        margin: 2rem 0;
+        width: fit-content;
+        border: 1px solid $color-primary;
+        border-radius: .6rem;
+
+        transition: width .3s;
+    }
+
+    & button {
+        margin: .2rem 0 .5rem 0;
+    }
+
+    & .service__details {
+        &--title {
+            display: flex;
+            align-items: center;
+            font-size: 2.18rem;
+            font-weight: 500;
+            color: lighten($color-primary, 5);
+
+            & svg {
+                margin-right: .4rem;
+            }
+        }
+    }
+}

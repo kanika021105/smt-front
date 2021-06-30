@@ -13,14 +13,15 @@ import Axios from '../../../../../axiosIns';
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
-import { AuthContext } from '../../../../Context/AuthContext';
+import AuthContext from '../../../../../store/auth-context';
 import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classes from './messages.module.scss';
 
+// TODO Fix context api also change clientId useage into email
 const Message = () => {
-    const { clientId } = useContext(AuthContext);
+    const { email } = useContext(AuthContext);
     const params = useParams();
     const { id } = params;
 
@@ -57,7 +58,7 @@ const Message = () => {
         setMessages((prevState) => [
             ...prevState,
             {
-                clientId,
+                email,
                 message: inputMessage,
                 createdAt: Date.now(),
             },
@@ -68,86 +69,47 @@ const Message = () => {
         setInputMessage(e.target.value);
     };
 
-    let keyNum = 0;
+    const keyNum = 0;
 
-    const ticketMessage = () => {
-        if (messages && ticket) {
-            messages.map((msg) => {
-                keyNum = +1;
-
-                if (+clientId === +msg.clientId) {
-                    return (
-                        <div
-                            key={keyNum}
-                            className={classes.message__sent__container}
-                        >
-                            <div className={classes.message__container}>
-                                <span className={classes.message}>
-                                    {msg.message}
-                                </span>
-                                <img src={supportSVG} alt="user Avatar" />
-                            </div>
-                            <div className={classes.sentTime}>
-                                {new Date(msg.createdAt).toLocaleString(
-                                    'en-us',
-                                )}
-                            </div>
-                        </div>
-                    );
-                }
-
+    const ticketMessage = messages
+        && ticket
+        && messages.map((msg) => {
+            if (email === msg.email) {
                 return (
                     <div
-                        key={keyNum}
-                        className={classes.message__received__container}
+                        key={keyNum + 1}
+                        className={classes.message__sent__container}
                     >
                         <div className={classes.message__container}>
-                            <img src={customerSVG} alt="user Avatar" />
                             <span className={classes.message}>
                                 {msg.message}
                             </span>
+                            <img src={supportSVG} alt="user Avatar" />
                         </div>
+
                         <div className={classes.sentTime}>
                             {new Date(msg.createdAt).toLocaleString('en-us')}
                         </div>
                     </div>
                 );
-            });
-        }
-    };
-    // const ticketMessage =
-    //     messages &&
-    //     ticket &&
-    //     messages.map((msg) => {
-    //         return +clientId === +msg.clientId ? (
-    //             <div
-    //                 key={keyNum++}
-    //                 className={classes.message__sent__container}
-    //             >
-    //                 <div className={classes.message__container}>
-    //                     <span className={classes.message}>{msg.message}</span>
-    //                     <img src={supportSVG} alt="user Avatar" />
-    //                 </div>
-    //                 <div className={classes.sentTime}>
-    //                     {new Date(msg.createdAt).toLocaleString('en-us')}
-    //                 </div>
-    //             </div>
-    //         ) : (
-    //             <div
-    //                 key={keyNum++}
-    //                 className={classes.message__received__container}
-    //             >
-    //                 <div className={classes.message__container}>
-    //                     <img src={customerSVG} alt="user Avatar" />
-    //                     <span className={classes.message}>{msg.message}</span>
-    //                 </div>
+            }
 
-    //                 <div className={classes.sentTime}>
-    //                     {new Date(msg.createdAt).toLocaleString('en-us')}
-    //                 </div>
-    //             </div>
-    //         );
-    //     });
+            return (
+                <div
+                    key={keyNum + 1}
+                    className={classes.message__received__container}
+                >
+                    <div className={classes.message__container}>
+                        <img src={customerSVG} alt="user Avatar" />
+                        <span className={classes.message}>{msg.message}</span>
+                    </div>
+
+                    <div className={classes.sentTime}>
+                        {new Date(msg.createdAt).toLocaleString('en-us')}
+                    </div>
+                </div>
+            );
+        });
 
     // TODO
     return (

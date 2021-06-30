@@ -3,7 +3,7 @@ import { Navbar } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavigationItems from '../NavigationItems/NavigationItems';
-import { AuthContext } from '../../../containers/Context/AuthContext';
+import AuthContext from '../../../store/auth-context';
 import classes from './Navbar.module.css';
 
 const NavbarComponent = () => {

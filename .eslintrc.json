@@ -24,26 +24,9 @@
         ],
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
-        // "object-curly-newline": [
-        //     "error",
-        //     {
-        //         "ObjectExpression": { "multiline": true, "minProperties": 1 },
-        //         "ObjectPattern": { "multiline": true },
-        //         "ImportDeclaration": { "multiline": true, "minProperties": 5 },
-        //         "ExportDeclaration": { "multiline": true, "minProperties": 4 }
-        //     }
-        // ],
-        // "react/jsx-wrap-multilines": 0,
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-        // "react/jsx-one-expression-per-line": [0, { "allow": "single-child" }],
-        "no-console": "off",
         "consistent-return": 0,
         "jsx-a11y/label-has-associated-control": 0,
-        // "operator-linebreak": [
-        //     "error",
-        //     "after",
-        //     { "overrides": { "?": "before", ":": "before" } }
-        // ],
         "react/require-default-props": 0
     }
 }

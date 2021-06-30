@@ -46,6 +46,8 @@ const Orders = () => {
                 setIsLoading(false);
 
                 const { data } = res;
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 if (!data) return console.log('something went wrong!');
 
                 setClients(data.clients);
@@ -90,6 +92,8 @@ const Orders = () => {
             const { data } = await Axios.delete(url);
             if (!data) {
                 setIsLoading(false);
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 return console.log('something went wrong');
             }
 
@@ -98,6 +102,8 @@ const Orders = () => {
 
             setIsLoading(false);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response);
         }
     };
@@ -185,6 +191,8 @@ const Orders = () => {
                 ...newList,
             ]);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err);
         }
     };

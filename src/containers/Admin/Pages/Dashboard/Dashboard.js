@@ -34,6 +34,8 @@ const Dashboard = () => {
         const url = '/admin/dashboard';
         Axios.get(url)
             .then((res) => {
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log();
 
                 setIsLoading(false);
@@ -44,6 +46,8 @@ const Dashboard = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log(err.response.msg);
             });
     }, []);

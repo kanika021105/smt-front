@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
@@ -10,7 +8,7 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
 import classes from './messages.module.scss';
-import { AuthContext } from '../../../../Context/AuthContext';
+import AuthContext from '../../../../../store/auth-context';
 
 import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
 
@@ -28,7 +26,7 @@ const Message = () => {
 
     const { websiteName } = useContext(WebsiteDetail);
 
-    const { clientId } = useContext(AuthContext);
+    const { email } = useContext(AuthContext);
     const params = useParams();
     const { id } = params;
 
@@ -57,7 +55,7 @@ const Message = () => {
                 return setMessages((prevState) => [
                     ...prevState,
                     {
-                        clientId,
+                        email,
                         createdAt: Date.now(),
                         message: inputMessage,
                     },
@@ -73,7 +71,7 @@ const Message = () => {
     const ticketMessage = messages
         && ticket
         && messages.map((msg) => {
-            if (+clientId === +msg.clientId) {
+            if (email === msg.email) {
                 return (
                     <div
                         key={keyNum + 1}
@@ -108,35 +106,6 @@ const Message = () => {
                     </div>
                 </div>
             );
-            // +clientId === +msg.clientId ? (
-            //     <div
-            //         key={keyNum++}
-            //         className={classes.message__sent__container}
-            //     >
-            //         <div className={classes.message__container}>
-            //             <span className={classes.message}>{msg.message}</span>
-            //             <img src={customerSVG} alt="user Avatar" />
-            //         </div>
-
-            //         <div className={classes.sentTime}>
-            //             {new Date(msg.createdAt).toLocaleString('en-us')}
-            //         </div>
-            //     </div>
-            // ) : (
-            //     <div
-            //         key={keyNum++}
-            //         className={classes.message__received__container}
-            //     >
-            //         <div className={classes.message__container}>
-            //             <img src={supportSVG} alt="user Avatar" />
-            //             <span className={classes.message}>{msg.message}</span>
-            //         </div>
-
-            //         <div className={classes.sentTime}>
-            //             {new Date(msg.createdAt).toLocaleString('en-us')}
-            //         </div>
-            //     </div>
-            // );
         });
 
     // TODO Change title to dynamic

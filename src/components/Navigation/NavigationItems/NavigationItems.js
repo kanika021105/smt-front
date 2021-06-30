@@ -3,7 +3,7 @@ import { Nav, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import classes from './NavigationItems.module.css';
-import { AuthContext } from '../../../containers/Context/AuthContext';
+import AuthContext from '../../../store/auth-context';
 
 const NavigationItems = () => {
     const { isLoggedIn, role } = useContext(AuthContext);

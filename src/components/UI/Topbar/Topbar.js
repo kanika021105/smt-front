@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaBars } from 'react-icons/fa';
 
-import { AuthContext } from '../../../containers/Context/AuthContext';
+import AuthContext from '../../../store/auth-context';
 import './Topbar.scss';
 
 function Topbar({ clicked }) {
-    const { fName } = useContext(AuthContext);
+    const { firstName } = useContext(AuthContext);
 
     return (
         <>
@@ -16,7 +16,7 @@ function Topbar({ clicked }) {
                 <div className="profile">
                     Hi,
                     {' '}
-                    {fName}
+                    {firstName}
                 </div>
             </div>
         </>
@@ -24,7 +24,7 @@ function Topbar({ clicked }) {
 }
 
 Topbar.propTypes = {
-    clicked: PropTypes.node,
+    clicked: PropTypes.func.isRequired,
 };
 
 export default Topbar;

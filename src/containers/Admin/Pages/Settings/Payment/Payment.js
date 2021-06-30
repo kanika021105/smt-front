@@ -32,7 +32,9 @@ const Payment = () => {
             })
             .catch((err) => {
                 setIsLoading(false);
+                // TODO Remove this
 
+                // eslint-disable-next-line no-console
                 console.log(err);
             });
     }, []);
@@ -46,8 +48,12 @@ const Payment = () => {
                 privateKey: secretKey,
                 publicKey: keyId,
             });
+                // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(data);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response.message);
         }
     };

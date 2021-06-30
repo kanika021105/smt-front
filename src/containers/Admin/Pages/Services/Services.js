@@ -10,6 +10,7 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Select from '../../../../components/UI/Select/Select';
 import Table, { TBody, THead } from '../../../../components/UI/Table/Table';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
@@ -72,6 +73,8 @@ const Services = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log(err);
             });
     }, []);
@@ -178,6 +181,8 @@ const Services = () => {
             });
 
             if (data.status !== 'success') {
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 return console.log('Something went wrong!');
             }
 
@@ -190,6 +195,8 @@ const Services = () => {
 
             handleBackdropClick();
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err);
         }
     };
@@ -204,20 +211,18 @@ const Services = () => {
 
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className={classes.input__label}>Category</label>
-                        <select
-                            className="select"
-                            value={addServiceDetails.categoryId}
-                            onChange={addCategoryChangeHandler}
-                            disabled={categoriesCount}
-                        >
-                            <option key={0} value={null}>
-                                {categoriesCount
-                                    ? 'No category to choose!'
-                                    : 'Choose a Category'}
-                            </option>
-                            {categories
+                    <Select
+                        label="Category"
+                        value={addServiceDetails.categoryId}
+                        onChange={addCategoryChangeHandler}
+                        disabled={categoriesCount}
+                    >
+                        <option key={0} value={null}>
+                            {categoriesCount
+                                ? 'No category to choose!'
+                                : 'Choose a Category'}
+                        </option>
+                        {categories
                                 && categories.map((category) => (
                                     <option
                                         key={category.id}
@@ -226,8 +231,7 @@ const Services = () => {
                                         {category.title}
                                     </option>
                                 ))}
-                        </select>
-                    </div>
+                    </Select>
 
                     <Input
                         label="Title"
@@ -255,90 +259,51 @@ const Services = () => {
                         />
                     </InputGroup>
 
-                    <div className={classes.inputGroup}>
-                        <div className="col-md-6">
-                            <label className={classes.input__label}>Api Provider</label>
-                            <input
-                                placeholder="Api Provider"
-                                className="input"
-                                value={addServiceDetails.provider}
-                                onChange={addApiProviderChange}
-                            />
-                        </div>
+                    <InputGroup>
+                        <Input
+                            label="Min"
+                            placeholder="Min"
+                            type="number"
+                            value={addServiceDetails.min}
+                            onChange={addMinChangeHandler}
+                        />
 
-                        <div className="col-md-6">
-                            <label className={classes.input__label}>
-                                Api Service Id
-                            </label>
-                            <input
-                                className="input"
-                                placeholder="Api Service Id"
-                                type="number"
-                                value={addServiceDetails.apiServiceId}
-                                onChange={addApiServiceIdChangeHandler}
-                            />
-                        </div>
-                    </div>
+                        <Input
+                            label="Max"
+                            placeholder="Max"
+                            type="number"
+                            value={addServiceDetails.max}
+                            onChange={addMaxChangeHandler}
+                        />
+                    </InputGroup>
 
-                    <div className="row pt-3">
-                        <div className="col-md-6">
-                            <label className={classes.input__label}>Min</label>
-                            <input
-                                className="input"
-                                placeholder="Min"
-                                type="number"
-                                value={addServiceDetails.min}
-                                onChange={addMinChangeHandler}
-                            />
-                        </div>
+                    <InputGroup>
+                        <Input
+                            label="Price"
+                            placeholder="Price"
+                            type="number"
+                            value={addServiceDetails.rate}
+                            onChange={addPriceChangeHandler}
+                        />
 
-                        <div className="col-md-6">
-                            <label className={classes.input__label}>Max</label>
-                            <input
-                                className="input"
-                                placeholder="Max"
-                                type="number"
-                                value={addServiceDetails.max}
-                                onChange={addMaxChangeHandler}
-                            />
-                        </div>
-                    </div>
+                        <Select
+                            label="Status"
+                            value={addServiceDetails.status}
+                            onChange={addStatusChangeHandler}
+                        >
+                            <option value="active">Active</option>
+                            <option value="disable">Disable</option>
+                        </Select>
 
-                    <div className="row pt-3">
-                        <div className="col-md-4">
-                            <label className={classes.input__label}>Price</label>
-                            <input
-                                className="input"
-                                value={addServiceDetails.rate}
-                                type="number"
-                                onChange={addPriceChangeHandler}
-                            />
-                        </div>
-
-                        <div className="col-md-4">
-                            <label className={classes.input__label}>Status</label>
-                            <select
-                                className="select"
-                                value={addServiceDetails.status}
-                                onChange={addStatusChangeHandler}
-                            >
-                                <option value="active">Active</option>
-                                <option value="disable">Disable</option>
-                            </select>
-                        </div>
-
-                        <div className="col-md-4">
-                            <label className={classes.input__label}>Drip Feed</label>
-                            <select
-                                className="select"
-                                value={addServiceDetails.dripFeed}
-                                onChange={addDripFeedChangeHandler}
-                            >
-                                <option value="active">Active</option>
-                                <option value="disable">Disable</option>
-                            </select>
-                        </div>
-                    </div>
+                        <Select
+                            label="Drip Feed"
+                            value={addServiceDetails.dripFeed}
+                            onChange={addDripFeedChangeHandler}
+                        >
+                            <option value="active">Active</option>
+                            <option value="disable">Disable</option>
+                        </Select>
+                    </InputGroup>
 
                     <div>
                         <label className={classes.input__label}>Desc</label>
@@ -510,6 +475,8 @@ const Services = () => {
             ]);
             handleClose();
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response.data);
         }
     };
@@ -523,14 +490,12 @@ const Services = () => {
 
             <form onSubmit={editingSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className="input__label">Category</label>
-                        <select
-                            className="select"
-                            value={editingServiceDetails.categoryId}
-                            onChange={categoryChangeHandler}
-                        >
-                            {categories
+                    <Select
+                        label="Category"
+                        value={editingServiceDetails.categoryId}
+                        onChange={categoryChangeHandler}
+                    >
+                        {categories
                                 && categories.map((category) => (
                                     <option
                                         key={category.id}
@@ -539,10 +504,9 @@ const Services = () => {
                                         {category.title}
                                     </option>
                                 ))}
-                        </select>
-                    </div>
+                    </Select>
 
-                    <div className="pt-2">
+                    {/* <div className="pt-2">
                         <label className="input__label">Title</label>
                         <input
                             placeholder="Title"
@@ -551,93 +515,77 @@ const Services = () => {
                             value={editingServiceDetails.title}
                             onChange={titleChangeHandler}
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="row pt-2">
-                        <div className="col-md-6">
-                            <label className="input__label">Api Provider</label>
-                            <input
-                                className="input"
-                                placeholder="Api Provider"
-                                value={editingServiceDetails.provider}
-                                onChange={providerChangeHandler}
-                            />
-                        </div>
+                    <Input
+                        label="Title"
+                        placeholder="Title"
+                        type="text"
+                        value={editingServiceDetails.title}
+                        onChange={titleChangeHandler}
+                    />
 
-                        <div className="col-md-6">
-                            <label className="input__label">
-                                Api Service Id
-                            </label>
-                            <input
-                                className="input"
-                                placeholder="Api Service Id"
-                                type="number"
-                                value={editingServiceDetails.apiServiceId}
-                                onChange={apiServiceChangeHandler}
-                            />
-                        </div>
-                    </div>
+                    <InputGroup>
+                        <Input
+                            label="Api Provider"
+                            placeholder="Api Provider"
+                            value={editingServiceDetails.provider}
+                            onChange={providerChangeHandler}
+                        />
 
-                    <div className="row pt-2">
-                        <div className="col-md-6">
-                            <label className="input__label">Min</label>
-                            <input
-                                className="input"
-                                placeholder="Min"
-                                type="number"
-                                value={editingServiceDetails.min}
-                                onChange={minChangeHandler}
-                            />
-                        </div>
+                        <Input
+                            label="Api Service Id"
+                            placeholder="Api Service Id"
+                            type="number"
+                            value={editingServiceDetails.apiServiceId}
+                            onChange={apiServiceChangeHandler}
+                        />
+                    </InputGroup>
 
-                        <div className="col-md-6">
-                            <label className="input__label">Max</label>
-                            <input
-                                className="input"
-                                placeholder="max"
-                                type="number"
-                                value={editingServiceDetails.max}
-                                onChange={maxChangeHandler}
-                            />
-                        </div>
-                    </div>
+                    <InputGroup>
+                        <Input
+                            label="Min"
+                            placeholder="Min"
+                            value={editingServiceDetails.min}
+                            onChange={minChangeHandler}
+                        />
 
-                    <div className="row pt-2">
-                        <div className="col-md-4">
-                            <label className="input__label">Price</label>
-                            <input
-                                className="input"
-                                placeholder="Price"
-                                type="number"
-                                value={editingServiceDetails.rate}
-                                onChange={priceChangeHandler}
-                            />
-                        </div>
+                        <Input
+                            label="Max"
+                            placeholder="Max"
+                            type="number"
+                            value={editingServiceDetails.max}
+                            onChange={maxChangeHandler}
+                        />
+                    </InputGroup>
 
-                        <div className="col-md-4">
-                            <label className="input__label">Status</label>
-                            <select
-                                className="select"
-                                value={editingServiceDetails.status}
-                                onChange={statusChangeHandler}
-                            >
-                                <option value="active">Active</option>
-                                <option value="disable">Disable</option>
-                            </select>
-                        </div>
+                    <InputGroup>
+                        <Input
+                            label="Price"
+                            placeholder="Price"
+                            type="number"
+                            value={editingServiceDetails.rate}
+                            onChange={priceChangeHandler}
+                        />
 
-                        <div className="col-md-4">
-                            <label className="input__label">Drip Feed</label>
-                            <select
-                                className="select"
-                                value={editingServiceDetails.dripFeed}
-                                onChange={dripFeedChangeHandler}
-                            >
-                                <option value="active">Active</option>
-                                <option value="deactive">Disable</option>
-                            </select>
-                        </div>
-                    </div>
+                        <Select
+                            label="Status"
+                            value={editingServiceDetails.status}
+                            onChange={statusChangeHandler}
+                        >
+                            <option value="active">Active</option>
+                            <option value="disable">Disable</option>
+                        </Select>
+
+                        <Select
+                            label="Drip Feed"
+                            value={editingServiceDetails.dripFeed}
+                            onChange={dripFeedChangeHandler}
+                        >
+                            <option value="active">Active</option>
+                            <option value="deactive">Disable</option>
+                        </Select>
+                    </InputGroup>
 
                     <div className="pt-2">
                         <label className="input__label">Desc</label>
@@ -681,6 +629,8 @@ const Services = () => {
             await Axios.delete(url);
             setServices([...newList]);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response.data);
         }
     };
@@ -730,6 +680,8 @@ const Services = () => {
     const getServiceByCategory = (id) => {
         const servicesList = services
             && services.filter((service) => +service.categoryId === +id);
+        // TODO Remove this
+        // eslint-disable-next-line no-console
         console.log(servicesList);
 
         return servicesList.map((service) => (

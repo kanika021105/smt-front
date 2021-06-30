@@ -12,6 +12,8 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Select from '../../../../components/UI/Select/Select';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
@@ -50,6 +52,8 @@ const ApiServices = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log(err.response.data.message);
             });
     }, [id]);
@@ -134,6 +138,8 @@ const ApiServices = () => {
         try {
             Axios.post(url, serviceData);
         } catch (err) {
+            // TODO Remove this
+            // eslint-disable-next-line no-console
             console.log(err.response.data.message);
         }
     };
@@ -143,7 +149,7 @@ const ApiServices = () => {
         let count = 0;
         while (count <= 500) {
             countList.push(count);
-            count = +1;
+            count += 1;
         }
         return countList;
     };
@@ -157,28 +163,21 @@ const ApiServices = () => {
 
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className="input__label">Title</label>
-                        <input
-                            className="input"
-                            type="text"
-                            placeholder="Title"
-                            value={selectedService.title || ''}
-                            onChange={titleChangeHandler}
-                            required
-                        />
-                    </div>
+                    <Input
+                        label="Title"
+                        type="text"
+                        placeholder="Title"
+                        value={selectedService.title || ''}
+                        onChange={titleChangeHandler}
+                    />
 
-                    <div className="mt-2">
-                        <label className="input__label">Category</label>
-                        <select
-                            className="select"
-                            value={selectedService.categoryId}
-                            onChange={categoryChangeHandler}
-                            required
-                        >
-                            <option>Choose a category</option>
-                            {categories
+                    <Select
+                        label="Category"
+                        value={selectedService.categoryId}
+                        onChange={categoryChangeHandler}
+                    >
+                        <option>Choose a category</option>
+                        {categories
                                 && categories.map((category) => (
                                     <option
                                         key={category.id}
@@ -187,69 +186,49 @@ const ApiServices = () => {
                                         {category.title}
                                     </option>
                                 ))}
-                        </select>
-                    </div>
 
-                    <div className="row mt-2">
-                        <div className="col-md-6">
-                            <label className="input__label">
-                                Minimum Quantity
-                            </label>
-                            <input
-                                className="input"
-                                type="number"
-                                placeholder="Minimum"
-                                value={selectedService.min || 0}
-                                onChange={minChangeHandler}
-                                required
-                            />
-                        </div>
+                    </Select>
 
-                        <div className="col-md-6">
-                            <label className="input__label">
-                                Maximum Quantity
-                            </label>
-                            <input
-                                className="input"
-                                type="number"
-                                placeholder="Maximum"
-                                value={selectedService.max || 0}
-                                onChange={maxChangeHandler}
-                                required
-                            />
-                        </div>
-                    </div>
+                    <InputGroup>
+                        <Input
+                            label="Minimum Quantity"
+                            type="number"
+                            placeholder="Minimum"
+                            value={selectedService.min || 0}
+                            onChange={minChangeHandler}
+                        />
 
-                    <div className="row mt-2">
-                        <div className="col-md-6">
-                            <label className="input__label">Price</label>
-                            <input
-                                className="input input--disabled"
-                                placeholder="Price"
-                                type="number"
-                                value={selectedService.rate || 0}
-                                disabled
-                            />
-                        </div>
+                        <Input
+                            label="Maximum Quantity"
+                            type="number"
+                            placeholder="Maximum"
+                            value={selectedService.max || 0}
+                            onChange={maxChangeHandler}
+                        />
+                    </InputGroup>
 
-                        <div className="col-md-6">
-                            <label className="input__label">
-                                Price increase in (%)
-                            </label>
-                            <select
-                                className="select"
-                                value={profitMargin}
-                                onChange={profitMarginChangeHandler}
-                            >
-                                {counter
+                    <InputGroup>
+                        <Input
+                            label="Price"
+                            type="number"
+                            placeholder="Price"
+                            value={selectedService.rate || 0}
+                            disabled
+                        />
+
+                        <Select
+                            label="Maximum Quantity"
+                            value={profitMargin}
+                            onChange={profitMarginChangeHandler}
+                        >
+                            {counter
                                     && counter.map((count) => (
                                         <option key={count} value={count}>
                                             {`${count}%`}
                                         </option>
                                     ))}
-                            </select>
-                        </div>
-                    </div>
+                        </Select>
+                    </InputGroup>
 
                     <div className="mt-2">
                         <label className="input__label">Description</label>

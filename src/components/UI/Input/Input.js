@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { number, string } from 'prop-types';
 
 import classes from './Input.module.scss';
 
@@ -15,9 +15,11 @@ const Input = ({
     pattern,
 }) => (
     <div className={classes.input}>
-        <label>{label}</label>
+        <label>
+            {label}
+        </label>
+
         <input
-            className={classes.input}
             id={id}
             type={type}
             name={name}
@@ -34,13 +36,13 @@ export const InputGroup = ({ children }) => <div className={classes['input--grou
 
 Input.propTypes = {
     id: PropTypes.number,
-    type: PropTypes.string.isRequired,
+    type: PropTypes.string,
     name: PropTypes.string,
-    value: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired,
-    onChange: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([string, number]),
+    placeholder: PropTypes.oneOfType([string, number]),
+    onChange: PropTypes.func,
     disabled: PropTypes.bool,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     pattern: PropTypes.string,
 
 };

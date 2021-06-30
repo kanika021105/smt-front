@@ -1,14 +1,34 @@
 @import '../../../../sass/index';
 
+
+.dashboard{
+    @media only screen and (max-width: $bp-14) {
+        margin: 0 2rem;
+    }
+
+    @media only screen and (max-width: $bp-14) {
+        margin: 0 1rem;
+    }
+}
+
 .section__one {
     margin-bottom: 2rem;
 
     display: flex;
     flex-direction: row;
     gap: 2rem;
+    flex-wrap: wrap;
 
     &__item {
         flex: 1;
+
+        @media only screen and (max-width: $bp-11) {
+            min-width: calc(50% - (2rem));
+        }
+
+        @media only screen and (max-width: $bp-5) {
+            min-width: 100%;
+        }
 
         &--title {
             display: block;
@@ -28,10 +48,11 @@
 
 .section__two {
     margin-bottom: 2rem;
-    
+
     display: flex;
     flex-direction: row;
     gap: 2rem;
+    flex-wrap: wrap;
 
 
     &__graph {
@@ -41,7 +62,7 @@
             width: 75%;
         }
 
-        @media only screen and (max-width: $bp-9) {
+        @media only screen and (max-width: $bp-10) {
             width: 100%;
         }
         

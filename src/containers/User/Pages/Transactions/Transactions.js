@@ -14,9 +14,6 @@ import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 import '../../../../sass/pages/user/transactions.scss';
 
 export default function Services() {
-    // const [errorMsg, setErrorMsg] = useState('');
-    // const [showError, setShowError] = useState(false);
-
     const [transactions, setTransactions] = useState();
 
     const { websiteName } = useContext(WebsiteDetail);
@@ -34,7 +31,7 @@ export default function Services() {
                 if (data.status !== 'success') return;
 
                 setIsLoading(false);
-                setTransactions(data.transactions.reverse());
+                setTransactions(data.transactions);
             })
             .catch((err) => console.log(err));
     }, []);
@@ -90,13 +87,27 @@ export default function Services() {
                                         <td>{transaction.amount}</td>
                                         <td>{transaction.paymentMethod}</td>
                                         <td>
-                                            <button
-                                                type="button"
-                                                className="btn btn-success btn-disabled"
-                                                disabled
-                                            >
-                                                {transaction.status}
-                                            </button>
+                                            {transaction.status === 'success'
+                                            && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-success btn-disabled"
+                                                    disabled
+                                                >
+                                                    {transaction.status}
+                                                </button>
+                                            )}
+
+                                            {transaction.status === 'failed'
+                                            && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-danger btn-disabled"
+                                                    disabled
+                                                >
+                                                    {transaction.status}
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

@@ -1,18 +1,18 @@
-// jshint esversion:9
-
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
-import { FiSliders } from 'react-icons/fi';
+import { BiMessageSquareDetail } from 'react-icons/bi';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
+import Select from '../../../../components/UI/Select/Select';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../../../sass/pages/user/NewOrder.scss';
+import classes from './NewOrder.module.scss';
 
 const NewOrder = () => {
     const websiteName = process.env.REACT_APP_WEBSITE_NAME;
@@ -33,10 +33,10 @@ const NewOrder = () => {
 
     const [orderDetails, setOrderDetails] = useState({
         link: '',
-        charge: 0,
-        quantity: 0,
-        selectedService: 0,
-        selectedCategory: 0,
+        charge: '',
+        quantity: '',
+        selectedService: '',
+        selectedCategory: '',
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +58,8 @@ const NewOrder = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO remove it
+                // eslint-disable-next-line no-console
                 console.log(err.response.msg);
             });
     }, []);
@@ -67,6 +69,7 @@ const NewOrder = () => {
             (service) => +service.categoryId === +orderDetails.selectedCategory,
         );
 
+    // eslint-disable-next-line no-unused-vars
     const selectedCategoryHandler = (e) => {
         setServiceDetails(() => ({
             id: '',
@@ -102,14 +105,14 @@ const NewOrder = () => {
         if (!details[0]) return;
 
         setServiceDetails(() => ({
-            id: details[0].id,
-            title: details[0].title,
-            min: details[0].min,
-            max: details[0].max,
-            rate: details[0].rate,
-            speed: details[0].speed,
-            avgtime: details[0].avgtime,
-            desc: details[0].desc,
+            id: details[0].id || '',
+            title: details[0].title || '',
+            min: details[0].min || '',
+            max: details[0].max || '',
+            rate: details[0].rate || '',
+            speed: details[0].speed || '',
+            avgtime: details[0].avgtime || '',
+            desc: details[0].desc || '',
         }));
     };
 
@@ -121,7 +124,7 @@ const NewOrder = () => {
     };
 
     const quantityInputHandler = async (e) => {
-        const orderQuantity = e.target.value;
+        const orderQuantity = +e.target.value;
         setOrderDetails((preState) => ({
             ...preState,
             quantity: orderQuantity,
@@ -151,6 +154,8 @@ const NewOrder = () => {
 
             if (data.status === 'failed') return;
         } catch (err) {
+            // TODO remove it
+            // eslint-disable-next-line no-console
             console.log(err.response.data);
         }
     };
@@ -171,12 +176,7 @@ const NewOrder = () => {
 
             <Loading show={isLoading} />
 
-            {/* Modal to show order placed status */}
-            {/* <Modal show={true} centered>
-                Test
-            </Modal> */}
-
-            <div className="container newOrder">
+            <div className={`container ${classes.newOrder}`}>
                 <h2 className="pageTitle">
                     <IconContext.Provider
                         value={{
@@ -191,24 +191,20 @@ const NewOrder = () => {
                     New Order
                 </h2>
 
-                <div className="row">
-                    <div className="col-md-6 u-sm-mb-1">
+                <div className={classes.newOrder__container}>
+                    <div className={classes.newOrder__item}>
                         <Card>
                             <form onSubmit={orderSubmitHandler}>
-                                <div>
-                                    <label className="input__label">
-                                        Category
-                                    </label>
-                                    <select
-                                        className="select"
-                                        value={orderDetails.selectedCategory}
-                                        onChange={selectedCategoryHandler}
-                                        disabled={categoriesLength()}
-                                    >
-                                        <option value="0" defaultValue>
-                                            Choose a Category
-                                        </option>
-                                        {categories
+                                <Select
+                                    label="Category"
+                                    value={orderDetails.selectedCategory}
+                                    onChange={selectedCategoryHandler}
+                                    disabled={categoriesLength()}
+                                >
+                                    <option value="0" defaultValue>
+                                        Choose a Category
+                                    </option>
+                                    {categories
                                             && categories.map((category) => (
                                                 <option
                                                     key={category.id}
@@ -217,23 +213,18 @@ const NewOrder = () => {
                                                     {category.title}
                                                 </option>
                                             ))}
-                                    </select>
-                                </div>
+                                </Select>
 
-                                <div className="pt-2">
-                                    <label className="input__label">
-                                        Services
-                                    </label>
-                                    <select
-                                        className="select"
-                                        value={orderDetails.selectedService}
-                                        onChange={selectedServiceHandler}
-                                        disabled={servicesLength()}
-                                    >
-                                        <option value="0" defaultValue>
-                                            Choose a Service
-                                        </option>
-                                        {servicesByCategory
+                                <Select
+                                    label="Choose a Service"
+                                    value={orderDetails.selectedService}
+                                    onChange={selectedServiceHandler}
+                                    disabled={servicesLength()}
+                                >
+                                    <option value="0" defaultValue>
+                                        Choose a Service
+                                    </option>
+                                    {servicesByCategory
                                             && servicesByCategory.map(
                                                 (service) => (
                                                     <option
@@ -248,155 +239,72 @@ const NewOrder = () => {
                                                     </option>
                                                 ),
                                             )}
-                                    </select>
+                                </Select>
+
+                                <Input label="Link" type="url" value={orderDetails.link} placeholder="https://" onChange={linkInputHandler} />
+                                <Input label="Quantity" type="number" value={orderDetails.quantity} placeholder="1000" onChange={quantityInputHandler} />
+
+                                <div className={classes['min-max__count']}>
+                                    Min:
+                                    {' '}
+                                    {serviceDetails.min || 0}
+                                    {' '}
+                                    / Max:
+                                    {serviceDetails.max || 0}
                                 </div>
 
-                                <div className="pt-2">
-                                    <label className="input__label">Link</label>
-                                    <input
-                                        type="url"
-                                        value={orderDetails.link}
-                                        className="input"
-                                        placeholder="https://..."
-                                        onChange={linkInputHandler}
-                                    />
-                                </div>
-
-                                <div className="pt-2">
-                                    <label className="input__label">
-                                        Quantity
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={orderDetails.quantity}
-                                        className="input"
-                                        placeholder="1000"
-                                        onChange={quantityInputHandler}
-                                    />
-
-                                    <div className="mt-2 ">
-                                        Min:
-                                        {' '}
-                                        {serviceDetails.min || 0}
-                                        {' '}
-                                        / Max:
-                                        {serviceDetails.max || 0}
-                                    </div>
-                                </div>
-
-                                <div className="mt-4 pl-2 newOrder__totalAmount">
+                                <div className={classes.newOrder__totalAmount}>
                                     Total =
                                     {' '}
-                                    {orderDetails.charge}
+                                    {orderDetails.charge || 0}
                                 </div>
 
-                                <div className="mt-3 newOrder__checkbox">
-                                    <input type="checkbox" />
-                                    <p>Yeah, I have confirmed my order!</p>
-                                </div>
+                                <Checkbox text="Yeah, I have confirmed my order!" />
 
-                                <div>
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary"
-                                    >
-                                        Place Order
-                                    </button>
-                                </div>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                >
+                                    Place Order
+                                </button>
                             </form>
                         </Card>
                     </div>
 
-                    <div className="col-md-6">
+                    <div className={classes.newOrder__item}>
                         <Card>
-                            <div className="service__details">
-                                <h3 className="service__details__title">
-                                    <FiSliders />
+                            <div className={classes.service__details}>
+                                <h3 className={classes['service__details--title']}>
+                                    <BiMessageSquareDetail />
                                     {' '}
                                     Service Details
                                 </h3>
 
-                                <div className="pt-2">
-                                    <label className="input__label">
-                                        Service Title
-                                    </label>
-                                    <input
-                                        className="input "
-                                        value={serviceDetails.title}
-                                        disabled
-                                    />
-                                </div>
+                                <InputGroup>
+                                    <Input label="Title" value={serviceDetails.title} disabled />
+                                    <Input label="Price" value={serviceDetails.rate} disabled />
+                                </InputGroup>
 
-                                <div className="row pt-2">
-                                    <div className="col-md-4">
-                                        <label className="input__label">
-                                            Min
-                                        </label>
-                                        <input
-                                            className="input "
-                                            value={serviceDetails.min}
-                                            disabled
-                                        />
-                                    </div>
+                                <InputGroup>
+                                    <Input label="Min" value={serviceDetails.min} disabled />
+                                    <Input label="Max" value={serviceDetails.max} disabled />
+                                </InputGroup>
 
-                                    <div className="col-md-4">
-                                        <label className="input__label">
-                                            Max
-                                        </label>
-                                        <input
-                                            className="input "
-                                            value={serviceDetails.max}
-                                            disabled
-                                        />
-                                    </div>
+                                <InputGroup>
+                                    <Input label="Speed" value={serviceDetails.speed} disabled />
+                                    <Input label="Average Time" value={serviceDetails.avgtime} disabled />
+                                </InputGroup>
 
-                                    <div className="col-md-4">
-                                        <label className="input__label">
-                                            Speed
-                                        </label>
-                                        <input
-                                            className="input "
-                                            value={serviceDetails.speed}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="row pt-2">
-                                    <div className="col-md-6 ">
-                                        <label className="input__label">
-                                            Price
-                                        </label>
-                                        <input
-                                            className="input "
-                                            value={serviceDetails.rate}
-                                            disabled
-                                        />
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <label className="input__label">
-                                            Average Time
-                                        </label>
-                                        <input
-                                            className="input "
-                                            value={serviceDetails.avgtime}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="pt-2">
-                                    <label className="input__label">
-                                        Description
-                                    </label>
-                                    <textarea
-                                        className="input "
-                                        value={serviceDetails.description}
-                                        rows="7"
-                                        disabled
-                                    />
-                                </div>
+                                <label className="input__label">
+                                    Description
+                                </label>
+                                <textarea
+                                    className="input "
+                                    value={serviceDetails.description}
+                                    rows="7"
+                                    style={{ width: '100%' }}
+                                    disabled
+                                />
                             </div>
                         </Card>
                     </div>

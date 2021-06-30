@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { FiLogOut } from 'react-icons/fi';
 import { BiSupport } from 'react-icons/bi';
@@ -8,12 +8,12 @@ import { MdAddShoppingCart, MdAttachMoney } from 'react-icons/md';
 import * as RiIcons from 'react-icons/ri';
 
 import { ReactComponent as Logo } from '../../../../assets/images/logo.min.svg';
-import { AuthContext } from '../../../Context/AuthContext';
+import AuthContext from '../../../../store/auth-context';
 
 function Links() {
     const {
-        fName,
-        lName,
+        firstName,
+        lastName,
         role,
         balance,
     } = useContext(AuthContext);
@@ -41,10 +41,10 @@ function Links() {
 
             <ul className="nav-links">
                 <li>
-                    <Link to="/dashboard">
+                    <NavLink to="/dashboard" activeClassName="active_link">
                         <RiIcons.RiDashboardLine />
                         <span className="link_name">Dashboard</span>
-                    </Link>
+                    </NavLink>
 
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Dashboard</span></li>
@@ -52,36 +52,32 @@ function Links() {
                 </li>
 
                 <li>
-                    <div className="iocn-link">
-                        <Link to="/new-order">
-                            <MdAddShoppingCart />
-                            <span className="link_name">New Order</span>
-                        </Link>
+                    <NavLink to="/new-order" activeClassName="active_link">
+                        <MdAddShoppingCart />
+                        <span className="link_name">New Order</span>
+                    </NavLink>
 
-                        <ul className="sub-menu blank">
-                            <li><span className="link_name">New Order</span></li>
-                        </ul>
-                    </div>
+                    <ul className="sub-menu blank">
+                        <li><span className="link_name">New Order</span></li>
+                    </ul>
                 </li>
 
                 <li>
-                    <div className="iocn-link">
-                        <Link to="/orders">
-                            <RiIcons.RiFileList3Line />
-                            <span className="link_name">Orders</span>
-                        </Link>
+                    <NavLink to="/orders" activeClassName="active_link">
+                        <RiIcons.RiFileList3Line />
+                        <span className="link_name">Orders</span>
+                    </NavLink>
 
-                        <ul className="sub-menu blank">
-                            <li><span className="link_name">Orders</span></li>
-                        </ul>
-                    </div>
+                    <ul className="sub-menu blank">
+                        <li><span className="link_name">Orders</span></li>
+                    </ul>
                 </li>
 
                 <li>
-                    <Link to="/services">
+                    <NavLink to="/services" activeClassName="active_link">
                         <RiIcons.RiListSettingsLine />
                         <span className="link_name">Services</span>
-                    </Link>
+                    </NavLink>
 
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Services</span></li>
@@ -89,30 +85,30 @@ function Links() {
                 </li>
 
                 <li>
-                    <Link to="/add-fund">
+                    <NavLink to="/add-fund" activeClassName="active_link">
                         <MdAttachMoney />
                         <span className="link_name">Add Fund</span>
-                    </Link>
+                    </NavLink>
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Add Fund</span></li>
                     </ul>
                 </li>
 
                 <li>
-                    <Link to="/support">
+                    <NavLink to="/support" activeClassName="active_link">
                         <BiSupport />
                         <span className="link_name">Support</span>
-                    </Link>
+                    </NavLink>
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Support</span></li>
                     </ul>
                 </li>
 
                 <li>
-                    <Link to="/transactions">
+                    <NavLink to="/transactions" activeClassName="active_link">
                         <AiOutlineHistory />
                         <span className="link_name">Transactions</span>
-                    </Link>
+                    </NavLink>
                     <ul className="sub-menu blank">
                         <li><span className="link_name">Transactions</span></li>
                     </ul>
@@ -124,7 +120,7 @@ function Links() {
                             {/* <img src="image/profile.jpg" alt="profile" /> */}
                         </div>
                         <div className="name-role">
-                            <div className="profile_name">{`${fName} ${lName}`}</div>
+                            <div className="profile_name">{`${firstName} ${lastName}`}</div>
                             <div className="role">{role}</div>
                         </div>
                         <FiLogOut onClick={logoutHandler} />

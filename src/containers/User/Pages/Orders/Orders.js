@@ -50,8 +50,8 @@ const Orders = () => {
 
     const getServiceTitle = (id) => {
         if (!services) return;
-        const { title } = services.filter((service) => service.id === id);
-        console.log(title);
+        const filService = services.filter((service) => +service.id === +id);
+        const { title } = filService[0];
         if (title) return title;
     };
 

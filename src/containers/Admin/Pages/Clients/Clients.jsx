@@ -50,6 +50,8 @@ const Clients = () => {
             .catch((err) => {
                 setIsLoading(false);
 
+                // TODO Remove this
+                // eslint-disable-next-line no-console
                 console.log(err.response.message);
             });
     }, []);

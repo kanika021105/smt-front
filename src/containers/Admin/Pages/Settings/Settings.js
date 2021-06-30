@@ -13,6 +13,8 @@ const Payment = lazy(() => import('./Payment/Payment'));
 const Settings = () => {
     //
     useEffect(() => {
+        // TODO Remove this
+        // eslint-disable-next-line no-console
         console.log('setting running!');
     }, []);
 

@@ -1,0 +1,14 @@
+.checkbox {
+    display: flex;
+    flex-direction: row;
+    margin: 1rem 0;
+
+    & input {
+        margin: auto 0;
+    }
+
+    & p {
+        margin: auto 0;
+        margin-left: 1rem;
+    }
+}

@@ -1,24 +1,24 @@
-.select {
-    // To remove arrow from select
-    // appearance: none;
+// .select {
+//     // To remove arrow from select
+//     // appearance: none;
 
-    padding: 3.7px 4px;
-    width: 100%;
-    display: block;
-    border: 0.5px solid lighten($color-grey, 30);
-    border-radius: 3px;
+//     padding: 3.7px 4px;
+//     width: 100%;
+//     display: block;
+//     border: 0.5px solid lighten($color-grey, 30);
+//     border-radius: 3px;
 
-    &:not(:disabled) {
-        color: darken($color-grey, 10);
-    }
+//     &:not(:disabled) {
+//         color: darken($color-grey, 10);
+//     }
 
-    &:active,
-    &:focus {
-        outline-color: lighten($color-primary, 20);
-    }
+//     &:active,
+//     &:focus {
+//         outline-color: lighten($color-primary, 20);
+//     }
 
-    // To remove arrow from select
-    // &::-ms-expand {
-    //     display: none;
-    // }
-}
+//     // To remove arrow from select
+//     // &::-ms-expand {
+//     //     display: none;
+//     // }
+// }

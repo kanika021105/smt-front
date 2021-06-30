@@ -1,28 +1,28 @@
-.input {
-    display: block;
-    padding: 4px 6px;
-    font-size: 1.4rem;
-    width: 100%;
-    border-radius: 3px;
-    border: 0.5px solid lighten($color-grey, 30);
+// .input {
+//     display: block;
+//     padding: 4px 6px;
+//     font-size: 1.4rem;
+//     width: 100%;
+//     border-radius: 3px;
+//     border: 0.5px solid lighten($color-grey, 30);
 
-    &:not(:disabled) {
-        color: darken($color-grey, 10);
-    }
+//     &:not(:disabled) {
+//         color: darken($color-grey, 10);
+//     }
 
-    &--disabled {
-        opacity: 0.8;
-        background-color: lighten($color-grey, 48);
-    }
+//     &--disabled {
+//         opacity: 0.8;
+//         background-color: lighten($color-grey, 48);
+//     }
 
-    &:active,
-    &:focus {
-        outline-color: lighten($color-primary, 20);
-    }
-}
+//     &:active,
+//     &:focus {
+//         outline-color: lighten($color-primary, 20);
+//     }
+// }
 
 
-.input__label {
-    display: block;
-    padding: 2px 0;
-}
+// .input__label {
+//     display: block;
+//     padding: 2px 0;
+// }

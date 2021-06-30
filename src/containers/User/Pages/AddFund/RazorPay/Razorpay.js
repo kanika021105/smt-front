@@ -4,16 +4,16 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
-import { AuthContext } from '../../../../Context/AuthContext';
 // import Loading from '../../../../../components/UI/Loading/Loading';
+import AuthContext from '../../../../../store/auth-context';
 
 import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
-
 import '../../../../../sass/pages/user/Razorpay.scss';
 
+// TODO Change clientId useage to email
 const Razorpay = () => {
     const [amount, setAmount] = useState(0);
-    const { clientId, fName } = useContext(AuthContext);
+    const { email, fName } = useContext(AuthContext);
     const [publicKey, setPublicKey] = useState('');
 
     const { websiteName } = useContext(WebsiteDetail);
@@ -35,7 +35,7 @@ const Razorpay = () => {
 
         const orderData = {
             amount,
-            clientId,
+            email,
             fName,
         };
 
@@ -63,6 +63,7 @@ const Razorpay = () => {
                         ...params,
                     });
                 } catch (err) {
+                    // eslint-disable-next-line no-console
                     console.log(err);
                 }
             },
