@@ -8,10 +8,10 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import './support.scss';
+import Context from '../../../../store/context';
 
 const Support = () => {
     const history = useHistory();
@@ -19,7 +19,7 @@ const Support = () => {
     const [tickets, setTickets] = useState();
     const [clients, setClients] = useState();
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -38,7 +38,8 @@ const Support = () => {
             .catch((err) => {
                 setIsLoading(false);
 
-                console.log(err.response.msg);
+                // console.log(err.response.msg);
+                throw new Error(err.response.message);
             });
     }, []);
 
@@ -101,7 +102,7 @@ const Support = () => {
                 <title>
                     Support -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 

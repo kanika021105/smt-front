@@ -1,48 +1,21 @@
-// /* eslint-disable */
-
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
-import { CheckoutProvider, Checkout, injectCheckout } from 'paytm-blink-checkout-react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { CheckoutProvider, Checkout } from 'paytm-blink-checkout-react';
 
 import Axios from '../../../../../axiosIns';
-import InjectCheckout from './injected-checkout';
-import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
-
-const InjectedCheckout = injectCheckout(InjectCheckout);
-toast.configure();
+import Toast from '../../../../../components/UI/Toast/Toast';
+import Input from '../../../../../components/UI/Input/Input';
+import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
+import Context from '../../../../../store/context';
 
 const Paytm = () => {
-    const [amount, setAmount] = useState(1);
-    const [config, setConfig] = useState();
+    const [config, setConfig] = useState('');
     const [showCheckout, setShowCheckout] = useState(false);
+    const [amount, setAmount] = useState(1);
+    const [merchantId, setMerchantId] = useState('');
 
-    const { websiteName } = useContext(WebsiteDetail);
-
-    const success = () => toast('Payment successful!', {
-        type: 'success',
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 6000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: null,
-    });
-
-    const failed = () => toast('Transaction failed!', {
-        type: 'error',
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 6000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: null,
-    });
-
-    const amountChangeHandler = (e) => setAmount(+e.target.value);
+    const { websiteName } = useContext(Context);
+    const { balance, updateBalance } = useContext(Context);
 
     let CONFIG = {
         style: {
@@ -71,8 +44,8 @@ const Paytm = () => {
             },
         },
         merchant: {
-            mid: 'OhFfSe81879043311565',
-            name: 'Test Gateway',
+            mid: merchantId || process.env.REACT_APP_PAYTM_MERCHANT_ID,
+            name: 'SMT Panel',
             logo: '',
             redirect: false,
         },
@@ -89,8 +62,7 @@ const Paytm = () => {
         handler: {
             notifyMerchant: (eventName) => {
                 if (eventName === 'SESSION_EXPIRED') {
-                    // eslint-disable-next-line no-alert
-                    alert('Your session has expired!!');
+                    Toast.failed('Your session has expired!');
                     window.location.reload();
                 }
             },
@@ -101,20 +73,29 @@ const Paytm = () => {
                     window.Paytm.CheckoutJS.close();
 
                     if (paymentStatus.STATUS === 'TXN_SUCCESS') {
+                        updateBalance(balance + +paymentStatus.TXNAMOUNT);
                         const url = 'paytm/verify';
                         await Axios.post(url, { ...paymentStatus });
-
-                        return success();
+                        return Toast.success('Payment successful!');
                     }
-
-                    failed();
 
                     const url = 'paytm/verify';
                     await Axios.post(url, { ...paymentStatus });
+                    return Toast.failed('Payment failed!');
                 }
             },
         },
     };
+
+    useEffect(() => {
+        Axios.get('/paytm').then((res) => {
+            setMerchantId(res.data.merchantId);
+        }).catch((err) => {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        });
+    }, []);
+
+    const amountChangeHandler = (e) => setAmount(+e.target.value);
 
     const toggleCheckout = async (e) => {
         e.preventDefault();
@@ -123,47 +104,32 @@ const Paytm = () => {
         const url = 'paytm/get-token';
         const { data } = await Axios.post(url, { orderId, amount });
         const { token } = data;
-
-        console.log({ token });
-
-        CONFIG = {
-            ...CONFIG,
-            data: {
-                ...CONFIG.data,
-                orderId,
-                token,
-            },
-        };
-
+        CONFIG = { ...CONFIG, data: { ...CONFIG.data, orderId, token } };
         setConfig({ ...CONFIG });
         setShowCheckout(true);
     };
 
     return (
-
         <>
             <Helmet>
                 <title>
                     Paytm -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
             <div className="Paytm">
                 <form onSubmit={toggleCheckout}>
-                    <input
-                        className="Razorpay__input input"
-                        placeholder="Amount"
+
+                    <Input
+                        label=""
                         type="number"
+                        placeholder="Amount"
                         onChange={amountChangeHandler}
                     />
 
-                    <div className="mt-3 Razorpay__checkbox">
-                        <input type="checkbox" />
-                        <p>I&apos;m paying for services and its non refundable!</p>
-                    </div>
-
+                    <Checkbox text="I'm paying for services and its non refundable!" />
                     <button
                         type="submit"
                         className="btn btn-primary Razorpay_button"
@@ -172,21 +138,12 @@ const Paytm = () => {
                     </button>
                 </form>
 
-                <br />
-
-                <div>
-                    <b>CHECKOUT VISIBILITY :</b>
-                    {' '}
-                    {showCheckout.toString()}
-                </div>
-
                 <CheckoutProvider
                     config={config}
                     checkoutJsInstance={null}
                     openInPopup
-                    env="STAGE"
+                    env="PROD"
                 >
-                    <InjectedCheckout />
                     {showCheckout && <Checkout />}
                 </CheckoutProvider>
             </div>

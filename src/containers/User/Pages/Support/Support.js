@@ -1,6 +1,4 @@
-// jshint esversion:9
-
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
@@ -10,8 +8,11 @@ import Modal from 'react-bootstrap/Modal';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Input from '../../../../components/UI/Input/Input';
+import Select from '../../../../components/UI/Select/Select';
+import Context from '../../../../store/context';
 
 import '../../../../sass/pages/user/support.scss';
 
@@ -21,7 +22,6 @@ const Support = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [showError, setShowError] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
-
     const [orderId, setOrderId] = useState('');
     const [message, setMessage] = useState('');
     const [serviceId, setServiceId] = useState('');
@@ -29,13 +29,10 @@ const Support = () => {
     const [selectedSubject, setSelectedSubject] = useState('');
     const [selectedRequest, setSelectedRequest] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
-
     const [tickets, setTickets] = useState();
     const [user, setUser] = useState();
-
-    const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
+    const { websiteName } = useContext(Context);
 
     useEffect(() => {
         setIsLoading(true);
@@ -84,7 +81,7 @@ const Support = () => {
         setShowAddModal(true);
     };
 
-    const subjectChangeHandler = (e) => {
+    const resetState = () => {
         setOrderId('');
         setMessage('');
         setServiceId('');
@@ -92,6 +89,10 @@ const Support = () => {
         setSelectedSubject('');
         setSelectedRequest('');
         setPaymentMethod('');
+    };
+
+    const subjectChangeHandler = (e) => {
+        resetState();
 
         setSelectedSubject(e.target.value);
     };
@@ -124,8 +125,6 @@ const Support = () => {
         e.preventDefault();
 
         setErrorMsg('');
-
-        const url = '/support/create-ticket';
 
         let ticketData = {};
         switch (selectedSubject) {
@@ -167,6 +166,7 @@ const Support = () => {
         }
 
         try {
+            const url = '/support/create-ticket';
             const { data } = await Axios.post(url, {
                 ...ticketData,
             });
@@ -178,31 +178,16 @@ const Support = () => {
                 ...preState,
             ]);
             setShowAddModal(false);
+            Toast.success('Ticket created!');
 
-            setOrderId('');
-            setMessage('');
-            setServiceId('');
-            setTransactionId('');
-            setSelectedSubject('');
-            setSelectedRequest('');
-            setPaymentMethod('');
-            return;
+            return resetState();
         } catch (err) {
-            console.log(err.response.data);
-
-            setErrorMsg(err.response.data.message);
+            Toast.failed(err.response.message || 'Something went wrong!');
         }
     };
 
     const handleBackdropClick = () => {
-        setOrderId('');
-        setMessage('');
-        setServiceId('');
-        setTransactionId('');
-        setSelectedSubject('');
-        setSelectedRequest('');
-        setPaymentMethod('');
-
+        resetState();
         setErrorMsg('');
         setShowAddModal(false);
     };
@@ -212,43 +197,37 @@ const Support = () => {
             case 'order':
                 return (
                     <>
-                        <div className="mt-2">
-                            <label className="input__label">OrderId</label>
-                            <input
-                                type="number"
-                                value={orderId}
-                                className="input"
-                                placeholder="Order Id"
-                                onChange={orderIdChangeHandler}
-                                required
-                            />
-                        </div>
+                        <Input
+                            label="Order Id"
+                            type="number"
+                            value={orderId}
+                            placeholder="Order Id"
+                            onChange={orderIdChangeHandler}
+                            required
+                        />
 
-                        <div className="mt-2">
-                            <label className="input__label">Request</label>
-                            <select
-                                className="select"
-                                value={selectedRequest}
-                                onChange={requestChangeHandler}
-                                required
-                            >
-                                <option key={0} value={null}>
-                                    Choose request!
-                                </option>
-                                <option key="cancel" value="cancel">
-                                    Cancel
-                                </option>
-                                <option key="refill" value="refill">
-                                    Refill
-                                </option>
-                                <option key="speedUp" value="speedUp">
-                                    Speed Up
-                                </option>
-                                <option key="other" value="other">
-                                    Other
-                                </option>
-                            </select>
-                        </div>
+                        <Select
+                            label="Request"
+                            value={selectedRequest}
+                            onChange={requestChangeHandler}
+                            required
+                        >
+                            <option key={0} value={null}>
+                                Choose request!
+                            </option>
+                            <option key="cancel" value="cancel">
+                                Cancel
+                            </option>
+                            <option key="refill" value="refill">
+                                Refill
+                            </option>
+                            <option key="speedUp" value="speedUp">
+                                Speed Up
+                            </option>
+                            <option key="other" value="other">
+                                Other
+                            </option>
+                        </Select>
 
                         <div className="mt-2">
                             <label className="input__label">Message</label>
@@ -265,40 +244,30 @@ const Support = () => {
             case 'payment':
                 return (
                     <>
-                        <div className="mt-2">
-                            <label className="input__label">
-                                Select Payment Method
-                            </label>
-                            <select
-                                className="select"
-                                value={paymentMethod}
-                                onChange={paymentMethodChangeHandler}
-                                required
-                            >
-                                <option key={0} value={null}>
-                                    Choose payment method!
-                                </option>
-                                <option key="razorpay" value="razorpay">
-                                    Razorpay
-                                </option>
-                                <option key="other" value="other">
-                                    Other
-                                </option>
-                            </select>
-                        </div>
+                        <Select
+                            label="Select Payment Method"
+                            value={paymentMethod}
+                            onChange={paymentMethodChangeHandler}
+                            required
+                        >
+                            <option key={0} value={null}>
+                                Choose payment method!
+                            </option>
+                            <option key="razorpay" value="razorpay">
+                                Razorpay
+                            </option>
+                            <option key="other" value="other">
+                                Other
+                            </option>
+                        </Select>
 
-                        <div className="mt-2">
-                            <label className="input__label">
-                                Transaction Id
-                            </label>
-                            <input
-                                type="text"
-                                className="input"
-                                value={transactionId}
-                                placeholder="Transaction Id"
-                                onChange={transactionIdChangeHandler}
-                            />
-                        </div>
+                        <Input
+                            label="Transaction Id"
+                            type="text"
+                            value={transactionId}
+                            placeholder="Transaction Id"
+                            onChange={transactionIdChangeHandler}
+                        />
 
                         <div className="mt-2">
                             <label className="input__label">Message</label>
@@ -315,7 +284,7 @@ const Support = () => {
             case 'service':
                 return (
                     <>
-                        <div className="mt-2">
+                        {/* <div className="mt-2">
                             <label className="input__label">Service Id</label>
                             <input
                                 type="number"
@@ -323,9 +292,15 @@ const Support = () => {
                                 value={serviceId}
                                 placeholder="Service Id"
                                 onChange={serviceIdChangeHandler}
-                                label
                             />
-                        </div>
+                        </div> */}
+                        <Input
+                            label="Service Id"
+                            type="number"
+                            value={serviceId}
+                            placeholder="Service Id"
+                            onChange={serviceIdChangeHandler}
+                        />
 
                         <div className="mt-2">
                             <label className="input__label">Message</label>
@@ -366,30 +341,27 @@ const Support = () => {
 
             <form onSubmit={addFormSubmitHandler}>
                 <Modal.Body>
-                    <div>
-                        <label className="input__label">Subject</label>
-                        <select
-                            className="select"
-                            value={selectedSubject}
-                            onChange={subjectChangeHandler}
-                        >
-                            <option key={0} value={null}>
-                                Choose a subject!
-                            </option>
-                            <option key="order" value="order">
-                                Order
-                            </option>
-                            <option key="payment" value="payment">
-                                Payment
-                            </option>
-                            <option key="service" value="service">
-                                Service
-                            </option>
-                            <option key="other" value="other">
-                                Other
-                            </option>
-                        </select>
-                    </div>
+                    <Select
+                        label="Subject"
+                        value={selectedSubject}
+                        onChange={subjectChangeHandler}
+                    >
+                        <option key={0} value={null}>
+                            Choose a subject!
+                        </option>
+                        <option key="order" value="order">
+                            Order
+                        </option>
+                        <option key="payment" value="payment">
+                            Payment
+                        </option>
+                        <option key="service" value="service">
+                            Service
+                        </option>
+                        <option key="other" value="other">
+                            Other
+                        </option>
+                    </Select>
 
                     {selectedSubjectSection()}
                 </Modal.Body>
@@ -420,7 +392,7 @@ const Support = () => {
                 <title>
                     Support -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
             {addModal}

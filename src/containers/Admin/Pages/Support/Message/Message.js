@@ -1,35 +1,26 @@
-// jshint esversion:9
-
 import React, { useEffect, useState, useContext } from 'react';
-
 import { useParams } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { InputGroup, Card } from 'react-bootstrap';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
-
-import AuthContext from '../../../../../store/auth-context';
-import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
+import Context from '../../../../../store/context';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classes from './messages.module.scss';
 
 // TODO Fix context api also change clientId useage into email
 const Message = () => {
-    const { email } = useContext(AuthContext);
     const params = useParams();
     const { id } = params;
-
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
-
-    const { websiteName } = useContext(WebsiteDetail);
+    const { email, websiteName } = useContext(Context);
 
     useEffect(() => {
         const url = `/admin/support/ticket/${id}`;
@@ -40,7 +31,9 @@ const Message = () => {
                 setTicket(data.ticket);
                 setMessages(data.messages);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                throw new Error(err);
+            });
     }, [id]);
 
     const submitMessageHandler = async (e) => {
@@ -52,7 +45,7 @@ const Message = () => {
                 message: inputMessage,
             });
         } catch (err) {
-            console.log(err.response.data.message);
+            throw new Error(err.response.message);
         }
 
         setMessages((prevState) => [
@@ -118,7 +111,7 @@ const Message = () => {
                 <title>
                     Ticket -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 

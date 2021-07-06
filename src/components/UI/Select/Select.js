@@ -4,7 +4,7 @@ import PropTypes, { number, string } from 'prop-types';
 import classes from './Select.module.scss';
 
 function Select({
-    children, label, value, onChange, disabled,
+    children, label, value, onChange, disabled, required,
 }) {
     return (
         <div className={classes.select}>
@@ -17,6 +17,7 @@ function Select({
                 value={value}
                 onChange={onChange}
                 disabled={disabled}
+                required={required}
             >
                 {children}
             </select>
@@ -30,6 +31,7 @@ Select.propTypes = {
     value: PropTypes.oneOfType([string, number]).isRequired,
     onChange: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
+    required: PropTypes.bool,
 
 };
 

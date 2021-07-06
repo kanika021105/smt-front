@@ -1,0 +1,108 @@
+@import '../../../sass/index';
+
+.dropdownButton button::after {
+    content: none !important;
+}
+
+// button.add-button {
+//     outline: none;
+//     border: none;
+//     font-size: 2rem;
+//     border-radius: 0.5rem;
+//     color: #fff;
+//     background-color: #3f80ea;
+//     padding: 0rem 1rem;
+//     margin: 0 0 0 1rem;
+// }
+
+// button.btn-add {
+//     outline: none;
+//     border: none;
+//     font-size: 2rem;
+//     border-radius: 0.4rem;
+//     color: #fff;
+//     background-color: $color-primary;
+//     padding: 0rem 1rem;
+//     margin: 0 0 0 1rem;
+// }
+
+button {
+    border: none;
+    outline: none;
+    color: $color-white;
+    font-size: 1.6rem;
+    padding: .7rem 1.4rem;
+    border-radius: 0.5rem;
+    text-transform: capitalize;
+}
+
+.button {
+    &--active {
+        background: $color-activeButton;
+    }
+
+    &--disable {
+        background: $color-disableButton;
+    }
+
+    &--success {
+        background: $color-successButton;
+    }
+
+    &--failed {
+        background: $color-failedButton;
+    }
+
+    &--edit {
+        background: $color-editButton;
+    }
+
+    &--delete {
+        background: $color-deleteButton;
+    }
+
+    &__order {
+        &--pending {
+            background: $color-orderPending;
+        }
+
+        &--processing {
+            background: $color-orderProcessing;
+        }
+
+        &--inprogress {
+            background: $color-orderInprogress;
+        }
+
+        &--completed {
+            background: $color-orderCompleted;
+        }
+
+        &--cancelled {
+            background: $color-orderCancelled;
+        }
+
+        &--partial {
+            background: $color-orderPartial;
+        }
+
+        &--refunded {
+            background: $color-orderRefunded;
+        }
+    }
+
+    &__modal {
+        &--primary {
+            background: $color-primaryButton;
+        }
+
+        &--secondary {
+            color: $color-lightDarkText;
+            background: none;
+        }
+    }
+}
+
+button:not(:disabled) {
+    cursor: pointer;
+}

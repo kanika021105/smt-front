@@ -1,8 +1,4 @@
-import React, {
-    useEffect,
-    useState,
-    useContext,
-} from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import {
     ResponsiveContainer,
@@ -16,18 +12,20 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
+import Toast from '../../../../components/UI/Toast/Toast';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
+import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 import classes from './Dashboard.module.scss';
+import Context from '../../../../store/context';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [graphData, setGraphData] = useState('');
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
     useEffect(() => {
         setIsLoading(true);
@@ -41,8 +39,7 @@ const Dashboard = () => {
             })
             .catch((err) => {
                 setIsLoading(false);
-                // eslint-disable-next-line no-console
-                console.log(err);
+                Toast.failed(err.response.data.message || 'Something went wrong!');
             });
     }, []);
 
@@ -54,13 +51,26 @@ const Dashboard = () => {
         spent,
     } = data;
 
+    const checkStatus = (status) => {
+        switch (status) {
+            case 'active':
+                return <Button.Active />;
+
+            case 'disable':
+                return <Button.Disable />;
+
+            default:
+                break;
+        }
+    };
+
     return (
         <>
             <Helmet>
                 <title>
                     Dashboard -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
@@ -69,13 +79,7 @@ const Dashboard = () => {
             <div className="container">
                 <div className={classes.dashboard}>
                     <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
+                        <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                             <VscListSelection />
                         </IconContext.Provider>
                         {' '}
@@ -131,11 +135,7 @@ const Dashboard = () => {
                     <section className={classes.section__two}>
                         <div className={classes.section__two__graph}>
                             <DashboardCard>
-                                <div
-                                    className={
-                                        classes.section__two__graph_container
-                                    }
-                                >
+                                <div className={classes.section__two__graph_container}>
                                     <ResponsiveContainer
                                         width="100%"
                                         height="100%"
@@ -152,38 +152,38 @@ const Dashboard = () => {
 
                                             <defs>
                                                 <linearGradient id="colorPending" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#ff750ced" stopOpacity={0.8} />
-                                                    <stop offset="90%" stopColor="#ff632aed" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#ff750ced" stopOpacity={0.8} />
+                                                    <stop offset="92%" stopColor="#ff632aed" stopOpacity={0} />
                                                 </linearGradient>
 
                                                 <linearGradient id="colorProcessing" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#5ef108ed" stopOpacity={0.8} />
-                                                    <stop offset="90%" stopColor="#5dc508" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#5ef108ed" stopOpacity={0.8} />
+                                                    <stop offset="92%" stopColor="#5dc508" stopOpacity={0} />
                                                 </linearGradient>
 
                                                 <linearGradient id="colorInprogress" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#0983f3ed" stopOpacity={0.8} />
-                                                    <stop offset="90%" stopColor="#2172f3" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#0983f3ed" stopOpacity={0.8} />
+                                                    <stop offset="92%" stopColor="#2172f3" stopOpacity={0} />
                                                 </linearGradient>
 
                                                 <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#099e7aed" stopOpacity={0.8} />
-                                                    <stop offset="90%" stopColor="#268b4a" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#099e7aed" stopOpacity={0.8} />
+                                                    <stop offset="92%" stopColor="#268b4a" stopOpacity={0} />
                                                 </linearGradient>
 
                                                 <linearGradient id="colorPartial" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#f86444ed" stopOpacity={0.8} />
-                                                    <stop offset="90%" stopColor="#f34242" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#f86444ed" stopOpacity={0.8} />
+                                                    <stop offset="92%" stopColor="#f34242" stopOpacity={0} />
                                                 </linearGradient>
 
                                                 <linearGradient id="colorCancelled" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#cf3558ed" stopOpacity={0.4} />
-                                                    <stop offset="90%" stopColor="#cc1f1f" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#cf3558ed" stopOpacity={0.4} />
+                                                    <stop offset="92%" stopColor="#cc1f1f" stopOpacity={0} />
                                                 </linearGradient>
 
                                                 <linearGradient id="colorRefunded" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="10%" stopColor="#8F66f4ed" stopOpacity={0.4} />
-                                                    <stop offset="90%" stopColor="#8F44FD" stopOpacity={0} />
+                                                    <stop offset="8%" stopColor="#8F66f4ed" stopOpacity={0.4} />
+                                                    <stop offset="92%" stopColor="#8F44FD" stopOpacity={0} />
                                                 </linearGradient>
                                             </defs>
 
@@ -203,9 +203,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorPending)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
 
                                             <Area
@@ -216,9 +214,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorProcessing)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
 
                                             <Area
@@ -229,9 +225,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorInprogress)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
 
                                             <Area
@@ -242,9 +236,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorCompleted)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
 
                                             <Area
@@ -255,9 +247,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorPartial)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
 
                                             <Area
@@ -268,9 +258,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorCancelled)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
 
                                             <Area
@@ -281,9 +269,7 @@ const Dashboard = () => {
                                                 strokeWidth="2"
                                                 fill="url(#colorRefunded)"
                                                 fillOpacity="1"
-                                                style={{
-                                                    strokeLinecap: 'round',
-                                                }}
+                                                style={{ strokeLinecap: 'round' }}
                                             />
                                         </AreaChart>
                                     </ResponsiveContainer>
@@ -364,7 +350,7 @@ const Dashboard = () => {
                         </div>
                     </section>
 
-                    <section className="section__third">
+                    <section className={classes.section__third}>
                         <DashboardCard>
                             <div className="tableTitle">
                                 Top 10 best selling services
@@ -380,34 +366,24 @@ const Dashboard = () => {
                                 </THead>
 
                                 <TBody>
-                                    {services
-                                        && services.map((service) => (
-                                            <tr key={service.id}>
-                                                <td>{service.id}</td>
-                                                <td>
-                                                    {service.title.length > 30
-                                                        ? `${service.title.substr(
-                                                            0,
-                                                            31,
-                                                        )}...`
-                                                        : service.title}
-                                                </td>
-                                                <td>
-                                                    {service.status
-                                                        === 'active' && (
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-success btn-disabled"
-                                                            disabled
-                                                        >
-                                                            {service.status}
-                                                        </button>
-                                                    )}
-                                                    {service.status
+                                    {services && services.map((service) => (
+                                        <tr key={service.id}>
+                                            <td>{service.id}</td>
+                                            <td>
+                                                {service.title.length > 30
+                                                    ? `${service.title.substr(0, 31)}...`
+                                                    : service.title}
+                                            </td>
+                                            <td>
+                                                {checkStatus(service.status)}
+                                                {/* {service.status === 'active'
+                                                && }
+                                                {service.status
                                                         === 'deactive' && (
-                                                        <button
+                                                    <button
                                                             type="button"
-                                                            className="btn btn-inactive btn-disabled"
+                                                            className="btn
+                                                            btn-inactive btn-disabled"
                                                             disabled
                                                         >
                                                             {service.status[0].toUpperCase()
@@ -417,10 +393,10 @@ const Dashboard = () => {
                                                                     )
                                                                     .toLowerCase()}
                                                         </button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                )} */}
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </TBody>
                             </Table>
                         </DashboardCard>

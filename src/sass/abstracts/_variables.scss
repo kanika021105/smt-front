@@ -21,9 +21,38 @@ $color-partial: #f34242;
 $color-active: #198754;
 $color-inactive: #f3731e;
 
+
+// Button Colors - Old
 $color-btn-edit: #5e8ad1;
 $color-btn-delete: #e22525;
 
+// Order Button Colors
+$color-orderPending: #ff632aed;
+$color-orderProcessing: #5dc508;
+$color-orderInprogress: #2172f3;
+$color-orderCompleted: #268b4a;
+$color-orderCancelled: #dd2a2a;
+$color-orderPartial: #f34242;
+$color-orderRefunded: #60b611;
+
+// Extra Button Colors
+$color-deleteButton: #cc0000;
+$color-editButton: #4483eb;
+$color-primaryButton: #518cec;
+$color-successButton: #139d43;
+$color-failedButton: #e53c3c;
+$color-activeButton: #139d43;
+$color-disableButton: #6a6a6a;
+
+
+
+// Text Colors
+$color-lightText: #eee;
+$color-darkText: #777;
+$color-veryDarkText: #555;
+$color-lightDarkText: #919191;
+
+// Table Colors
 $color-white__table: #cecece;
 
 // GRID

@@ -1,28 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Button from '../../../../components/UI/Button/Button';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
+import Context from '../../../../store/context';
 
 import '../../../../sass/pages/user/services.scss';
 
-export default function Services() {
-    const [errorMsg, setErrorMsg] = useState('');
-    const [showError, setShowError] = useState(false);
-
+function Services() {
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
-
-    const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
+
+    const { websiteName } = useContext(Context);
 
     useEffect(() => {
         setIsLoading(false);
@@ -30,21 +26,14 @@ export default function Services() {
         const url = '/services';
         Axios.get(url)
             .then((res) => {
-                const { data } = res;
-
-                if (data.status !== 'success') {
-                    setErrorMsg(
-                        'Failed to load services... Please try again or contact support team!',
-                    );
-                    setShowError(true);
-                    return;
-                }
                 setIsLoading(false);
-
-                setServices(res.data.services);
-                setCategories(res.data.categories);
+                const { data } = res;
+                setServices(data.services);
+                setCategories(data.categories);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                Toast.failed(err.response.data.message);
+            });
     }, []);
 
     const getServiceByCateId = (cateId) => {
@@ -55,40 +44,23 @@ export default function Services() {
             <tr key={service.id}>
                 <td>{service.id}</td>
                 <td>
-                    {service.title.length > 35
-                        ? `${service.title.slice(0, 35)}...`
-                        : service.title}
+                    {service.title.length > 35 ? `${service.title.slice(0, 35)}...` : service.title}
                 </td>
-                <td>
-                    {service.min}
-                    {' '}
-                    /
-                    {' '}
-                    {service.max}
-                </td>
+                <td>{`${service.min} / ${service.max}`}</td>
                 <td>{service.rate.toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
-                <td>
-                    <button
-                        type="button"
-                        className="btn btn-active btn-disabled"
-                        disabled
-                    >
-                        {service.status}
-                    </button>
-                </td>
+                <td><Button.Active /></td>
             </tr>
         ));
     };
 
-    // TODO Change title to dynamic
     return (
         <>
             <Helmet>
                 <title>
                     Services -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
@@ -96,63 +68,42 @@ export default function Services() {
 
             <div className="container Services">
                 <h2 className="pageTitle">
-                    <IconContext.Provider
-                        value={{
-                            style: {
-                                fontSize: '30px',
-                            },
-                        }}
-                    >
+                    <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                         <VscListSelection />
                     </IconContext.Provider>
                     {' '}
                     Services
                 </h2>
 
-                {showError && (
-                    <Card>
-                        <div>
-                            <small className="errorMsg">{errorMsg}</small>
-                        </div>
-                    </Card>
-                )}
+                {categories && categories.map((category) => (
+                    <div className="serviceListCard" key={category.id}>
+                        <Card>
+                            <h3 className="categoryTitle ">
+                                {category.title}
+                            </h3>
 
-                {categories
-                    && categories.map((category) => (
-                        <div className="serviceListCard" key={category.id}>
-                            <Card>
-                                <div>
-                                    {showError && (
-                                        <small className="errorMsg">
-                                            {errorMsg}
-                                        </small>
-                                    )}
-                                </div>
+                            <Table>
+                                <THead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Min / Max</th>
+                                        <th>Price</th>
+                                        <th>Drip Feed</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </THead>
 
-                                <h3 className="categoryTitle ">
-                                    {category.title}
-                                </h3>
-
-                                <Table>
-                                    <THead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Min / Max</th>
-                                            <th>Price</th>
-                                            <th>Drip Feed</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </THead>
-
-                                    <TBody>
-                                        {getServiceByCateId(category.id)}
-                                    </TBody>
-                                </Table>
-                            </Card>
-                        </div>
-                    ))}
+                                <TBody>
+                                    {getServiceByCateId(category.id)}
+                                </TBody>
+                            </Table>
+                        </Card>
+                    </div>
+                ))}
             </div>
         </>
     );
 }
+
+export default Services;

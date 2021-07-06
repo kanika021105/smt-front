@@ -8,9 +8,7 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
 import classes from './messages.module.scss';
-import AuthContext from '../../../../../store/auth-context';
-
-import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
+import Context from '../../../../../store/context';
 
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
@@ -24,9 +22,9 @@ const Message = () => {
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
-    const { email } = useContext(AuthContext);
+    const { email } = useContext(Context);
     const params = useParams();
     const { id } = params;
 
@@ -62,7 +60,7 @@ const Message = () => {
                 ]);
             }
         } catch (err) {
-            console.log(err.response.data);
+            throw new Error(err.response.message);
         }
     };
 
@@ -115,7 +113,7 @@ const Message = () => {
                 <title>
                     Ticket -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                     {' '}
                 </title>
             </Helmet>

@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useState, useContext } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
@@ -7,9 +5,9 @@ import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
+import Context from '../../../store/context';
 
 import SignUpImage from '../../../assets/images/signup.svg';
-import WebsiteDetail from '../../Context/WebsiteDetailContext';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({
@@ -25,7 +23,7 @@ const Signup = () => {
     const [showError, setShowError] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
     const firstNameChangeHandler = (e) => {
         setUserDetails((preState) => ({
@@ -151,7 +149,7 @@ const Signup = () => {
                 <title>
                     SignUp -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 

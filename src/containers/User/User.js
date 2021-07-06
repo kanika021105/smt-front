@@ -1,7 +1,5 @@
-// jshint esversion:9
-
-import React, { Suspense, lazy } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { lazy } from 'react';
+import { Route } from 'react-router-dom';
 
 const Layout = lazy(() => import('./Layout/UserLayout'));
 const Dashboard = lazy(() => import('./Pages/Dashboard/Dashboard'));
@@ -12,61 +10,52 @@ const Support = lazy(() => import('./Pages/Support/Support'));
 const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
 const AddFund = lazy(() => import('./Pages/AddFund/AddFund'));
 const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
+const PrivacyPolicy = lazy(() => import('../ExtraPages/Terms&Policy/PrivacyPolicy'));
 
 const Admin = () => (
-    <Suspense
-        fallback={(
-            <div className="loading">
-                <div className="loading__1">
-                    <div />
-                </div>
-            </div>
-        )}
-    >
-        <Layout>
-            <Switch>
-                <Route
-                    path="/"
-                    render={() => {
-                        window.location.href = '/dashboard';
-                    }}
-                    exact
-                />
+    <Layout>
+        <Route
+            path="/"
+            render={() => { window.location.href = '/dashboard'; }}
+            exact
+        />
 
-                <Route path="/support/ticket/:id" exact>
-                    <TicketMessage />
-                </Route>
+        <Route path="/support/ticket/:id" exact>
+            <TicketMessage />
+        </Route>
 
-                <Route path="/transactions" exact>
-                    <Transactions />
-                </Route>
+        <Route path="/transactions" exact>
+            <Transactions />
+        </Route>
 
-                <Route path="/dashboard" exact>
-                    <Dashboard />
-                </Route>
+        <Route path="/dashboard" exact>
+            <Dashboard />
+        </Route>
 
-                <Route path="/new-order" exact>
-                    <NewOrder />
-                </Route>
+        <Route path="/new-order" exact>
+            <NewOrder />
+        </Route>
 
-                <Route path="/add-fund">
-                    <AddFund />
-                </Route>
+        <Route path="/add-fund">
+            <AddFund />
+        </Route>
 
-                <Route path="/services" exact>
-                    <Services />
-                </Route>
+        <Route path="/services" exact>
+            <Services />
+        </Route>
 
-                <Route path="/support" exact>
-                    <Support />
-                </Route>
+        <Route path="/support" exact>
+            <Support />
+        </Route>
 
-                <Route path="/orders" exact>
-                    <Orders />
-                </Route>
-            </Switch>
-        </Layout>
-    </Suspense>
+        <Route path="/orders" exact>
+            <Orders />
+        </Route>
+
+        <Route path="/privacy">
+            <PrivacyPolicy />
+        </Route>
+    </Layout>
 );
 
 export default Admin;

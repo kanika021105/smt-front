@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -10,14 +8,14 @@ import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
+import Context from '../../../../store/context';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Select from '../../../../components/UI/Select/Select';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-
+import Toast from '../../../../components/UI/Toast/Toast';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import './apiServices.scss';
 import 'bootstrap/js/dist/dropdown';
@@ -32,7 +30,7 @@ const ApiServices = () => {
     const [selectedService, setSelectedService] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -126,7 +124,7 @@ const ApiServices = () => {
         }));
     };
 
-    const formSubmitHandler = (e) => {
+    const formSubmitHandler = async (e) => {
         e.preventDefault();
 
         const serviceData = {
@@ -134,13 +132,12 @@ const ApiServices = () => {
             profitMargin,
             provider: +id,
         };
-        const url = '/admin/api-provider/service/add';
         try {
-            Axios.post(url, serviceData);
+            const url = '/admin/api-provider/service/add';
+            await Axios.post(url, serviceData);
+            Toast.success('Service added!');
         } catch (err) {
-            // TODO Remove this
-            // eslint-disable-next-line no-console
-            console.log(err.response.data.message);
+            Toast.failed(err.response.data.message);
         }
     };
 
@@ -342,7 +339,7 @@ const ApiServices = () => {
                 <title>
                     Api Services -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BiMessageSquareDetail } from 'react-icons/bi';
@@ -11,15 +10,13 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
 import Select from '../../../../components/UI/Select/Select';
-
+import Context from '../../../../store/context';
+import Toast from '../../../../components/UI/Toast/Toast';
 import classes from './NewOrder.module.scss';
 
 const NewOrder = () => {
-    const websiteName = process.env.REACT_APP_WEBSITE_NAME;
-
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
-
     const [serviceDetails, setServiceDetails] = useState({
         id: '',
         title: '',
@@ -30,7 +27,6 @@ const NewOrder = () => {
         avgtime: '',
         description: '',
     });
-
     const [orderDetails, setOrderDetails] = useState({
         link: '',
         charge: '',
@@ -38,8 +34,13 @@ const NewOrder = () => {
         selectedService: '',
         selectedCategory: '',
     });
-
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState({
+        show: false,
+        message: '',
+    });
+
+    const { balance, updateBalance, websiteName } = useContext(Context);
 
     useEffect(() => {
         setIsLoading(true);
@@ -58,9 +59,7 @@ const NewOrder = () => {
             .catch((err) => {
                 setIsLoading(false);
 
-                // TODO remove it
-                // eslint-disable-next-line no-console
-                console.log(err.response.msg);
+                throw new Error(err.response.msg);
             });
     }, []);
 
@@ -69,7 +68,26 @@ const NewOrder = () => {
             (service) => +service.categoryId === +orderDetails.selectedCategory,
         );
 
-    // eslint-disable-next-line no-unused-vars
+    const reset = () => {
+        setOrderDetails({
+            link: '',
+            charge: '',
+            quantity: '',
+            selectedService: '',
+            selectedCategory: '',
+        });
+        setServiceDetails({
+            id: '',
+            title: '',
+            min: '',
+            max: '',
+            rate: '',
+            speed: '',
+            avgtime: '',
+            description: '',
+        });
+    };
+
     const selectedCategoryHandler = (e) => {
         setServiceDetails(() => ({
             id: '',
@@ -135,6 +153,17 @@ const NewOrder = () => {
             ...preState,
             charge: totalAmount,
         }));
+
+        if (balance < totalAmount) {
+            return setError({
+                show: true,
+                message: 'Insufficient Fund!',
+            });
+        }
+        setError({
+            show: false,
+            message: '',
+        });
     };
 
     const orderSubmitHandler = async (e) => {
@@ -152,11 +181,15 @@ const NewOrder = () => {
         try {
             const { data } = await Axios.post(url, orderData);
 
-            if (data.status === 'failed') return;
+            if (data.status === 'success') {
+                updateBalance(balance - orderDetails.charge);
+                reset();
+                return Toast.success('Order placed successfully!');
+            }
+
+            return Toast.failed('Something went wrong!');
         } catch (err) {
-            // TODO remove it
-            // eslint-disable-next-line no-console
-            console.log(err.response.data);
+            return Toast.failed(err.response.data.message);
         }
     };
 
@@ -170,7 +203,7 @@ const NewOrder = () => {
                 <title>
                     New Order -
                     {' '}
-                    {websiteName || 'SMT Panel'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
@@ -253,6 +286,7 @@ const NewOrder = () => {
                                     {serviceDetails.max || 0}
                                 </div>
 
+                                {error.show && <p className={classes.error}>{error.message}</p>}
                                 <div className={classes.newOrder__totalAmount}>
                                     Total =
                                     {' '}

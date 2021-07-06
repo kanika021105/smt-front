@@ -4,18 +4,20 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
+import Context from '../../../../store/context';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Button from '../../../../components/UI/Button/Button';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import './Transactions.scss';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState();
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -25,15 +27,27 @@ const Transactions = () => {
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
-
                 setTransactions(res.data.transactions);
             })
             .catch((err) => {
                 setIsLoading(false);
-
-                console.log(err.response.msg);
+                Toast.failed(err.response.message);
             });
     }, []);
+
+    const deleteHandler = async (e) => {
+        const id = +e.target.value;
+        const newList = await transactions.filter((transaction) => transaction.id !== +id);
+
+        try {
+            const url = `/admin/transaction/delete/${id}`;
+            Axios.delete(url);
+            setTransactions([...newList]);
+            Toast.success(`Transaction "${id} deleted!"`);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    };
 
     const transactionDataTable = (
         <Card>
@@ -46,6 +60,7 @@ const Transactions = () => {
                         <th>Amount</th>
                         <th>Method</th>
                         <th>Status</th>
+                        <th>Option</th>
                     </tr>
                 </THead>
 
@@ -59,13 +74,15 @@ const Transactions = () => {
                                 <td>{transaction.amount}</td>
                                 <td>{transaction.paymentMethod}</td>
                                 <td>
-                                    <button
-                                        type="button"
-                                        className="btn btn-success btn-disabled"
-                                        disabled
-                                    >
-                                        {transaction.status}
-                                    </button>
+                                    {transaction.status === 'success'
+                                        ? <Button.Success />
+                                        : <Button.Failed />}
+                                </td>
+                                <td>
+                                    <Button.Delete
+                                        value={transaction.id}
+                                        onClick={deleteHandler}
+                                    />
                                 </td>
                             </tr>
                         ))}
@@ -75,12 +92,9 @@ const Transactions = () => {
     );
 
     const isEmptyTransactions = transactions && transactions.length <= 0;
-
-    const showData = isEmptyTransactions ? (
-        <DataNotFound message="Please wait for users to make some transaction." />
-    ) : (
-        transactionDataTable
-    );
+    const showData = isEmptyTransactions
+        ? <DataNotFound message="Please wait for users to make some transaction." />
+        : transactionDataTable;
 
     // TODO
     return (
@@ -89,7 +103,7 @@ const Transactions = () => {
                 <title>
                     Transactions -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 

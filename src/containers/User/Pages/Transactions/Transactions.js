@@ -1,24 +1,23 @@
+/* eslint-disable no-console */
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Context from '../../../../store/context';
 
 import '../../../../sass/pages/user/transactions.scss';
 
-export default function Services() {
+function Transaction() {
     const [transactions, setTransactions] = useState();
-
-    const { websiteName } = useContext(WebsiteDetail);
-
     const [isLoading, setIsLoading] = useState(false);
+    const { websiteName } = useContext(Context);
 
     useEffect(() => {
         setIsLoading(true);
@@ -27,23 +26,21 @@ export default function Services() {
         Axios.get(url)
             .then((res) => {
                 const { data } = res;
-
-                if (data.status !== 'success') return;
-
                 setIsLoading(false);
                 setTransactions(data.transactions);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                Toast.failed(err.response.data.message || 'Something went wrong!');
+            });
     }, []);
 
-    // TODO Change title to dynamic
     return (
         <>
             <Helmet>
                 <title>
                     Transactions -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
@@ -51,13 +48,7 @@ export default function Services() {
 
             <div className="container Transactions">
                 <h2 className="pageTitle">
-                    <IconContext.Provider
-                        value={{
-                            style: {
-                                fontSize: '30px',
-                            },
-                        }}
-                    >
+                    <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                         <VscListSelection />
                     </IconContext.Provider>
                     {' '}
@@ -78,39 +69,16 @@ export default function Services() {
                         </THead>
 
                         <TBody>
-                            {transactions
-                                && transactions.map((transaction) => (
-                                    <tr key={transaction.id}>
-                                        <td>{transaction.id}</td>
-                                        <td>{transaction.email}</td>
-                                        <td>{transaction.transactionId}</td>
-                                        <td>{transaction.amount}</td>
-                                        <td>{transaction.paymentMethod}</td>
-                                        <td>
-                                            {transaction.status === 'success'
-                                            && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-success btn-disabled"
-                                                    disabled
-                                                >
-                                                    {transaction.status}
-                                                </button>
-                                            )}
-
-                                            {transaction.status === 'failed'
-                                            && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-danger btn-disabled"
-                                                    disabled
-                                                >
-                                                    {transaction.status}
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
+                            {transactions && transactions.map((transaction) => (
+                                <tr key={transaction.id}>
+                                    <td>{transaction.id}</td>
+                                    <td>{transaction.email}</td>
+                                    <td>{transaction.transactionId}</td>
+                                    <td>{transaction.amount}</td>
+                                    <td>{transaction.paymentMethod}</td>
+                                    <td>{transaction.status === 'success' ? <Button.Success /> : <Button.Failed />}</td>
+                                </tr>
+                            ))}
                         </TBody>
                     </Table>
                 </Card>
@@ -118,3 +86,5 @@ export default function Services() {
         </>
     );
 }
+
+export default Transaction;

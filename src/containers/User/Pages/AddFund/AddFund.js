@@ -1,23 +1,18 @@
-// jshint esversion:9
-
 import React, { useContext } from 'react';
 import { Route, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
-import Razorpay from './RazorPay/Razorpay';
-import Paytm from './Paytm/Paytm';
-
 import Card from '../../../../components/UI/Card/Card';
-
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
-
+import Context from '../../../../store/context';
 import '../../../../sass/pages/user/AddFund.scss';
 
+const Paytm = React.lazy(() => import('./Paytm/Paytm'));
+const Razorpay = React.lazy(() => import('./RazorPay/Razorpay'));
+
 const AddFund = () => {
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
     // TODO Change title to dynamic
     return (
@@ -43,7 +38,7 @@ const AddFund = () => {
                             <ul>
                                 <li>
                                     <NavLink
-                                        to="/add-fund"
+                                        to="/add-fund/razorpay"
                                         activeClassName="active"
                                         exact
                                     >
@@ -64,7 +59,11 @@ const AddFund = () => {
                         </div>
 
                         <div className="addfund__gateway">
-                            <Route path="/add-fund" exact>
+                            <Route path="/add-fund/" exact>
+                                <Razorpay />
+                            </Route>
+
+                            <Route path="/add-fund/razorpay" exact>
                                 <Razorpay />
                             </Route>
 
@@ -73,7 +72,7 @@ const AddFund = () => {
                                     <title>
                                         Paytm -
                                         {' '}
-                                        {websiteName || 'SMT'}
+                                        {websiteName || ''}
                                         {' '}
                                     </title>
                                 </Helmet>

@@ -13,6 +13,7 @@ const Input = ({
     disabled,
     label,
     pattern,
+    required,
 }) => (
     <div className={classes.input}>
         <label>
@@ -28,6 +29,7 @@ const Input = ({
             onChange={onChange}
             disabled={disabled}
             pattern={pattern}
+            required={required}
         />
     </div>
 );
@@ -44,7 +46,7 @@ Input.propTypes = {
     disabled: PropTypes.bool,
     label: PropTypes.string,
     pattern: PropTypes.string,
-
+    required: PropTypes.bool,
 };
 
 InputGroup.propTypes = {

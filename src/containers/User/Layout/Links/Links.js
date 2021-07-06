@@ -8,7 +8,7 @@ import { MdAddShoppingCart, MdAttachMoney } from 'react-icons/md';
 import * as RiIcons from 'react-icons/ri';
 
 import { ReactComponent as Logo } from '../../../../assets/images/logo.min.svg';
-import AuthContext from '../../../../store/auth-context';
+import Context from '../../../../store/context';
 
 function Links() {
     const {
@@ -16,13 +16,15 @@ function Links() {
         lastName,
         role,
         balance,
-    } = useContext(AuthContext);
+        logout,
+    } = useContext(Context);
 
-    const logoutHandler = (e) => {
-        e.preventDefault();
+    const logoutHandler = () => {
+        // e.preventDefault();
 
-        localStorage.clear();
-        window.location = '/login';
+        // localStorage.clear();
+        // window.location = '/login';
+        logout();
     };
 
     return (

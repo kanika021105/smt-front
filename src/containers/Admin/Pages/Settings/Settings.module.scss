@@ -1,0 +1,43 @@
+@import '../../../../sass/index';
+
+.setting {
+    min-height: calc(100vh - (8rem + 2.6rem));
+
+    &__container{
+        display: flex;
+        flex-direction: row;
+        gap: 5rem;
+    }
+
+    &__links {
+        width: 20%;
+        border: 1px solid $color-grey-light-1;
+        border-radius: .8rem;
+        color: $color-primary;
+        padding-left: 3rem;
+        
+        h3 {
+            padding: .1rem 0;
+        }
+        
+        li {
+            list-style: none;
+            display: flex;
+            padding: .1rem 0;
+            padding-left: 1rem;
+
+            a {
+                text-decoration: none;
+                font-size: 1.6rem;
+                color: $color-grey;
+            }
+        }
+    }
+
+    &__options {
+        flex: 1;
+        border: 1px solid $color-grey-light-1;
+        border-radius: .8rem;
+        padding: 2rem;
+    }
+}

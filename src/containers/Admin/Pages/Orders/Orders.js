@@ -1,23 +1,24 @@
-/* eslint-disable indent */
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import Modal from 'react-bootstrap/Modal';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import Modal from 'react-bootstrap/Modal';
 
 import Axios from '../../../../axiosIns';
+import Context from '../../../../store/context';
 import Card from '../../../../components/UI/Card/Card';
+import Toast from '../../../../components/UI/Toast/Toast';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Select from '../../../../components/UI/Select/Select';
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Button from '../../../../components/UI/Button/Button';
 
 import classes from './orders.module.scss';
 import 'bootstrap/js/dist/dropdown';
-
-import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
 const Orders = () => {
     const [clients, setClients] = useState();
@@ -32,7 +33,7 @@ const Orders = () => {
         status: '',
     });
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -46,18 +47,13 @@ const Orders = () => {
                 setIsLoading(false);
 
                 const { data } = res;
-                // TODO Remove this
-                // eslint-disable-next-line no-console
-                if (!data) return console.log('something went wrong!');
-
                 setClients(data.clients);
                 setServices(data.services);
                 setOrders(data.orders);
             })
             .catch((err) => {
                 setIsLoading(false);
-
-                console.log(err.response);
+                return Toast.failed(err.response.message || 'Something went wrong!');
             });
     }, []);
 
@@ -66,10 +62,9 @@ const Orders = () => {
             const details = services.filter((service) => service.id === id);
 
             if (details[0]) return details[0].title;
-            return null;
+            return '';
         }
-
-        return null;
+        return '';
     };
 
     const getUserEmail = (id) => {
@@ -87,72 +82,55 @@ const Orders = () => {
         const url = `/admin/order/delete/${id}`;
 
         try {
-            setIsLoading(true);
-
-            const { data } = await Axios.delete(url);
-            if (!data) {
-                setIsLoading(false);
-                // TODO Remove this
-                // eslint-disable-next-line no-console
-                return console.log('something went wrong');
-            }
-
+            await Axios.delete(url);
             const newList = await orders.filter((order) => order.id !== +id);
             setOrders([...newList]);
-
-            setIsLoading(false);
+            Toast.warning(`Order id "${id}" deleted!`);
         } catch (err) {
-            // TODO Remove this
-            // eslint-disable-next-line no-console
-            console.log(err.response);
+            Toast.failed(err.response.message);
         }
     };
 
     // Editing order
     const editButtonHandler = (e) => {
         setShowEditModal(true);
-        const orderId = e.target.value;
 
-        if (!orders) return console.log('Orders list not available!');
+        const orderId = e.target.value;
+        if (!orders) throw new Error('Orders list not available!');
 
         const order = orders.filter((ordr) => +ordr.id === +orderId);
-        if (!order) return console.log('order not found!');
+        if (!order) throw new Error('Orders not found');
 
         setEditingOrder(order[0]);
+        const {
+            link,
+            startCounter,
+            remains,
+            status,
+        } = order[0];
+
         setEditedDetails({
-            link: order[0].link,
-            startCounter: order[0].startCounter,
-            remains: order[0].remains,
-            status: order[0].status,
+            link,
+            startCounter,
+            remains,
+            status,
         });
     };
 
     const startCounterChangeHandler = (e) => {
-        setEditedDetails((preState) => ({
-            ...preState,
-            startCounter: e.target.value,
-        }));
+        setEditedDetails((preState) => ({ ...preState, startCounter: e.target.value }));
     };
 
     const remainChangeHandler = (e) => {
-        setEditedDetails((preState) => ({
-            ...preState,
-            remains: e.target.value,
-        }));
+        setEditedDetails((preState) => ({ ...preState, remains: e.target.value }));
     };
 
     const statusChangeHandler = (e) => {
-        setEditedDetails((preState) => ({
-            ...preState,
-            status: e.target.value,
-        }));
+        setEditedDetails((preState) => ({ ...preState, status: e.target.value }));
     };
 
     const linkChangeHandler = (e) => {
-        setEditedDetails((preState) => ({
-            ...preState,
-            link: e.target.value,
-        }));
+        setEditedDetails((preState) => ({ ...preState, link: e.target.value }));
     };
 
     const handleClose = () => {
@@ -168,38 +146,25 @@ const Orders = () => {
 
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
 
-        const orderId = editingOrder.id;
-        const url = `/admin/order/edit/${orderId}`;
-        const newList = orders.filter((order) => order.id !== editingOrder.id);
+        const { id } = editingOrder;
+        const newList = orders.filter((order) => order.id !== id);
 
         try {
-            const { data } = await Axios.patch(url, {
-                ...editedDetails,
-            });
-            if (data.status !== 'success') {
-                return console.log('Something went wrong');
-            }
+            const url = `/admin/order/edit/${id}`;
+            const { data } = await Axios.patch(url, { ...editedDetails });
 
+            setOrders(() => [{ ...data.updatedOrder }, ...newList]);
             handleClose();
-            setIsLoading(false);
-            setOrders(() => [
-                {
-                    ...data.updatedOrder,
-                },
-                ...newList,
-            ]);
+            Toast.success(`Order id "${id}"`);
         } catch (err) {
-            // TODO Remove this
-            // eslint-disable-next-line no-console
-            console.log(err);
+            Toast.failed(err.response.message);
         }
     };
 
     const editModal = (
         <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton closeLabel="">
+            <Modal.Header>
                 <Modal.Title>Edit Order</Modal.Title>
             </Modal.Header>
 
@@ -207,176 +172,105 @@ const Orders = () => {
                 <Modal.Body>
                     {editingOrder && (
                         <>
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <label className="input__label">
-                                        OrderId
-                                    </label>
-                                    <input
-                                        className="input input--disabled"
-                                        value={editingOrder.id}
-                                        disabled
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="input__label">
-                                        Api OrderId
-                                    </label>
-                                    <input
-                                        className="input input--disabled"
-                                        value={
-                                            editingOrder.apiOrderId || 'Manual'
-                                        }
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="input__label">Service</label>
-                                <input
-                                    className="input input--disabled"
-                                    value={
-                                        getServiceTitle(
-                                            editingOrder.serviceId,
-                                        ) || ''
-                                    }
+                            <InputGroup>
+                                <Input
+                                    label="Order Id"
+                                    value={editingOrder.id}
                                     disabled
                                 />
-                            </div>
 
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <label className="input__label ">
-                                        Order Type
-                                    </label>
-                                    <input
-                                        className="input input--disabled"
-                                        value={editingOrder.type || 'Manual'}
-                                        disabled
-                                    />
-                                </div>
+                                <Input
+                                    label="API Order Id"
+                                    value={editingOrder.apiOrderId || 'Manual'}
+                                    disabled
+                                />
+                            </InputGroup>
 
-                                <div className="col-md-6">
-                                    <label className="input__label">User</label>
-                                    <input
-                                        className="input input--disabled"
-                                        value={
-                                            getUserEmail(
-                                                editingOrder.clientId,
-                                            ) || ''
-                                        }
-                                        disabled
-                                    />
-                                </div>
-                            </div>
+                            <Input
+                                label="Service"
+                                value={getServiceTitle(editingOrder.serviceId) || ''}
+                                disabled
+                            />
 
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <label className="input__label">
-                                        Amount
-                                    </label>
-                                    <input
-                                        className="input input--disabled"
-                                        value={editingOrder.charge || 0}
-                                        disabled
-                                    />
-                                </div>
+                            <InputGroup>
+                                <Input
+                                    label="Order Type"
+                                    value={editingOrder.type || 'Manual'}
+                                    disabled
+                                />
 
-                                <div className="col-md-6">
-                                    <label className="input__label">
-                                        Quantity
-                                    </label>
-                                    <input
-                                        className="input input--disabled"
-                                        value={editingOrder.quantity || 0}
-                                        disabled
-                                    />
-                                </div>
-                            </div>
+                                <Input
+                                    label="User"
+                                    value={getUserEmail(editingOrder.clientId) || ''}
+                                    disabled
+                                />
+                            </InputGroup>
 
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <label className="input__label">
-                                        Start Counter
-                                    </label>
-                                    <input
-                                        className="input"
-                                        type="number"
-                                        value={editedDetails.startCounter || 0}
-                                        onChange={startCounterChangeHandler}
-                                    />
-                                </div>
+                            <InputGroup>
+                                <Input
+                                    label="Amount"
+                                    value={editingOrder.charge || 0}
+                                    disabled
+                                />
 
-                                <div className="col-md-4">
-                                    <label className="input__label">
-                                        Remains
-                                    </label>
-                                    <input
-                                        className="input"
-                                        type="number"
-                                        value={editedDetails.remains || 0}
-                                        onChange={remainChangeHandler}
-                                    />
-                                </div>
+                                <Input
+                                    label="Quantity"
+                                    value={editingOrder.quantity || 0}
+                                    disabled
+                                />
+                            </InputGroup>
 
-                                <div className="col-md-4">
-                                    <label className="input__label">
-                                        Status
-                                    </label>
-                                    <select
-                                        className="select"
-                                        value={editedDetails.status}
-                                        onChange={statusChangeHandler}
-                                    >
-                                        <option value="pending">Pending</option>
-                                        <option value="processing">
-                                            Processing
-                                        </option>
-                                        <option value="inprogress">
-                                            In Progress
-                                        </option>
-                                        <option value="completed">
-                                            Completed
-                                        </option>
-                                        <option value="partial">Partial</option>
-                                        <option value="cancelled">
-                                            Cancelled
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+                            <InputGroup>
+                                <Input
+                                    label="Start Counter"
+                                    type="number"
+                                    value={editedDetails.startCounter || 0}
+                                    onChange={startCounterChangeHandler}
+                                />
 
-                            <div>
-                                <label className="input__label">Link</label>
-                                <input
-                                    className="input"
+                                <Input
+                                    label="Remains"
+                                    type="number"
+                                    value={editedDetails.remains || 0}
+                                    onChange={remainChangeHandler}
+                                />
+
+                            </InputGroup>
+
+                            <InputGroup>
+                                <Input
+                                    label="Link"
                                     type="url"
                                     value={editedDetails.link || ''}
                                     onChange={linkChangeHandler}
                                 />
-                            </div>
+
+                                <Select
+                                    label="Status"
+                                    value={editedDetails.status}
+                                    onChange={statusChangeHandler}
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="inprogress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="partial">Partial</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </Select>
+                            </InputGroup>
+
                         </>
                     )}
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={handleClose}
-                    >
+                    <Button.ModalSecondary type="button" onClick={handleClose}>
                         Close
-                    </button>
+                    </Button.ModalSecondary>
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        onClick={editingSubmitHandler}
-                    >
+                    <Button.ModalPrimary type="submit" onClick={editingSubmitHandler}>
                         Submit
-                    </button>
+                    </Button.ModalPrimary>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -385,70 +279,25 @@ const Orders = () => {
     const getStatus = (status) => {
         switch (status) {
             case 'pending':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-pending btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.OrderPending />;
 
             case 'processing':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-processing btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.OrderProcessing />;
 
             case 'inprogress':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-inprogress btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.OrderInprogress />;
 
             case 'completed':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-completed btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.OrderCompleted />;
 
             case 'cancelled':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-cancelled btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.OrderCancelled />;
 
             case 'partial':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-partial btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.OrderPartial />;
+
+            case 'refunded':
+                return <Button.OrderRefunded />;
 
             default:
                 break;
@@ -457,121 +306,84 @@ const Orders = () => {
 
     const ordersTable = orders && orders.length <= 0 ? (
         <DataNotFound message="Please wait for clients to create some order." />
-        ) : (
-            <Card>
-                <Table>
-                    <THead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Service</th>
-                            <th>Link</th>
-                            <th>Charge</th>
-                            <th>QTY</th>
-                            <th>Start Counter</th>
-                            <th>Status</th>
-                            <th>Options</th>
-                        </tr>
-                    </THead>
+    ) : (
+        <Card>
+            <Table>
+                <THead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Service</th>
+                        <th>Link</th>
+                        <th>Charge</th>
+                        <th>QTY</th>
+                        <th>Start Counter</th>
+                        <th>Status</th>
+                        <th>Options</th>
+                    </tr>
+                </THead>
 
-                    <TBody>
-                        {orders
-                            && orders.map((order) => (
-                                <tr key={order.id}>
-                                    <td>{order.id}</td>
-
-                                    <td>
-                                        {getServiceTitle(order.serviceId)
-                                        && getServiceTitle(order.serviceId)
-                                            .length > 30
-                                            ? `${order.serviceId} 
-                                            - ${getServiceTitle(
-                                                order.serviceId,
-                                            ).slice(0, 30)}...`
-                                            : `${order.serviceId} - getServiceTitle(order.serviceId)`}
-                                    </td>
-
-                                    <td>
-                                        {order.link.length > 20
-                                            ? `${order.link.slice(0, 20)}...`
-                                            : order.link}
-                                    </td>
-
-                                    <td>{order.charge}</td>
-                                    <td>{order.quantity}</td>
-                                    <td>{order.startCounter}</td>
-                                    <td>{getStatus(order.status)}</td>
-
-                                    <td>
-                                        <IconContext.Provider
-                                            value={{
-                                                style: {
-                                                    fontSize: '30px',
-                                                    padding: 'auto',
-                                                },
-                                            }}
+                <TBody>
+                    {orders && orders.map((order) => (
+                        <tr key={order.id}>
+                            <td>{order.id}</td>
+                            <td>
+                                {getServiceTitle(order.serviceId)
+                                    && getServiceTitle(order.serviceId).length > 30
+                                    ? `${order.serviceId} - ${getServiceTitle(order.serviceId).slice(0, 30)}...`
+                                    : `${order.serviceId} - ${getServiceTitle(order.serviceId)}`}
+                            </td>
+                            <td>
+                                {order.link.length > 20 ? `${order.link.slice(0, 20)}...` : order.link}
+                            </td>
+                            <td>{order.charge}</td>
+                            <td>{order.quantity}</td>
+                            <td>{order.startCounter}</td>
+                            <td>{getStatus(order.status)}</td>
+                            <td>
+                                <IconContext.Provider
+                                    value={{ style: { fontSize: '30px', padding: 'auto' } }}
+                                >
+                                    <div className="dropdown">
+                                        <span
+                                            id="option"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
                                         >
-                                            <div className="dropdown ">
-                                                <span
-                                                    id="option"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                >
-                                                    <BsThreeDotsVertical />
-                                                </span>
-                                                <ul
-                                                    className="dropdown-menu"
-                                                    aria-labelledby="option"
-                                                >
-                                                    <li>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-edit"
-                                                            style={{
-                                                                width: '100%',
-                                                            }}
-                                                            value={order.id}
-                                                            onClick={
-                                                                editButtonHandler
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                    </li>
+                                            <BsThreeDotsVertical />
+                                        </span>
 
-                                                    <li>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-delete"
-                                                            style={{
-                                                                width: '100%',
-                                                            }}
-                                                            value={order.id}
-                                                            onClick={
-                                                                deleteButtonHandler
-                                                            }
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </IconContext.Provider>
-                                    </td>
-                                </tr>
-                            ))}
-                    </TBody>
-                </Table>
-            </Card>
-        );
+                                        <ul className="dropdown-menu" aria-labelledby="option">
+                                            <li>
+                                                <Button.Edit
+                                                    value={order.id}
+                                                    onClick={editButtonHandler}
+                                                />
+                                            </li>
 
-    // TODO
+                                            <li>
+                                                <Button.Delete
+                                                    value={order.id}
+                                                    onClick={deleteButtonHandler}
+                                                />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </IconContext.Provider>
+                            </td>
+                        </tr>
+                    ))}
+                </TBody>
+            </Table>
+        </Card>
+    );
+
     return (
         <>
             <Helmet>
                 <title>
                     Orders -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
@@ -581,19 +393,12 @@ const Orders = () => {
             <div className="container">
                 <div className={classes.Orders}>
                     <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
+                        <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                             <VscListSelection />
                         </IconContext.Provider>
                         {' '}
                         Orders
                     </h2>
-
                     {ordersTable}
                 </div>
             </div>

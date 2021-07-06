@@ -1,5 +1,3 @@
-// jshint esversion:9
-
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
@@ -9,14 +7,16 @@ import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
+import Context from '../../../../store/context';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-import Input from '../../../../components/UI/Input/Input';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Select from '../../../../components/UI/Select/Select';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
+import Button from '../../../../components/UI/Button/Button';
+import Toast from '../../../../components/UI/Toast/Toast';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import WebsiteDetail from '../../../Context/WebsiteDetailContext';
 
 import 'bootstrap/js/dist/dropdown';
 import './categories.scss';
@@ -41,7 +41,7 @@ const Categories = () => {
         status: '',
     });
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName } = useContext(Context);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -52,15 +52,11 @@ const Categories = () => {
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
-
                 setCategories(res.data.categories || {});
             })
             .catch((err) => {
                 setIsLoading(false);
-
-                // TODO Remove this
-                // eslint-disable-next-line no-console
-                console.log(err.response);
+                Toast.failed(err.response.message);
             });
     }, []);
 
@@ -70,59 +66,34 @@ const Categories = () => {
     };
 
     const addTitleChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({
-            ...preState,
-            title: e.target.value,
-        }));
+        setNewCategoryDetails((preState) => ({ ...preState, title: e.target.value }));
     };
 
     const addShortChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({
-            ...preState,
-            short: e.target.value,
-        }));
+        setNewCategoryDetails((preState) => ({ ...preState, short: e.target.value }));
     };
 
     const addDescChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({
-            ...preState,
-            desc: e.target.value,
-        }));
+        setNewCategoryDetails((preState) => ({ ...preState, desc: e.target.value }));
     };
 
     const addStatusChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({
-            ...preState,
-            status: e.target.value,
-        }));
+        setNewCategoryDetails((preState) => ({ ...preState, status: e.target.value }));
     };
 
     const formSubmitHandler = async (e) => {
         e.preventDefault();
 
         const url = '/admin/category/add';
-        const cateData = {
-            ...newCategoryDetails,
-        };
+        const cateData = { ...newCategoryDetails };
 
         try {
             const { data } = await Axios.post(url, cateData);
-
-            if (data.status !== 'success') {
-                return;
-            }
-
-            setCategories((preState) => [
-                {
-                    ...data.createdCategory,
-                },
-                ...preState,
-            ]);
+            setCategories((preState) => [{ ...data.createdCategory }, ...preState]);
             setShowAddModal(false);
+            Toast.success('Category created!');
         } catch (err) {
-            // TODO Remove this
-            // eslint-disable-next-line no-console
-            console.log(err.response.data);
+            Toast.failed(err.response.data.message || 'Failed to add category!');
         }
     };
 
@@ -145,45 +116,42 @@ const Categories = () => {
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
                     <Input label="Title" placeholder="Enter title" type="text" value={newCategoryDetails.title} onChange={addTitleChangeHandler} />
-                    <Input label="Short" placeholder="Enter short number" type="number" value={newCategoryDetails.short} onChange={addShortChangeHandler} />
 
-                    <div>
-                        <label className="input__label">Desc</label>
-                        <textarea
-                            placeholder="Enter description..."
-                            className="input"
-                            value={newCategoryDetails.desc || ''}
-                            rows={3}
-                            onChange={addDescChangeHandler}
-                        />
-                    </div>
+                    <InputGroup>
+                        <Input label="Short" placeholder="Enter short number" type="number" value={newCategoryDetails.short} onChange={addShortChangeHandler} />
+                        <Select
+                            label="Status"
+                            value={newCategoryDetails.status}
+                            onChange={addStatusChangeHandler}
+                        >
+                            <option value="active">Active</option>
+                            <option value="disable">Disable</option>
+                        </Select>
+                    </InputGroup>
 
-                    <Select
-                        label="Status"
-                        value={newCategoryDetails.status}
-                        onChange={addStatusChangeHandler}
-                    >
-                        <option value="active">Active</option>
-                        <option value="disable">Disable</option>
-                    </Select>
+                    <Textarea
+                        label="Description"
+                        placeholder="Enter description..."
+                        value={newCategoryDetails.desc || ''}
+                        rows={4}
+                        onChange={addDescChangeHandler}
+                    />
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button
+                    <Button.ModalSecondary
                         type="button"
-                        className="btn btn-secondary"
                         onClick={handleBackdropClick}
                     >
                         Close
-                    </button>
+                    </Button.ModalSecondary>
 
-                    <button
-                        className="btn btn-primary"
+                    <Button.ModalPrimary
                         type="submit"
                         onClick={formSubmitHandler}
                     >
                         Create
-                    </button>
+                    </Button.ModalPrimary>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -194,45 +162,37 @@ const Categories = () => {
         setShowEditModal(true);
 
         const categoryId = +e.target.value;
-        const category = await categories.filter(
-            (cate) => cate.id === categoryId,
-        );
-
+        const category = await categories.filter((cate) => cate.id === categoryId);
+        const {
+            id,
+            title,
+            description,
+            short,
+            status,
+        } = category[0];
         setEditingCategoryDetails({
-            id: category[0].id,
-            title: category[0].title,
-            description: category[0].description,
-            short: category[0].short,
-            status: category[0].status,
+            id,
+            title,
+            description,
+            short,
+            status,
         });
     };
 
     const titleChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({
-            ...preState,
-            title: e.target.value,
-        }));
+        setEditingCategoryDetails((preState) => ({ ...preState, title: e.target.value }));
     };
 
     const descChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({
-            ...preState,
-            description: e.target.value,
-        }));
+        setEditingCategoryDetails((preState) => ({ ...preState, description: e.target.value }));
     };
 
     const shortChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({
-            ...preState,
-            short: e.target.value,
-        }));
+        setEditingCategoryDetails((preState) => ({ ...preState, short: e.target.value }));
     };
 
     const statusChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({
-            ...preState,
-            status: e.target.value,
-        }));
+        setEditingCategoryDetails((preState) => ({ ...preState, status: e.target.value }));
     };
 
     const handleClose = () => {
@@ -254,27 +214,13 @@ const Categories = () => {
         const newList = await categories.filter((cate) => cate.id !== id);
 
         try {
-            const { data } = await Axios.patch(url, {
-                ...editingCategoryDetails,
-            });
+            await Axios.patch(url, { ...editingCategoryDetails });
+            setCategories([{ ...editingCategoryDetails }, ...newList]);
 
-            if (!data) {
-                // TODO Remove this
-                // eslint-disable-next-line no-console
-                console.log('Failed to update Category!');
-            }
-
-            setCategories([
-                {
-                    ...editingCategoryDetails,
-                },
-                ...newList,
-            ]);
             handleClose();
+            Toast.success(`Category "${id}" update!`);
         } catch (err) {
-            // TODO Remove this
-            // eslint-disable-next-line no-console
-            console.log(err);
+            Toast.failed(err.response.message || 'Something went wrong!');
         }
     };
 
@@ -289,41 +235,41 @@ const Categories = () => {
 
                     <Input label="Title" placeholder="Title" type="text" value={editingCategoryDetails.title} onChange={titleChangeHandler} />
 
-                    <div className="pt-3">
-                        <label className="input__label">Description</label>
-                        <textarea
-                            rows="3"
-                            className="input"
-                            placeholder="Description..."
-                            value={editingCategoryDetails.description}
-                            onChange={descChangeHandler}
-                        />
-                    </div>
+                    <InputGroup>
+                        <Input label="Short" placeholder="Short" type="number" value={editingCategoryDetails.short} onChange={shortChangeHandler} />
 
-                    <Input label="Short" placeholder="Short" type="number" value={editingCategoryDetails.short} onChange={shortChangeHandler} />
+                        <Select
+                            label="Status"
+                            value={editingCategoryDetails.status}
+                            onChange={statusChangeHandler}
+                        >
+                            <option value="disable">Disable</option>
+                            <option value="active">Active</option>
+                        </Select>
+                    </InputGroup>
 
-                    <Select
-                        label="Status"
-                        value={editingCategoryDetails.status}
-                        onChange={statusChangeHandler}
-                    >
-                        <option value="disable">Disable</option>
-                        <option value="active">Active</option>
-                    </Select>
+                    <Textarea
+                        label="Description"
+                        rows={4}
+                        placeholder="Description..."
+                        value={editingCategoryDetails.description}
+                        onChange={descChangeHandler}
+                    />
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button
+                    <Button.ModalSecondary
                         type="button"
-                        className="btn btn-secondary"
                         onClick={handleClose}
                     >
                         Close
-                    </button>
+                    </Button.ModalSecondary>
 
-                    <button type="submit" className="btn btn-primary">
+                    <Button.ModalPrimary
+                        type="submit"
+                    >
                         Submit
-                    </button>
+                    </Button.ModalPrimary>
                 </Modal.Footer>
             </form>
         </Modal>
@@ -336,41 +282,23 @@ const Categories = () => {
         const newList = categories.filter((category) => category.id !== +id);
 
         try {
-            await Axios.delete(url, {
-                id,
-            });
-        } catch (err) {
-            // TODO Remove this
-            // eslint-disable-next-line no-console
-            console.log(err.response.data);
-        }
+            await Axios.delete(url, { id });
+            setCategories([...newList]);
 
-        setCategories([...newList]);
+            Toast.warning(`Category "${id}" deleted!`);
+        } catch (err) {
+            Toast.failed(err.response.message);
+        }
     };
 
     const checkStatus = (status) => {
         switch (status) {
             case 'active':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-active btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.Active />;
 
             case 'disable':
-                return (
-                    <button
-                        type="button"
-                        className="btn btn-inactive btn-disabled"
-                        disabled
-                    >
-                        {status}
-                    </button>
-                );
+                return <Button.Disable />;
+
             default:
                 break;
         }
@@ -393,75 +321,47 @@ const Categories = () => {
                 </THead>
 
                 <TBody>
-                    {categories
-                            && categories.map((category) => (
-                                <tr key={category.id}>
-                                    <td>{category.id}</td>
-                                    <td>{category.title}</td>
-                                    <td>{category.description}</td>
-                                    <td>{category.short}</td>
-
-                                    <td>{checkStatus(category.status)}</td>
-
-                                    <td>
-                                        <IconContext.Provider
-                                            value={{
-                                                style: {
-                                                    fontSize: '30px',
-                                                    padding: 'auto',
-                                                },
-                                            }}
+                    {categories && categories.map((category) => (
+                        <tr key={category.id}>
+                            <td>{category.id}</td>
+                            <td>{category.title}</td>
+                            <td>{category.description}</td>
+                            <td>{category.short}</td>
+                            <td>{checkStatus(category.status)}</td>
+                            <td>
+                                <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
+                                    <div className="dropdown ">
+                                        <span
+                                            id="option"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
                                         >
-                                            <div className="dropdown ">
-                                                <span
-                                                    id="option"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                >
-                                                    <BsThreeDotsVertical />
-                                                </span>
+                                            <BsThreeDotsVertical />
+                                        </span>
 
-                                                <ul
-                                                    className="dropdown-menu"
-                                                    aria-labelledby="option"
-                                                >
-                                                    <li>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-edit"
-                                                            style={{
-                                                                width: '100%',
-                                                            }}
-                                                            value={category.id}
-                                                            onClick={
-                                                                editButtonHandler
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                    </li>
+                                        <ul
+                                            className="dropdown-menu"
+                                            aria-labelledby="option"
+                                        >
+                                            <li>
+                                                <Button.Edit
+                                                    value={category.id}
+                                                    onClick={editButtonHandler}
+                                                />
+                                            </li>
 
-                                                    <li>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-delete"
-                                                            style={{
-                                                                width: '100%',
-                                                            }}
-                                                            value={category.id}
-                                                            onClick={
-                                                                deleteButtonHandler
-                                                            }
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </IconContext.Provider>
-                                    </td>
-                                </tr>
-                            ))}
+                                            <li>
+                                                <Button.Delete
+                                                    value={category.id}
+                                                    onClick={deleteButtonHandler}
+                                                />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </IconContext.Provider>
+                            </td>
+                        </tr>
+                    ))}
                 </TBody>
             </Table>
         </Card>
@@ -474,7 +374,7 @@ const Categories = () => {
                 <title>
                     Categories -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
@@ -486,13 +386,7 @@ const Categories = () => {
                 <div className="container">
                     <div>
                         <h2 className="pageTitle">
-                            <IconContext.Provider
-                                value={{
-                                    style: {
-                                        fontSize: '30px',
-                                    },
-                                }}
-                            >
+                            <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                                 <VscListSelection />
                             </IconContext.Provider>
                             {' '}

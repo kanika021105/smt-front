@@ -1,15 +1,13 @@
-// jshint esversion:9
-
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-import WebsiteDetail from '../../Context/WebsiteDetailContext';
 import Axios from '../../../axiosIns';
 import classes from './Login.module.scss';
 
 import LoginImage from '../../../assets/images/login.svg';
-import AuthContext from '../../../store/auth-context';
+import Context from '../../../store/context';
+import Toast from '../../../components/UI/Toast/Toast';
 
 const Login = () => {
     const [loginEmail, setLoginEmail] = useState('');
@@ -18,8 +16,7 @@ const Login = () => {
     const [errorMsg, setErrorMsg] = useState('');
     const [showError, setShowError] = useState(false);
 
-    const { websiteName } = useContext(WebsiteDetail);
-    const AuthCtx = useContext(AuthContext);
+    const AuthCtx = useContext(Context);
 
     const emailChangeHandler = (e) => setLoginEmail(e.target.value);
     const passwordChangeHandler = (e) => setPassword(e.target.value);
@@ -36,9 +33,7 @@ const Login = () => {
         };
 
         try {
-            const { data } = await Axios.post(url, {
-                ...loginData,
-            });
+            const { data } = await Axios.post(url, { ...loginData });
             setErrorMsg('');
 
             const remainingMilliseconds = 24 * 60 * 60 * 1000;
@@ -60,21 +55,16 @@ const Login = () => {
             );
 
             if (client.role === 'admin') {
-                // history.replace('/admin/dashboard');
                 window.location = '/admin/dashboard';
                 return;
             }
 
             if (client.role === 'user') {
-                // history.replace('/dashboard');
                 window.location = '/dashboard';
                 return;
             }
         } catch (err) {
-            // setErrorMsg(err.response.data.message);
-
-            setShowError(true);
-            console.log(err);
+            Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     };
 
@@ -84,7 +74,7 @@ const Login = () => {
                 <title>
                     Login -
                     {' '}
-                    {websiteName || 'SMT '}
+                    {AuthCtx.websiteName || ' '}
                 </title>
             </Helmet>
 

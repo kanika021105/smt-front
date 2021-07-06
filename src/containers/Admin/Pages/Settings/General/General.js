@@ -1,24 +1,52 @@
-// jshint esversion:9
-
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+import Axios from '../../../../../axiosIns';
 import Loading from '../../../../../components/UI/Loading/Loading';
-import WebsiteDetail from '../../../../Context/WebsiteDetailContext';
-
-import './General.scss';
+import Input from '../../../../../components/UI/Input/Input';
+import Toast from '../../../../../components/UI/Toast/Toast';
+import Textarea from '../../../../../components/UI/Textarea/Textarea';
+import Context from '../../../../../store/context';
 
 const General = () => {
-    const [siteName, setSiteName] = useState('');
-    const [websiteDescription, setWebsiteDescription] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [keywords, setKeywords] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { websiteName } = useContext(WebsiteDetail);
+    const { websiteName, updateWebsiteName } = useContext(Context);
+
+    useEffect(() => {
+        const url = '/admin/settings/general';
+        Axios.get(url)
+            .then((res) => {
+                setName(res.data.websiteName);
+                setDescription(res.data.websiteDescription);
+                setKeywords(res.data.websiteKeywords);
+            })
+            .catch((err) => {
+                Toast.failed(err.response.data.message || 'Something went wrong!');
+            });
+    }, []);
 
     const siteNameChangeHandler = (e) => {
-        setSiteName(e.target.value);
-        setWebsiteDescription('');
+        setName(e.target.value);
         setIsLoading(false);
+    };
+
+    const descriptionHandler = (e) => {
+        setDescription(e.target.value);
+    };
+
+    const keywordsHandler = (e) => {
+        setKeywords(e.target.value);
+    };
+
+    const submitSetting = async () => {
+        updateWebsiteName(name);
+        const url = '/admin/settings/general/update';
+        await Axios.put(url, { name, keywords, description });
+        Toast.success('Generals settings updated!');
     };
 
     return (
@@ -27,50 +55,41 @@ const General = () => {
                 <title>
                     General -
                     {' '}
-                    {websiteName || 'SMT'}
+                    {websiteName || ''}
                 </title>
             </Helmet>
 
             <Loading show={isLoading} />
 
-            <div className=" border p-4">
-                <div>
-                    <label className="input__label">Website Name</label>
-                    <input
-                        className="input"
-                        placeholder="Website Name"
-                        type="text"
-                        value={siteName}
-                        onChange={siteNameChangeHandler}
-                    />
-                </div>
+            <Input
+                label="Website Name"
+                placeholder="SMT Panel"
+                type="text"
+                value={name}
+                onChange={siteNameChangeHandler}
+            />
 
-                <div className="pt-2">
-                    <label className="input__label">Website Description</label>
-                    <textarea
-                        placeholder="Website Description..."
-                        className="input"
-                        rows="5"
-                        value={websiteDescription}
-                        onChange={siteNameChangeHandler}
-                    />
-                </div>
+            <Textarea
+                label="Website Description"
+                placeholder="SMT Panel smm script is the script you need
+                    to start your social media marketing business.
+                    Its simple yet verify powerful!"
+                rows={5}
+                value={description}
+                onChange={descriptionHandler}
+            />
 
-                <div className="pt-2">
-                    <label className="input__label">Website Keywords</label>
-                    <textarea
-                        placeholder="Website Keywords..."
-                        className="input"
-                        rows="6"
-                        value={websiteName}
-                        onChange={siteNameChangeHandler}
-                    />
-                </div>
+            <Textarea
+                label="Website Keywords"
+                placeholder="'SMT Panel', 'Smm Panel', 'Smm Script'..."
+                rows={6}
+                value={keywords}
+                onChange={keywordsHandler}
+            />
 
-                <button type="button" className="mt-3 btn btn-primary">
-                    Save
-                </button>
-            </div>
+            <button type="button" className="mt-3 btn btn-primary" onClick={submitSetting}>
+                Save
+            </button>
         </>
     );
 };

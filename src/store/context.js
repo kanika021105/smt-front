@@ -1,20 +1,24 @@
+/* eslint-disable no-shadow */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const AuthContext = React.createContext({
+const Context = React.createContext({
     token: '',
     email: '',
     role: '',
     firstName: '',
     lastName: '',
     balance: '',
+    websiteName: '',
     isLoggedIn: false,
     login: () => {},
     verify: () => {},
     logout: () => {},
+    updateBalance: () => {},
+    updateWebsiteName: () => {},
 });
 
-// eslint-disable-next-line react/prop-types
-export const AuthContextProvider = ({ children }) => {
+export const ContextProvider = ({ children }) => {
     const initialToken = localStorage.getItem('token');
     const [token, setToken] = useState(initialToken);
     const [email, setEmail] = useState('');
@@ -22,10 +26,10 @@ export const AuthContextProvider = ({ children }) => {
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [balance, setBalance] = useState(null);
+    const [websiteName, setWebsiteName] = useState(null);
 
     const userIsLoggedIn = !!token;
 
-    // eslint-disable-next-line no-shadow
     const loginHandler = (token, email, role, firstName, lastName, balance) => {
         setToken(token);
         setEmail(email);
@@ -35,13 +39,21 @@ export const AuthContextProvider = ({ children }) => {
         setBalance(balance);
     };
 
-    // eslint-disable-next-line no-shadow
-    const verifyLoginHandler = (email, role, firstName, lastName, balance) => {
+    const verifyLoginHandler = (email, role, firstName, lastName, balance, websiteName) => {
         setEmail(email);
         setRole(role);
         setFirstName(firstName);
         setLastName(lastName);
         setBalance(balance);
+        setWebsiteName(websiteName);
+    };
+
+    const updateBalanceHandler = (balance) => {
+        setBalance(balance);
+    };
+
+    const updateWebsiteNameHandler = (name) => {
+        setWebsiteName(name);
     };
 
     const logoutHandler = () => {
@@ -51,6 +63,7 @@ export const AuthContextProvider = ({ children }) => {
         setFirstName(null);
         setLastName(null);
         setBalance(null);
+        localStorage.clear();
     };
 
     const contextValue = {
@@ -60,17 +73,24 @@ export const AuthContextProvider = ({ children }) => {
         firstName,
         lastName,
         balance,
+        websiteName,
         isLoggedIn: userIsLoggedIn,
         login: loginHandler,
         verify: verifyLoginHandler,
         logout: logoutHandler,
+        updateBalance: updateBalanceHandler,
+        updateWebsiteName: updateWebsiteNameHandler,
     };
 
     return (
-        <AuthContext.Provider value={contextValue}>
+        <Context.Provider value={contextValue}>
             {children}
-        </AuthContext.Provider>
+        </Context.Provider>
     );
 };
 
-export default AuthContext;
+ContextProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
+export default Context;

@@ -1,4 +1,4 @@
-import React, { useEffect, lazy } from 'react';
+import React, { lazy } from 'react';
 import { Route, Link } from 'react-router-dom';
 
 import { IconContext } from 'react-icons';
@@ -6,30 +6,26 @@ import { VscListSelection } from 'react-icons/vsc';
 import { Helmet } from 'react-helmet';
 
 import Card from '../../../../components/UI/Card/Card';
+import classes from './Settings.module.scss';
 
 const General = lazy(() => import('./General/General'));
-const Payment = lazy(() => import('./Payment/Payment'));
+const Paytm = lazy(() => import('./Payment/Paytm'));
+const RazorPay = lazy(() => import('./Payment/Razorpay'));
+const Privacy = lazy(() => import('./Others/Privacy'));
 
-const Settings = () => {
-    //
-    useEffect(() => {
-        // TODO Remove this
-        // eslint-disable-next-line no-console
-        console.log('setting running!');
-    }, []);
+const Settings = () => (
+    <>
+        <Helmet>
+            <title>
+                Settings -
+                {' '}
+                {process.env.REACT_APP_WEBSITE_NAME}
+            </title>
+        </Helmet>
 
-    // TODO Change title to dynamic
-    return (
-        <>
-            <Helmet>
-                <title>
-                    Settings -
-                    {' '}
-                    {process.env.REACT_APP_WEBSITE_NAME}
-                </title>
-            </Helmet>
+        <div className="container">
+            <div className={classes.setting}>
 
-            <div className="container">
                 <h2 className="pageTitle">
                     <IconContext.Provider
                         value={{
@@ -45,22 +41,34 @@ const Settings = () => {
                 </h2>
 
                 <Card>
-                    <div className="row">
-                        <div className="col-md-3 border p-4">
+                    <div className={classes.setting__container}>
+                        <div className={classes.setting__links}>
                             <li>
                                 <Link to="/admin/settings/general">
                                     General
                                 </Link>
                             </li>
-
                             <li>
-                                <Link to="/admin/settings/payment">
-                                    Payment
+                                <Link to="/admin/settings/privacy">
+                                    Privacy
+                                </Link>
+                            </li>
+                            <h3>
+                                Payment
+                            </h3>
+                            <li>
+                                <Link to="/admin/settings/payment/paytm">
+                                    Paytm
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/admin/settings/payment/razorpay">
+                                    Razorpay
                                 </Link>
                             </li>
                         </div>
 
-                        <div className="col-md-9">
+                        <div className={classes.setting__options}>
                             <Route exact path="/admin/settings">
                                 <General />
                             </Route>
@@ -69,15 +77,23 @@ const Settings = () => {
                                 <General />
                             </Route>
 
-                            <Route exact path="/admin/settings/payment">
-                                <Payment />
+                            <Route exact path="/admin/settings/privacy">
+                                <Privacy />
+                            </Route>
+
+                            <Route exact path="/admin/settings/payment/paytm">
+                                <Paytm />
+                            </Route>
+
+                            <Route exact path="/admin/settings/payment/razorpay">
+                                <RazorPay />
                             </Route>
                         </div>
                     </div>
                 </Card>
             </div>
-        </>
-    );
-};
+        </div>
+    </>
+);
 
 export default Settings;
