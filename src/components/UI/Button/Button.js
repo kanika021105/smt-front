@@ -201,13 +201,13 @@ Failed.propTypes = {
 Edit.propTypes = {
     className: PropTypes.string,
     onClick: PropTypes.func.isRequired,
-    value: PropTypes.number.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 Delete.propTypes = {
     className: PropTypes.string,
     onClick: PropTypes.func.isRequired,
-    value: PropTypes.number.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 OrderPending.propTypes = {

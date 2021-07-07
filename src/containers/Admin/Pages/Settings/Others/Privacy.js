@@ -11,7 +11,7 @@ function Privacy() {
     const [privacy, setPrivacy] = useState([
         {
             type: 'paragraph',
-            children: [{ text: 'This is sample text' }],
+            children: [{ text: '' }],
         },
     ]);
 
@@ -20,7 +20,9 @@ function Privacy() {
         Axios.get(url)
             .then((res) => {
                 const { value } = res.data[0];
-                setPrivacy([JSON.parse(value)]);
+                if (value) {
+                    setPrivacy([JSON.parse(value)]);
+                }
             })
             .catch((err) => {
                 Toast.failed(err.response.data.message || 'Something went wrong!');
@@ -28,9 +30,8 @@ function Privacy() {
     }, []);
 
     const saveHandler = () => {
-        // const url = '/privacy';
-        console.log(privacy);
-        // Axios.put(url, { privacy });
+        const url = '/privacy';
+        Axios.put(url, { privacy });
     };
 
     const renderElement = useCallback((props) => {
@@ -50,6 +51,7 @@ function Privacy() {
                 onChange={(newValue) => setPrivacy(newValue)}
             >
                 <Editable
+                    placeholder="Enter privacy policy here!"
                     renderElement={renderElement}
                     onKeyDown={(e) => {
                         if (e.key === '&') {

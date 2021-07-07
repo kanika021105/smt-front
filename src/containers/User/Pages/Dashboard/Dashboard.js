@@ -187,12 +187,26 @@ const Dashboard = () => {
                                                 </linearGradient>
                                             </defs>
 
-                                            <XAxis dataKey="name" />
-                                            <Tooltip cursor={{
-                                                stroke: '#0f89ff',
-                                                strokeWidth: 8,
-                                                strokeOpacity: '0.2',
-                                            }}
+                                            <XAxis
+                                                dataKey="name"
+                                                stroke="#3f80ea"
+                                                allowDataOverflow={false}
+                                            />
+                                            <Tooltip
+                                                cursor={{
+                                                    stroke: '#0f89ff',
+                                                    strokeWidth: 8,
+                                                    strokeOpacity: '0.2',
+                                                }}
+                                                itemStyle={{
+                                                    color: '#3f80ea',
+                                                    opacity: '0.8',
+                                                }}
+                                                contentStyle={{
+                                                    backgroundColor: 'transparent',
+                                                    borderRadius: '8px',
+                                                }}
+                                                labelStyle={{ color: '#aaa' }}
                                             />
 
                                             <Area

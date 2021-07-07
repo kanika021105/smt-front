@@ -3,10 +3,10 @@ import React from 'react';
 
 import classes from './Checkbox.module.scss';
 
-function Checkbox({ text }) {
+function Checkbox({ text, checked, onChange }) {
     return (
         <div className={classes.checkbox}>
-            <input type="checkbox" />
+            <input type="checkbox" checked={checked} onChange={onChange} />
             <p>{text}</p>
         </div>
     );
@@ -14,6 +14,8 @@ function Checkbox({ text }) {
 
 Checkbox.propTypes = {
     text: PropTypes.string.isRequired,
+    checked: PropTypes.bool,
+    onChange: PropTypes.func,
 };
 
 export default Checkbox;

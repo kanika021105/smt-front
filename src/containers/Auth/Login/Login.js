@@ -36,6 +36,8 @@ const Login = () => {
             const { data } = await Axios.post(url, { ...loginData });
             setErrorMsg('');
 
+            console.log({ data });
+
             const remainingMilliseconds = 24 * 60 * 60 * 1000;
             const expiryDate = Date.now() + remainingMilliseconds;
 

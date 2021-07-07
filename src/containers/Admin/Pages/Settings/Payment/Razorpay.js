@@ -5,11 +5,13 @@ import Axios from '../../../../../axiosIns';
 import Context from '../../../../../store/context';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Input from '../../../../../components/UI/Input/Input';
+import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 import Loading from '../../../../../components/UI/Loading/Loading';
 
 const Razorpay = () => {
     const [keyId, setKeyId] = useState('');
     const [keySecret, setKeySecret] = useState('');
+    const [enable, setEnable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(Context);
 
@@ -21,9 +23,14 @@ const Razorpay = () => {
             .then((res) => {
                 setIsLoading(false);
                 const { data } = res;
+                const { ids, enable: active } = data;
 
-                setKeyId(data.data.keyId);
-                setKeySecret(data.data.keySecret);
+                if (ids) {
+                    const { keyId: id, keySecret: secret } = JSON.parse(ids);
+                    setKeyId(id);
+                    setKeySecret(secret);
+                    setEnable(active);
+                }
             })
             .catch((err) => {
                 setIsLoading(false);
@@ -39,6 +46,7 @@ const Razorpay = () => {
             await Axios.put(url, {
                 keyId,
                 keySecret,
+                enable,
             });
             Toast.success('Razorpay details updated!');
         } catch (err) {
@@ -54,6 +62,10 @@ const Razorpay = () => {
         setKeySecret(e.target.value);
     };
 
+    const enableToggle = () => {
+        setEnable((preState) => !preState);
+    };
+
     return (
         <>
             <Helmet>
@@ -67,6 +79,8 @@ const Razorpay = () => {
             <Loading show={isLoading} />
 
             <div>
+                <Checkbox text="Enable" checked={enable} onChange={enableToggle} />
+
                 <Input
                     label="Key Id"
                     type="text"

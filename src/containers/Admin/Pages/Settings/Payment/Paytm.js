@@ -6,10 +6,12 @@ import Input from '../../../../../components/UI/Input/Input';
 import Loading from '../../../../../components/UI/Loading/Loading';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Context from '../../../../../store/context';
+import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 
 const Razorpay = () => {
     const [merchantId, setMerchantId] = useState('');
     const [merchantKey, setMerchantKey] = useState('');
+    const [enable, setEnable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(Context);
 
@@ -21,11 +23,17 @@ const Razorpay = () => {
             .then((res) => {
                 setIsLoading(false);
                 const { data } = res;
+                const { ids, enable: active } = data;
 
-                setMerchantId(data.data.merchantId);
-                setMerchantKey(data.data.merchantKey);
+                if (ids) {
+                    const { merchantId: id, merchantKey: key } = JSON.parse(ids);
+                    setMerchantId(id);
+                    setMerchantKey(key);
+                    setEnable(active);
+                }
             })
             .catch((err) => {
+                setIsLoading(false);
                 setIsLoading(false);
                 Toast.failed(err.response.data.message || 'Something went wrong!');
             });
@@ -39,6 +47,7 @@ const Razorpay = () => {
             await Axios.put(url, {
                 merchantId,
                 merchantKey,
+                enable,
             });
 
             Toast.success('Paytm details updated!');
@@ -53,6 +62,10 @@ const Razorpay = () => {
 
     const keyIdChangeHandler = (e) => {
         setMerchantKey(e.target.value);
+    };
+
+    const enableToggle = () => {
+        setEnable((preState) => !preState);
     };
 
     return (
@@ -70,6 +83,8 @@ const Razorpay = () => {
             <div className="border p-4">
                 <form onSubmit={formSubmitHandler}>
                     <div>
+                        <Checkbox checked={enable} text="Enable" onChange={enableToggle} />
+
                         <Input
                             label="Merchant Id"
                             type="text"

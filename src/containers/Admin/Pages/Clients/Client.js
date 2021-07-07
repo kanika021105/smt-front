@@ -55,7 +55,7 @@ const Clients = () => {
     }, []);
 
     const editButtonHandler = async (e) => {
-        const id = +e.target.value;
+        const id = e.target.value;
         const user = await clients.filter((client) => client.id === id);
 
         setEditingUserDetails({ ...user[0] });
@@ -245,7 +245,6 @@ const Clients = () => {
             <Table className="table">
                 <THead>
                     <tr>
-                        <th>ID</th>
                         <th>Email</th>
                         <th>Full Name</th>
                         <th>Role</th>
@@ -258,7 +257,6 @@ const Clients = () => {
                 <TBody>
                     {clients && clients.map((client) => (
                         <tr key={client.id}>
-                            <td>{client.id}</td>
                             <td>{client.email}</td>
                             <td>
                                 {client.f_name}
