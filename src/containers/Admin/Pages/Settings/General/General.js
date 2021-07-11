@@ -20,9 +20,9 @@ const General = () => {
         const url = '/admin/settings/general';
         Axios.get(url)
             .then((res) => {
-                setName(res.data.websiteName);
-                setDescription(res.data.websiteDescription);
-                setKeywords(res.data.websiteKeywords);
+                setName(res.data.websiteName || '');
+                setDescription(res.data.websiteDescription || '');
+                setKeywords(res.data.websiteKeywords || '');
             })
             .catch((err) => {
                 Toast.failed(err.response.data.message || 'Something went wrong!');

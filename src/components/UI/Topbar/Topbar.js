@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FaBars } from 'react-icons/fa';
+import { CgProfile } from 'react-icons/cg';
 
 import Context from '../../../store/context';
 import './Topbar.scss';
 
 function Topbar({ clicked }) {
-    const { firstName } = useContext(Context);
+    const Ctx = React.useContext(Context);
 
     return (
         <>
@@ -16,7 +18,11 @@ function Topbar({ clicked }) {
                 <div className="profile">
                     Hi,
                     {' '}
-                    {firstName}
+                    {Ctx.firstName}
+                    {' '}
+                    <Link to={`/profile/${Ctx.clientId}`}>
+                        <CgProfile />
+                    </Link>
                 </div>
             </div>
         </>

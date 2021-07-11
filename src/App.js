@@ -40,6 +40,7 @@ const App = () => {
                 const { data } = res;
 
                 Ctx.verify(
+                    data.clientId,
                     data.email,
                     data.role,
                     data.firstName,

@@ -185,109 +185,103 @@ const Signup = () => {
                             <div className={classes.formControl}>
                                 <div className={classes.inputGroup}>
                                     <div className={classes.inputSection}>
-                                        <label className={classes.label}>
+                                        <label className={classes.label} htmlFor="fName">
                                             First Name
+                                            <input
+                                                className={showError && classes.invalid}
+                                                type="text"
+                                                id="fName"
+                                                placeholder="Jhon"
+                                                pattern="[a-z,A-Z]{1,}"
+                                                title="Only alphabet allowed"
+                                                value={userDetails.firstName}
+                                                onChange={firstNameChangeHandler}
+                                                spellCheck={false}
+                                                minLength={1}
+                                            />
                                         </label>
-                                        <input
-                                            className={
-                                                showError && classes.invalid
-                                            }
-                                            type="text"
-                                            id="fName"
-                                            placeholder="Jhon"
-                                            pattern="[a-z,A-Z]{1,}"
-                                            title="Only alphabet allowed"
-                                            value={userDetails.firstName}
-                                            onChange={firstNameChangeHandler}
-                                            spellCheck={false}
-                                            minLength={1}
-                                        />
                                     </div>
 
                                     <div className={classes.inputSection}>
-                                        <label className={classes.label}>
+                                        <label className={classes.label} htmlFor="lName">
                                             Last Name
+                                            <input
+                                                id="lName"
+                                                className={showError && classes.invalid}
+                                                type="text"
+                                                placeholder="Doe"
+                                                pattern="[a-z,A-Z]{1,}"
+                                                title="Only alphabet allowed"
+                                                value={userDetails.lastName}
+                                                onChange={lastNameChangeHandler}
+                                                spellCheck={false}
+                                            />
                                         </label>
-                                        <input
-                                            className={
-                                                showError && classes.invalid
-                                            }
-                                            type="text"
-                                            placeholder="Doe"
-                                            pattern="[a-z,A-Z]{1,}"
-                                            title="Only alphabet allowed"
-                                            value={userDetails.lastName}
-                                            onChange={lastNameChangeHandler}
-                                            spellCheck={false}
-                                        />
                                     </div>
                                 </div>
 
                                 <div className={classes.inputSection}>
-                                    <label className={classes.label}>
+                                    <label className={classes.label} htmlFor="email">
                                         Email
+                                        <input
+                                            id="email"
+                                            className={showError && classes.invalid}
+                                            type="email"
+                                            placeholder="example@gmail.com"
+                                            value={userDetails.email}
+                                            onChange={emailChangeHandler}
+                                            spellCheck={false}
+                                        />
                                     </label>
-                                    <input
-                                        className={showError && classes.invalid}
-                                        type="email"
-                                        placeholder="example@gmail.com"
-                                        value={userDetails.email}
-                                        onChange={emailChangeHandler}
-                                        spellCheck={false}
-                                    />
                                 </div>
 
                                 <div className={classes.inputSection}>
-                                    <label className={classes.label}>
+                                    <label className={classes.label} htmlFor="contact">
                                         Contact
+                                        <input
+                                            id="contact"
+                                            className={showError && classes.invalid}
+                                            type="tel"
+                                            placeholder="Contact"
+                                            pattern="[0-9]{10,14}"
+                                            title="Enter valid phone number"
+                                            value={userDetails.contact}
+                                            onChange={contactChangeHandler}
+                                            spellCheck={false}
+                                        />
                                     </label>
-                                    <input
-                                        className={showError && classes.invalid}
-                                        type="tel"
-                                        placeholder="Contact"
-                                        pattern="[0-9]{10,14}"
-                                        title="Enter valid phone number"
-                                        value={userDetails.contact}
-                                        onChange={contactChangeHandler}
-                                        spellCheck={false}
-                                    />
                                 </div>
 
                                 <div className={classes.inputGroup}>
                                     <div className={classes.inputSection}>
-                                        <label className={classes.label}>
+                                        <label className={classes.label} htmlFor="password">
                                             Password
+                                            <input
+                                                id="password"
+                                                className={showError && classes.invalid}
+                                                type="password"
+                                                placeholder="Password"
+                                                minLength={6}
+                                                value={userDetails.password}
+                                                onChange={passwordChangeHandler}
+                                                spellCheck={false}
+                                            />
                                         </label>
-                                        <input
-                                            className={
-                                                showError && classes.invalid
-                                            }
-                                            type="password"
-                                            placeholder="Password"
-                                            minLength={6}
-                                            value={userDetails.password}
-                                            onChange={passwordChangeHandler}
-                                            spellCheck={false}
-                                        />
                                     </div>
 
                                     <div className={classes.inputSection}>
-                                        <label className={classes.label}>
+                                        <label className={classes.label} htmlFor="confirmPassword">
                                             Confirm Password
+                                            <input
+                                                className={showError && classes.invalid}
+                                                type="password"
+                                                placeholder="Confirm Password"
+                                                value={userDetails.confirmPassword}
+                                                onChange={confirmPasswordChangeHandler}
+                                                minLength={6}
+                                                spellCheck={false}
+                                            />
                                         </label>
-                                        <input
-                                            className={
-                                                showError && classes.invalid
-                                            }
-                                            type="password"
-                                            placeholder="Confirm Password"
-                                            value={userDetails.confirmPassword}
-                                            onChange={
-                                                confirmPasswordChangeHandler
-                                            }
-                                            minLength={6}
-                                            spellCheck={false}
-                                        />
                                     </div>
                                 </div>
                             </div>
@@ -336,108 +330,6 @@ const Signup = () => {
                     </div>
                 </div>
             </div>
-
-            {/* <div className={classes.SignUp}>
-                <Card>
-                    <h2>Create a new account!</h2>
-
-                    {showError && (
-                        <small className={classes.errorMsg}>{errorMsg}</small>
-                    )}
-
-                    <form onSubmit={submitHandler}>
-                        <div className="row">
-                            <div className="col-md-6 col-sm-12">
-                                <div className={classes.formControl}>
-                                    <label className="input__label">
-                                        First Name
-                                    </label>
-                                    <input
-                                        className="input"
-                                        id="firstName"
-                                        type="text"
-                                        value={userDetails.firstName}
-                                        placeholder="First Name"
-                                        onChange={firstNameChangeHandler}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="col-md-6 col-sm-12">
-                                <div className={classes.formControl}>
-                                    <label className="input__label">
-                                        Last Name
-                                    </label>
-                                    <input
-                                        className="input"
-                                        id="lastName"
-                                        type="text"
-                                        value={userDetails.lastName}
-                                        placeholder="Last Name"
-                                        onChange={lastNameChangeHandler}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={classes.formControl}>
-                            <label className="input__label">Email</label>
-                            <input
-                                className="input"
-                                id="email"
-                                type="email"
-                                value={userDetails.email}
-                                placeholder="Email"
-                                onChange={emailChangeHandler}
-                            />
-                        </div>
-
-                        <div className={classes.formControl}>
-                            <label className="input__label">
-                                WhatsApp/Telegram
-                            </label>
-                            <input
-                                className="input"
-                                id="contact"
-                                type="number"
-                                value={userDetails.contact}
-                                placeholder="+91"
-                                onChange={contactChangeHandler}
-                            />
-                        </div>
-
-                        <div className={classes.formControl}>
-                            <label className="input__label">Password</label>
-                            <FormControl
-                                className="input"
-                                id="password"
-                                type="password"
-                                value={userDetails.password}
-                                placeholder="Password"
-                                onChange={passwordChangeHandler}
-                            />
-                        </div>
-
-                        <div className={classes.formControl}>
-                            <label className="input__label">
-                                Confirm Password
-                            </label>
-                            <input
-                                className="input"
-                                id="confirmPassword"
-                                type="password"
-                                value={userDetails.confirmPassword}
-                                placeholder="Confirm Password"
-                                onChange={confirmPasswordChangeHandler}
-                            />
-                        </div>
-
-                        <button type="submit" className="mt-3 btn btn-primary">
-                            Signup
-                        </button>
-                    </form>
-                </Card>
-            </div> */}
         </>
     );
 };

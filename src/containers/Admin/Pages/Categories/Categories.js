@@ -161,7 +161,7 @@ const Categories = () => {
     const editButtonHandler = async (e) => {
         setShowEditModal(true);
 
-        const categoryId = +e.target.value;
+        const categoryId = e.target.value;
         const category = await categories.filter((cate) => cate.id === categoryId);
         const {
             id,
@@ -277,9 +277,9 @@ const Categories = () => {
 
     // Delete
     const deleteButtonHandler = async (e) => {
-        const id = +e.target.value;
+        const id = e.target.value;
         const url = `/admin/category/delete/${id}`;
-        const newList = categories.filter((category) => category.id !== +id);
+        const newList = categories.filter((category) => category.id !== id);
 
         try {
             await Axios.delete(url, { id });
@@ -300,7 +300,7 @@ const Categories = () => {
                 return <Button.Disable />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 
@@ -311,7 +311,6 @@ const Categories = () => {
             <Table>
                 <THead>
                     <tr>
-                        <th>ID</th>
                         <th>Title</th>
                         <th>Desc</th>
                         <th>Short</th>
@@ -323,7 +322,6 @@ const Categories = () => {
                 <TBody>
                     {categories && categories.map((category) => (
                         <tr key={category.id}>
-                            <td>{category.id}</td>
                             <td>{category.title}</td>
                             <td>{category.description}</td>
                             <td>{category.short}</td>

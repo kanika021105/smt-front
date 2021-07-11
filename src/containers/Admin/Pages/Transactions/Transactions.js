@@ -36,12 +36,12 @@ const Transactions = () => {
     }, []);
 
     const deleteHandler = async (e) => {
-        const id = +e.target.value;
-        const newList = await transactions.filter((transaction) => transaction.id !== +id);
+        const id = e.target.value;
+        const newList = await transactions.filter((transaction) => transaction.id !== id);
 
         try {
             const url = `/admin/transaction/delete/${id}`;
-            Axios.delete(url);
+            await Axios.delete(url);
             setTransactions([...newList]);
             Toast.success(`Transaction "${id} deleted!"`);
         } catch (err) {

@@ -10,38 +10,13 @@
 
 html {
     scroll-behavior: smooth;
-
-    //  Production
-    // font-size: 62.5%;
-
-    // Development
-    font-size: 10px;
-
-    // @include respond(media-6) {
-    //     font-size: 5px;
-    // }
-
-    // @include respond(media-7) {
-    //     font-size: 6px;
-    // }
-
-    // @include respond(media-8) {
-    //     font-size: 8px;
-    // }
-
-    // @include respond(media-11) {
-    //     font-size: 10px;
-    // }
-
-    // @include respond(media-14) {
-    //     font-size: 11px;
-    // }
+    // font-size: 62.5%; //  Production
+    font-size: 10px; // Development
 }
 
 body {
     height: 100%;
     background-color: #f7f9fc;
-
     box-sizing: border-box;
     overflow-x: hidden;
 

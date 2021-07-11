@@ -16,21 +16,20 @@ const Input = ({
     required,
 }) => (
     <div className={classes.input}>
-        <label>
+        <label htmlFor={id || 'input'}>
             {label}
+            <input
+                id={id || 'input'}
+                type={type}
+                name={name}
+                value={value}
+                placeholder={placeholder}
+                onChange={onChange}
+                disabled={disabled}
+                pattern={pattern}
+                required={required}
+            />
         </label>
-
-        <input
-            id={id}
-            type={type}
-            name={name}
-            value={value}
-            placeholder={placeholder}
-            onChange={onChange}
-            disabled={disabled}
-            pattern={pattern}
-            required={required}
-        />
     </div>
 );
 

@@ -1,10 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 @import '../abstracts/extends';
 
 body {
     line-height: 1.5;
-    color: $color-grey !important;
-    font-family: 'Mulish', sans-serif !important;
-    font-size: 1.6rem !important;
+    color: $color-grey;
+    font-size: 1.6rem;
+    font-family: 'Varela Round', sans-serif;
 }
 
 h2 {

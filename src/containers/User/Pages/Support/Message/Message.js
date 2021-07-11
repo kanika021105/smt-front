@@ -2,14 +2,13 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { InputGroup, Card } from 'react-bootstrap';
-
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
 import classes from './messages.module.scss';
 import Context from '../../../../../store/context';
-
+import Toast from '../../../../../components/UI/Toast/Toast';
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
@@ -59,8 +58,9 @@ const Message = () => {
                     },
                 ]);
             }
+            return Toast.failed('Something went wrong!');
         } catch (err) {
-            throw new Error(err.response.message);
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     };
 

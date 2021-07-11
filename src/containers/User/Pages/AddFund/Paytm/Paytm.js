@@ -11,11 +11,39 @@ import Context from '../../../../../store/context';
 const Paytm = () => {
     const [config, setConfig] = useState('');
     const [showCheckout, setShowCheckout] = useState(false);
-    const [amount, setAmount] = useState(1);
+    const [amount, setAmount] = useState('');
     const [merchantId, setMerchantId] = useState('');
 
     const { websiteName } = useContext(Context);
     const { balance, updateBalance } = useContext(Context);
+
+    async function verifyPayment(paymentStatus) {
+        try {
+            const url = 'paytm/verify';
+            await Axios.post(url, { ...paymentStatus });
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    }
+
+    function updateUserBalance(paymentStatus) {
+        updateBalance(balance + +paymentStatus.TXNAMOUNT);
+        return Toast.success('Payment successful!');
+    }
+
+    function handleTransaction(paymentStatus) {
+        if (paymentStatus) {
+            setShowCheckout(false);
+            window.Paytm.CheckoutJS.close();
+
+            verifyPayment(paymentStatus);
+            if (paymentStatus.STATUS === 'TXN_SUCCESS') {
+                return updateUserBalance(paymentStatus);
+            }
+            return Toast.failed('Payment failed!');
+        }
+        return Toast.failed('Something went wrong!');
+    }
 
     let CONFIG = {
         style: {
@@ -67,47 +95,61 @@ const Paytm = () => {
                 }
             },
 
-            transactionStatus: async (paymentStatus) => {
-                if (paymentStatus) {
-                    setShowCheckout(false);
-                    window.Paytm.CheckoutJS.close();
-
-                    if (paymentStatus.STATUS === 'TXN_SUCCESS') {
-                        updateBalance(balance + +paymentStatus.TXNAMOUNT);
-                        const url = 'paytm/verify';
-                        await Axios.post(url, { ...paymentStatus });
-                        return Toast.success('Payment successful!');
-                    }
-
-                    const url = 'paytm/verify';
-                    await Axios.post(url, { ...paymentStatus });
-                    return Toast.failed('Payment failed!');
-                }
+            transactionStatus: (paymentStatus) => {
+                handleTransaction(paymentStatus);
             },
         },
     };
 
-    useEffect(() => {
-        Axios.get('/paytm').then((res) => {
-            setMerchantId(res.data.merchantId);
-        }).catch((err) => {
+    async function getMerchantId() {
+        try {
+            const url = '/paytm';
+            const { data } = await Axios.get(url);
+            setMerchantId(data.merchantId);
+        } catch (err) {
             Toast.failed(err.response.data.message || 'Something went wrong!');
-        });
+        }
+    }
+
+    useEffect(() => {
+        getMerchantId();
     }, []);
 
-    const amountChangeHandler = (e) => setAmount(+e.target.value);
+    function amountChangeHandler(e) {
+        setAmount(+e.target.value);
+    }
 
-    const toggleCheckout = async (e) => {
+    async function getToken(orderId) {
+        try {
+            const url = 'paytm/get-token';
+            const { data } = await Axios.post(url, { orderId, amount });
+            const { token } = data;
+            CONFIG = {
+                ...CONFIG,
+                data: {
+                    ...CONFIG.data,
+                    orderId,
+                    token,
+                },
+            };
+            setConfig({ ...CONFIG });
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    }
+
+    async function toggleCheckout(e) {
         e.preventDefault();
 
-        const orderId = `ORDER_ID_${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}${new Date().getHours()}${new Date().getMinutes()}${new Date().getSeconds()}${Math.floor(Math.random() * 999999999999)}`;
-        const url = 'paytm/get-token';
-        const { data } = await Axios.post(url, { orderId, amount });
-        const { token } = data;
-        CONFIG = { ...CONFIG, data: { ...CONFIG.data, orderId, token } };
-        setConfig({ ...CONFIG });
-        setShowCheckout(true);
-    };
+        try {
+            const orderId = `ORDER_ID_${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}${new Date().getHours()}${new Date().getMinutes()}${new Date().getSeconds()}${Math.floor(Math.random() * 999999999999)}`;
+            getToken(orderId);
+            setShowCheckout(true);
+            Toast.info('Loading... Please wait!', 4000);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    }
 
     return (
         <>
@@ -115,7 +157,7 @@ const Paytm = () => {
                 <title>
                     Paytm -
                     {' '}
-                    {websiteName || ''}
+                    {websiteName}
                 </title>
             </Helmet>
 

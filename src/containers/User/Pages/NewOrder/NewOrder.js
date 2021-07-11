@@ -8,6 +8,7 @@ import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
 import Select from '../../../../components/UI/Select/Select';
 import Context from '../../../../store/context';
@@ -65,7 +66,7 @@ const NewOrder = () => {
 
     const servicesByCategory = services
         && services.filter(
-            (service) => +service.categoryId === +orderDetails.selectedCategory,
+            (service) => service.categoryId === orderDetails.selectedCategory,
         );
 
     const reset = () => {
@@ -102,7 +103,7 @@ const NewOrder = () => {
 
         setOrderDetails((preState) => ({
             ...preState,
-            selectedCategory: +e.target.value,
+            selectedCategory: e.target.value,
             selectedService: '',
         }));
     };
@@ -155,10 +156,11 @@ const NewOrder = () => {
         }));
 
         if (balance < totalAmount) {
-            return setError({
-                show: true,
-                message: 'Insufficient Fund!',
-            });
+            Toast.failed('Insufficient balance in your account!', 3500);
+            // return setError({
+            //     show: true,
+            //     message: 'Insufficient Fund!',
+            // });
         }
         setError({
             show: false,
@@ -329,11 +331,8 @@ const NewOrder = () => {
                                     <Input label="Average Time" value={serviceDetails.avgtime} disabled />
                                 </InputGroup>
 
-                                <label className="input__label">
-                                    Description
-                                </label>
-                                <textarea
-                                    className="input "
+                                <Textarea
+                                    label="Description"
                                     value={serviceDetails.description}
                                     rows="7"
                                     style={{ width: '100%' }}

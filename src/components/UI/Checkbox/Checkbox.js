@@ -18,4 +18,9 @@ Checkbox.propTypes = {
     onChange: PropTypes.func,
 };
 
+Checkbox.defaultProps = {
+    checked: false,
+    onChange: () => '',
+};
+
 export default Checkbox;

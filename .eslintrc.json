@@ -25,8 +25,6 @@
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-        "consistent-return": 0,
-        "jsx-a11y/label-has-associated-control": 0,
         "react/require-default-props": 0
     }
 }

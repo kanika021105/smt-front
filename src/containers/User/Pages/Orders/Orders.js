@@ -65,7 +65,7 @@ const Orders = () => {
                 return <Button.OrderRefunded />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 

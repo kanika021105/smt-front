@@ -88,7 +88,7 @@ const Dashboard = () => {
                 return <Button.OrderRefunded />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 
@@ -101,7 +101,7 @@ const Dashboard = () => {
                 return <Button.Disable />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 
@@ -360,31 +360,31 @@ const Dashboard = () => {
 
                                             <div className={classes.section__two__summaryData_item}>
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.pendingOrders || 0}
+                                                    {data.pendingOrdersCount || 0}
                                                 </span>
 
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.processingOrders || 0}
+                                                    {data.processingOrdersCount || 0}
                                                 </span>
 
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.inprogressOrders || 0}
+                                                    {data.inprogressOrdersCount || 0}
                                                 </span>
 
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.completedOrders || 0}
+                                                    {data.completedOrdersCount || 0}
                                                 </span>
 
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.partialOrders || 0}
+                                                    {data.partialOrdersCount || 0}
                                                 </span>
 
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.cancelledOrders || 0}
+                                                    {data.cancelledOrdersCount || 0}
                                                 </span>
 
                                                 <span className={classes.section__two_statusData}>
-                                                    {data.refundedOrders || 0}
+                                                    {data.refundedOrdersCount || 0}
                                                 </span>
                                             </div>
                                         </div>

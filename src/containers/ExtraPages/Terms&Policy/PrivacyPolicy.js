@@ -9,15 +9,16 @@ function PrivacyPolicy() {
         const url = '/privacy';
         Axios.get(url).then((res) => {
             const value = JSON.parse(res.data[0].value);
-            console.log(value);
-            const { text } = value.children[0];
-            setPrivacy(text);
+            if (value) {
+                setPrivacy(value.children[0].text);
+            }
         });
     });
 
     return (
         <>
             {privacy}
+            Privacy Page
         </>
     );
 }

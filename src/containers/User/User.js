@@ -10,6 +10,9 @@ const Support = lazy(() => import('./Pages/Support/Support'));
 const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
 const AddFund = lazy(() => import('./Pages/AddFund/AddFund'));
 const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
+const Profile = lazy(() => import('./Pages/Profile/Profile'));
+const Api = lazy(() => import('./Pages/API/api'));
+
 const PrivacyPolicy = lazy(() => import('../ExtraPages/Terms&Policy/PrivacyPolicy'));
 
 const Admin = () => (
@@ -50,6 +53,14 @@ const Admin = () => (
 
         <Route path="/orders" exact>
             <Orders />
+        </Route>
+
+        <Route path="/profile/:id" exact>
+            <Profile />
+        </Route>
+
+        <Route path="/api">
+            <Api />
         </Route>
 
         <Route path="/privacy">

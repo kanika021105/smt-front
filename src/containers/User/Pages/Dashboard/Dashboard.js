@@ -60,7 +60,7 @@ const Dashboard = () => {
                 return <Button.Disable />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 

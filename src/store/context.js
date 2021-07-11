@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const Context = React.createContext({
+    clientId: '',
     token: '',
     email: '',
     role: '',
@@ -21,6 +22,7 @@ const Context = React.createContext({
 export const ContextProvider = ({ children }) => {
     const initialToken = localStorage.getItem('token');
     const [token, setToken] = useState(initialToken);
+    const [clientId, SetClientId] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState(null);
     const [firstName, setFirstName] = useState(null);
@@ -30,33 +32,40 @@ export const ContextProvider = ({ children }) => {
 
     const userIsLoggedIn = !!token;
 
-    const loginHandler = (token, email, role, firstName, lastName, balance) => {
+    function loginHandler(
+        token, clientId, email, role, firstName, lastName, balance,
+    ) {
         setToken(token);
+        SetClientId(clientId);
         setEmail(email);
         setRole(role);
         setFirstName(firstName);
         setLastName(lastName);
         setBalance(balance);
-    };
+    }
 
-    const verifyLoginHandler = (email, role, firstName, lastName, balance, websiteName) => {
+    function verifyLoginHandler(
+        clientId, email, role, firstName, lastName, balance, websiteName,
+    ) {
+        SetClientId(clientId);
         setEmail(email);
         setRole(role);
         setFirstName(firstName);
         setLastName(lastName);
         setBalance(balance);
         setWebsiteName(websiteName);
-    };
+    }
 
-    const updateBalanceHandler = (balance) => {
+    function updateBalanceHandler(balance) {
         setBalance(balance);
-    };
+    }
 
-    const updateWebsiteNameHandler = (name) => {
+    function updateWebsiteNameHandler(name) {
         setWebsiteName(name);
-    };
+    }
 
-    const logoutHandler = () => {
+    function logoutHandler() {
+        SetClientId(null);
         setEmail(null);
         setToken(null);
         setRole(null);
@@ -64,10 +73,11 @@ export const ContextProvider = ({ children }) => {
         setLastName(null);
         setBalance(null);
         localStorage.clear();
-    };
+    }
 
     const contextValue = {
         token,
+        clientId,
         email,
         role,
         firstName,

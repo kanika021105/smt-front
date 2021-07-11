@@ -236,7 +236,7 @@ const Clients = () => {
                 return <Button.Disable />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 

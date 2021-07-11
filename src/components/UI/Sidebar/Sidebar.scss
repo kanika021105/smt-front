@@ -251,6 +251,10 @@
             white-space: nowrap;
         }
 
+        & .nav-links li a.active_link .link_name {
+            color: $color-primary;
+        }
+
         & .nav-links li .sub-menu {
             display: none;
         }

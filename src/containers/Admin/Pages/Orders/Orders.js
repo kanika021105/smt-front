@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-
 import Modal from 'react-bootstrap/Modal';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
@@ -9,13 +8,13 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Axios from '../../../../axiosIns';
 import Context from '../../../../store/context';
 import Card from '../../../../components/UI/Card/Card';
+import Button from '../../../../components/UI/Button/Button';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Select from '../../../../components/UI/Select/Select';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
-import Select from '../../../../components/UI/Select/Select';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import Button from '../../../../components/UI/Button/Button';
 
 import classes from './orders.module.scss';
 import 'bootstrap/js/dist/dropdown';
@@ -24,19 +23,16 @@ const Orders = () => {
     const [clients, setClients] = useState();
     const [orders, setOrders] = useState();
     const [services, setServices] = useState();
-
     const [editingOrder, setEditingOrder] = useState();
+    const { websiteName } = useContext(Context);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [editedDetails, setEditedDetails] = useState({
         link: '',
         startCounter: 0,
         remains: 0,
         status: '',
     });
-
-    const { websiteName } = useContext(Context);
-
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -45,7 +41,6 @@ const Orders = () => {
         Axios.get(url)
             .then((res) => {
                 setIsLoading(false);
-
                 const { data } = res;
                 setClients(data.clients);
                 setServices(data.services);
@@ -60,7 +55,6 @@ const Orders = () => {
     const getServiceTitle = (id) => {
         if (services) {
             const details = services.filter((service) => service.id === id);
-
             if (details[0]) return details[0].title;
             return '';
         }
@@ -70,22 +64,22 @@ const Orders = () => {
     const getUserEmail = (id) => {
         if (clients) {
             const { email } = clients.filter((client) => client.id === id);
-
             if (email) return email;
             return null;
         }
+        return '';
     };
 
     // Deleting Order
     const deleteButtonHandler = async (e) => {
-        const id = e.target.value;
-        const url = `/admin/order/delete/${id}`;
+        const uid = e.target.value;
+        const url = `/admin/order/delete/${uid}`;
 
         try {
             await Axios.delete(url);
-            const newList = await orders.filter((order) => order.id !== +id);
+            const newList = await orders.filter((order) => order.uid !== uid);
             setOrders([...newList]);
-            Toast.warning(`Order id "${id}" deleted!`);
+            Toast.warning(`Order id "${uid}" deleted!`);
         } catch (err) {
             Toast.failed(err.response.message);
         }
@@ -95,10 +89,10 @@ const Orders = () => {
     const editButtonHandler = (e) => {
         setShowEditModal(true);
 
-        const orderId = e.target.value;
+        const orderUid = e.target.value;
         if (!orders) throw new Error('Orders list not available!');
 
-        const order = orders.filter((ordr) => +ordr.id === +orderId);
+        const order = orders.filter((ordr) => ordr.uid === orderUid);
         if (!order) throw new Error('Orders not found');
 
         setEditingOrder(order[0]);
@@ -147,16 +141,16 @@ const Orders = () => {
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
 
-        const { id } = editingOrder;
-        const newList = orders.filter((order) => order.id !== id);
+        const { uid } = editingOrder;
+        const newList = orders.filter((order) => order.uid !== uid);
 
         try {
-            const url = `/admin/order/edit/${id}`;
+            const url = `/admin/order/edit/${uid}`;
             const { data } = await Axios.patch(url, { ...editedDetails });
 
             setOrders(() => [{ ...data.updatedOrder }, ...newList]);
             handleClose();
-            Toast.success(`Order id "${id}"`);
+            Toast.success(`Order id "${uid}"`);
         } catch (err) {
             Toast.failed(err.response.message);
         }
@@ -300,7 +294,7 @@ const Orders = () => {
                 return <Button.OrderRefunded />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 
@@ -324,7 +318,7 @@ const Orders = () => {
 
                 <TBody>
                     {orders && orders.map((order) => (
-                        <tr key={order.id}>
+                        <tr key={order.uid}>
                             <td>{order.id}</td>
                             <td>
                                 {getServiceTitle(order.serviceId)
@@ -355,14 +349,14 @@ const Orders = () => {
                                         <ul className="dropdown-menu" aria-labelledby="option">
                                             <li>
                                                 <Button.Edit
-                                                    value={order.id}
+                                                    value={order.uid}
                                                     onClick={editButtonHandler}
                                                 />
                                             </li>
 
                                             <li>
                                                 <Button.Delete
-                                                    value={order.id}
+                                                    value={order.uid}
                                                     onClick={deleteButtonHandler}
                                                 />
                                             </li>

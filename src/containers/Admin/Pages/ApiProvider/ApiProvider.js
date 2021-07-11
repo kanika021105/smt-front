@@ -102,9 +102,10 @@ const ApiProvider = () => {
             if (data.status === 'success') {
                 setApiProviders((preState) => [...preState, { ...data.createdApi }]);
                 setShowAddModal(false);
-
-                Toast.success('Api added successfully!');
+                return Toast.success('Api added successfully!');
             }
+
+            return Toast.failed('Failed to add API Provider!');
         } catch (err) {
             return Toast.failed(err.response.message || 'Something went wrong!');
         }
@@ -218,8 +219,9 @@ const ApiProvider = () => {
 
                 return Toast.success('Api details updated!');
             }
+            return Toast.failed('Failed to update api details!');
         } catch (err) {
-            Toast.failed(err.response.message);
+            return Toast.failed(err.response.message);
         }
     };
 
@@ -285,7 +287,7 @@ const ApiProvider = () => {
     const syncClickHandler = async (id) => {
         setShowSyncModal(true);
 
-        const apiProvider = await apiProviders.filter((provider) => +provider.id === +id);
+        const apiProvider = await apiProviders.filter((provider) => provider.id === id);
         setSyncData((preState) => ({
             ...preState,
             api: {
@@ -392,12 +394,18 @@ const ApiProvider = () => {
             const { data } = await Axios.get(url);
             const newList = await apiProviders.filter((provider) => provider.id !== id);
             const updatedList = [{ ...data.updated }, ...newList]
-            // eslint-disable-next-line no-nested-ternary
-                .sort((a, b) => (a.id > b.id ? 1 : b.id > a.id ? -1 : 0));
+                .sort((a, b) => {
+                    if (a.id > b.id) {
+                        return 1;
+                    } if (b.id > a.id) {
+                        return -1;
+                    }
+                    return 0;
+                });
             setApiProviders(() => [...updatedList]);
             return Toast.success('Balance updated!');
         } catch (err) {
-            Toast.failed(err.response.data.message || 'Something went wrong!');
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     };
 
@@ -429,7 +437,7 @@ const ApiProvider = () => {
                 return <Button.Disable />;
 
             default:
-                break;
+                return Toast.failed('Invalid status received!');
         }
     };
 

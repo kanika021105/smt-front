@@ -13,6 +13,7 @@ import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Select from '../../../../components/UI/Select/Select';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
@@ -227,16 +228,13 @@ const ApiServices = () => {
                         </Select>
                     </InputGroup>
 
-                    <div className="mt-2">
-                        <label className="input__label">Description</label>
-                        <textarea
-                            className="input"
-                            rows="4"
-                            placeholder="Description..."
-                            value={selectedService.description || ''}
-                            onChange={descChangeHandler}
-                        />
-                    </div>
+                    <Textarea
+                        label="Description"
+                        rows="4"
+                        placeholder="Description..."
+                        value={selectedService.description || ''}
+                        onChange={descChangeHandler}
+                    />
                 </Modal.Body>
 
                 <Modal.Footer>

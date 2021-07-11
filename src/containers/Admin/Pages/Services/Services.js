@@ -24,14 +24,12 @@ const Services = () => {
     const [services, setServices] = useState();
     const [providers, setProviders] = useState();
     const [categories, setCategories] = useState();
-
     const [showEditModal, setShowEditModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
-
     const [addServiceDetails, setAddServiceDetails] = useState({
         categoryId: 0,
         title: '',
-        provider: 0,
+        apiProviderId: '',
         apiServiceId: 0,
         min: 0,
         max: 0,
@@ -40,12 +38,12 @@ const Services = () => {
         dripFeed: 'disable',
         description: '',
     });
-
     const [editingServiceDetails, setEditingServiceDetails] = useState({
         id: '',
+        uid: '',
         categoryId: 0,
         title: '',
-        provider: 0,
+        apiProviderId: 0,
         apiServiceId: '',
         min: '',
         max: '',
@@ -58,76 +56,111 @@ const Services = () => {
     const { websiteName } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
 
+    async function getData() {
+        try {
+            const url = '/admin/services';
+            const { data } = await Axios.get(url);
+
+            setServices(data.services);
+            setCategories(data.categories);
+            setProviders(data.apiProviders);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    }
+
     useEffect(() => {
         setIsLoading(true);
-
-        const url = '/admin/services';
-        Axios.get(url)
-            .then((res) => {
-                setIsLoading(false);
-
-                const { data } = res;
-                setServices(data.services);
-                setCategories(data.categories);
-                setProviders(data.apiProviders);
-            })
-            .catch((err) => {
-                Toast.failed(err.response.message || 'Something went wrong!');
-            });
+        getData();
+        setIsLoading(false);
     }, []);
 
+    function categoriesCount() {
+        return categories && categories.length <= 0;
+    }
+
     // Adding Services
-    const handleAddButtonClick = () => {
+    function handleAddButtonClick() {
         setShowAddModal(true);
-    };
+    }
 
-    const addCategoryChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, categoryId: +e.target.value }));
-    };
+    function addCategoryChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            categoryId: e.target.value,
+        }));
+    }
 
-    const addTitleChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, title: e.target.value }));
-    };
+    function addTitleChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            title: e.target.value,
+        }));
+    }
 
-    const addApiProviderChange = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, provider: +e.target.value }));
-    };
+    function addApiProviderChange(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            apiProviderId: e.target.value,
+        }));
+    }
 
-    const addApiServiceIdChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, apiServiceId: +e.target.value }));
-    };
+    function addApiServiceIdChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            apiServiceId: +e.target.value,
+        }));
+    }
 
-    const addMinChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, min: +e.target.value }));
-    };
+    function addMinChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            min: +e.target.value,
+        }));
+    }
 
-    const addMaxChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, max: +e.target.value }));
-    };
+    function addMaxChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            max: +e.target.value,
+        }));
+    }
 
-    const addPriceChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, rate: +e.target.value }));
-    };
+    function addPriceChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            rate: +e.target.value,
+        }));
+    }
 
-    const addStatusChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    function addStatusChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
+    }
 
-    const addDripFeedChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, dripFeed: e.target.value }));
-    };
+    function addDripFeedChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            dripFeed: e.target.value,
+        }));
+    }
 
-    const addDescChangeHandler = (e) => {
-        setAddServiceDetails((preState) => ({ ...preState, description: e.target.value }));
-    };
+    function addDescChangeHandler(e) {
+        setAddServiceDetails((preState) => ({
+            ...preState,
+            description: e.target.value,
+        }));
+    }
 
-    const handleBackdropClick = () => {
+    function handleBackdropClick() {
         setShowAddModal(false);
 
         setAddServiceDetails({
-            categoryId: 0,
+            categoryId: '',
             title: '',
-            provider: 0,
+            apiProviderId: '',
             apiServiceId: '',
             min: '',
             max: '',
@@ -136,9 +169,9 @@ const Services = () => {
             dripFeed: 'disable',
             description: '',
         });
-    };
+    }
 
-    const addFormSubmitHandler = async (e) => {
+    async function createService(e) {
         e.preventDefault();
 
         try {
@@ -146,14 +179,12 @@ const Services = () => {
             const { data } = await Axios.post(url, { ...addServiceDetails });
             setServices((preState) => [{ ...data.createdService }, ...preState]);
 
-            handleBackdropClick();
             Toast.success('Service created!');
+            return handleBackdropClick();
         } catch (err) {
-            Toast.failed(err.response.message || 'Something went wrong!s');
+            return Toast.failed(err.response.data.message || 'Failed to create service!');
         }
-    };
-
-    const categoriesCount = categories && categories.length <= 0;
+    }
 
     const addModal = (
         <Modal show={showAddModal} onHide={handleBackdropClick}>
@@ -161,16 +192,16 @@ const Services = () => {
                 <Modal.Title>Add Service</Modal.Title>
             </Modal.Header>
 
-            <form onSubmit={addFormSubmitHandler}>
+            <form onSubmit={createService}>
                 <Modal.Body>
                     <Select
                         label="Category"
                         value={addServiceDetails.categoryId}
                         onChange={addCategoryChangeHandler}
-                        disabled={categoriesCount}
+                        disabled={categoriesCount()}
                     >
                         <option key={0} value="">
-                            {categoriesCount ? 'No category to choose!' : 'Choose a Category'}
+                            {categoriesCount() ? 'No category to choose!' : 'Choose a Category'}
                         </option>
                         {categories && categories.map((category) => (
                             <option key={category.id} value={category.id}>
@@ -188,13 +219,20 @@ const Services = () => {
                     />
 
                     <InputGroup>
-                        <Input
+                        <Select
                             label="Api Provider"
-                            placeholder="Api Provider"
-                            type="text"
-                            value={addServiceDetails.provider}
+                            value={addServiceDetails.apiProviderId}
                             onChange={addApiProviderChange}
-                        />
+                        >
+                            <option key={0} value="">
+                                Manual
+                            </option>
+                            {providers && providers.map((providr) => (
+                                <option key={providr.id} value={providr.id}>
+                                    {providr.name}
+                                </option>
+                            ))}
+                        </Select>
 
                         <Input
                             label="Api Service Id"
@@ -265,7 +303,7 @@ const Services = () => {
                         Close
                     </Button.ModalSecondary>
 
-                    <Button.ModalPrimary type="submit" onClick={addFormSubmitHandler}>
+                    <Button.ModalPrimary type="submit">
                         Submit
                     </Button.ModalPrimary>
                 </Modal.Footer>
@@ -274,60 +312,90 @@ const Services = () => {
     );
 
     // Editing Services
-    const editButtonHandler = (e) => {
-        const id = +e.target.value;
-        const serviceDetails = services.filter((service) => service.id === +id);
+    function editButtonHandler(e) {
+        const uid = e.target.value;
+        const serviceDetails = services.filter((service) => service.uid === uid);
 
-        setEditingServiceDetails((preState) => ({ ...preState, ...serviceDetails[0] }));
+        setEditingServiceDetails({ ...serviceDetails[0] });
         setShowEditModal(true);
-    };
+    }
 
-    const categoryChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, categoryId: e.target.value }));
-    };
+    function categoryChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            categoryId: e.target.value,
+        }));
+    }
 
-    const titleChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, title: e.target.value }));
-    };
+    function titleChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            title: e.target.value,
+        }));
+    }
 
-    const providerChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, provider: e.target.value }));
-    };
+    function providerChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            apiProviderId: e.target.value,
+        }));
+    }
 
-    const apiServiceChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, apiServiceId: e.target.value }));
-    };
+    function apiServiceChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            apiServiceId: e.target.value,
+        }));
+    }
 
-    const minChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, min: e.target.value }));
-    };
+    function minChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            min: e.target.value,
+        }));
+    }
 
-    const maxChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, max: e.target.value }));
-    };
+    function maxChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            max: e.target.value,
+        }));
+    }
 
-    const priceChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, rate: e.target.value }));
-    };
+    function priceChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            rate: e.target.value,
+        }));
+    }
 
-    const statusChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    function statusChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
+    }
 
-    const dripFeedChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, dripFeed: e.target.value }));
-    };
+    function dripFeedChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            dripFeed: e.target.value,
+        }));
+    }
 
-    const descChangeHandler = (e) => {
-        setEditingServiceDetails((preState) => ({ ...preState, description: e.target.value }));
-    };
+    function descChangeHandler(e) {
+        setEditingServiceDetails((preState) => ({
+            ...preState,
+            description: e.target.value,
+        }));
+    }
 
     const handleClose = () => {
         setEditingServiceDetails({
             id: '',
-            categoryId: 0,
+            categoryId: '',
             title: '',
-            provider: 0,
+            provider: '',
             apiServiceId: '',
             min: '',
             max: '',
@@ -343,13 +411,13 @@ const Services = () => {
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
 
-        const { id } = editingServiceDetails;
-        const url = `admin/service/update/${id}`;
-        const newList = services.filter((service) => service.id !== id);
+        const { uid, id } = editingServiceDetails;
+        const url = `admin/service/update/${uid}`;
+        const newList = services.filter((service) => service.uid !== uid);
 
         try {
             const { data } = await Axios.patch(url, { ...editingServiceDetails });
-            setServices(() => [{ ...data.updatedService }, ...newList]);
+            setServices(() => [...newList, { ...data.updatedService }]);
 
             handleClose();
             Toast.success(`Service "${id}" updated!`);
@@ -390,12 +458,21 @@ const Services = () => {
                     />
 
                     <InputGroup>
-                        <Input
+
+                        <Select
                             label="Api Provider"
-                            placeholder="Api Provider"
-                            value={editingServiceDetails.provider}
+                            value={editingServiceDetails.apiProviderId}
                             onChange={providerChangeHandler}
-                        />
+                        >
+                            <option key={0} value="">
+                                Manual
+                            </option>
+                            {providers && providers.map((providr) => (
+                                <option key={providr.id} value={providr.id}>
+                                    {providr.name}
+                                </option>
+                            ))}
+                        </Select>
 
                         <Input
                             label="Api Service Id"
@@ -480,23 +557,23 @@ const Services = () => {
     );
 
     const deleteButtonHandler = async (e) => {
-        const id = +e.target.value;
-        const newList = await services.filter((service) => service.id !== id);
+        const uid = e.target.value;
+        const newList = await services.filter((service) => service.uid !== uid);
 
         try {
-            const url = `/admin/service/delete/${id}`;
+            const url = `/admin/service/delete/${uid}`;
             await Axios.delete(url);
             setServices([...newList]);
 
-            Toast.warning(`Service "${id}" deleted`);
+            Toast.warning(`Service "${uid}" deleted`);
         } catch (err) {
             Toast.failed(err.response.data || 'Failed to delete service!');
         }
     };
 
-    const getProviderName = (provider, apiServiceId) => {
+    function getProviderName(apiProviderId, apiServiceId) {
         const providerDetail = providers
-         && providers.filter((apiProvider) => apiProvider.id === +provider);
+         && providers.filter((apiProvider) => apiProvider.id === apiProviderId);
 
         return (
             <td>
@@ -504,7 +581,7 @@ const Services = () => {
                 {apiServiceId && apiServiceId}
             </td>
         );
-    };
+    }
 
     const checkStatus = (status) => {
         switch (status) {
@@ -515,23 +592,23 @@ const Services = () => {
                 return <Button.Disable />;
 
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 
     const getServiceByCategory = (id) => {
         const servicesList = services
-            && services.filter((service) => +service.categoryId === +id);
+            && services.filter((service) => service.categoryId === id);
 
         return servicesList.map((service) => (
-            <tr key={service.id}>
+            <tr key={service.uid}>
                 <td>{service.id}</td>
                 <td>
                     {service.title.length > 35
                         ? `${service.title.slice(0, 35)}...`
                         : service.title}
                 </td>
-                {getProviderName(service.provider, service.apiServiceId)}
+                {getProviderName(service.apiProviderId, service.apiServiceId)}
                 <td>
                     {service.min}
                     {' '}
@@ -570,7 +647,7 @@ const Services = () => {
                                         style={{
                                             width: '100%',
                                         }}
-                                        value={service.id}
+                                        value={service.uid}
                                         onClick={editButtonHandler}
                                     >
                                         Edit
@@ -584,7 +661,7 @@ const Services = () => {
                                         style={{
                                             width: '100%',
                                         }}
-                                        value={service.id}
+                                        value={service.uid}
                                         onClick={deleteButtonHandler}
                                     >
                                         Delete

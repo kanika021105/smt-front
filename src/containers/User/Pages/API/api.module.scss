@@ -1,0 +1,78 @@
+@import '../../../../sass/index';
+
+.api {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 5rem auto;
+    width: 70%;
+    
+    
+    &__details {
+        color: $color-white;
+        padding: 2rem 0 2rem 3rem;
+        background-color: lighten($color-primary, 8);
+        border-radius: 1.4rem 1.4rem 0 0;
+        box-shadow: 4px 4px 8px rgba(0,0,0, 0.15);
+
+        h2 {
+            margin: 0;
+            padding: 0;
+        }
+
+        &--heading {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        &--content {
+            padding: 2rem 0 2rem 3rem;
+            background: $color-grey-light-3; 
+            border-radius: 0 0 1.4rem 1.4rem ;
+            box-shadow: 4px 4px 8px rgba(0,0,0, 0.15);
+            margin-bottom: 3rem;
+
+            & .item {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 1rem;
+
+                &__heading {
+                    padding: 0;
+                    margin: 0;
+                    font-size: 1.4rem;
+                    font-weight: 600;
+                    color: darken($color-grey, 12);
+                }
+
+                &__content {
+                    margin: 0;
+                    padding: 0;
+                    font-size: 1.4rem;
+                    color: darken($color-grey, 5);
+                }
+            }
+        }
+    }
+
+    .code {
+        padding: 3.6rem 0 2rem 3rem;
+        margin-bottom: 3rem;
+        color: $color-grey-light-3;
+        background: url(../../../../assets/images/dots.png) no-repeat 3rem 2.8rem darken($color-grey, 30);
+        border-radius: 1.4rem 1.4rem 1.4rem 1.4rem ;
+
+        .dots {
+
+        }
+    }
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+
+    div {
+        flex: 1;
+    }
+}

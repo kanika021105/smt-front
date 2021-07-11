@@ -4,29 +4,31 @@ import PropTypes, { number, string } from 'prop-types';
 import classes from './Select.module.scss';
 
 function Select({
-    children, label, value, onChange, disabled, required,
+    children, id, label, value, onChange, disabled, required,
 }) {
     return (
         <div className={classes.select}>
-            <label>
+            <label htmlFor={id || 'select'}>
                 {label}
-            </label>
 
-            <select
-                className="select"
-                value={value}
-                onChange={onChange}
-                disabled={disabled}
-                required={required}
-            >
-                {children}
-            </select>
+                <select
+                    id={id || 'select'}
+                    className="select"
+                    value={value}
+                    onChange={onChange}
+                    disabled={disabled}
+                    required={required}
+                >
+                    {children}
+                </select>
+            </label>
         </div>
     );
 }
 
 Select.propTypes = {
     children: PropTypes.node.isRequired,
+    id: PropTypes.string,
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([string, number]).isRequired,
     onChange: PropTypes.func.isRequired,

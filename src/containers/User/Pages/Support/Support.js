@@ -11,6 +11,7 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Input from '../../../../components/UI/Input/Input';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Select from '../../../../components/UI/Select/Select';
 import Context from '../../../../store/context';
 
@@ -162,27 +163,19 @@ const Support = () => {
                 break;
 
             default:
-                break;
+                Toast.failed('Something went wrong!');
         }
 
         try {
             const url = '/support/create-ticket';
-            const { data } = await Axios.post(url, {
-                ...ticketData,
-            });
+            const { data } = await Axios.post(url, { ...ticketData });
 
-            setTickets((preState) => [
-                {
-                    ...data.ticket,
-                },
-                ...preState,
-            ]);
+            setTickets((preState) => [{ ...data.ticket }, ...preState]);
             setShowAddModal(false);
             Toast.success('Ticket created!');
-
             return resetState();
         } catch (err) {
-            Toast.failed(err.response.message || 'Something went wrong!');
+            return Toast.failed(err.response.message || 'Something went wrong!');
         }
     };
 
@@ -229,15 +222,12 @@ const Support = () => {
                             </option>
                         </Select>
 
-                        <div className="mt-2">
-                            <label className="input__label">Message</label>
-                            <textarea
-                                className="input"
-                                value={message}
-                                onChange={messageChangeHandler}
-                                rows={5}
-                            />
-                        </div>
+                        <Textarea
+                            label="Message"
+                            value={message}
+                            onChange={messageChangeHandler}
+                            rows={5}
+                        />
                     </>
                 );
 
@@ -269,31 +259,18 @@ const Support = () => {
                             onChange={transactionIdChangeHandler}
                         />
 
-                        <div className="mt-2">
-                            <label className="input__label">Message</label>
-                            <textarea
-                                className="input"
-                                value={message}
-                                onChange={messageChangeHandler}
-                                rows={7}
-                            />
-                        </div>
+                        <Textarea
+                            label="Message"
+                            value={message}
+                            onChange={messageChangeHandler}
+                            rows={7}
+                        />
                     </>
                 );
 
             case 'service':
                 return (
                     <>
-                        {/* <div className="mt-2">
-                            <label className="input__label">Service Id</label>
-                            <input
-                                type="number"
-                                className="input"
-                                value={serviceId}
-                                placeholder="Service Id"
-                                onChange={serviceIdChangeHandler}
-                            />
-                        </div> */}
                         <Input
                             label="Service Id"
                             type="number"
@@ -302,34 +279,27 @@ const Support = () => {
                             onChange={serviceIdChangeHandler}
                         />
 
-                        <div className="mt-2">
-                            <label className="input__label">Message</label>
-                            <textarea
-                                className="input"
-                                value={message}
-                                onChange={messageChangeHandler}
-                                rows={5}
-                            />
-                        </div>
+                        <Textarea
+                            label="Message"
+                            value={message}
+                            onChange={messageChangeHandler}
+                            rows={5}
+                        />
                     </>
                 );
 
             case 'other':
                 return (
-                    <>
-                        <div className="mt-2">
-                            <label className="input__label">Message</label>
-                            <textarea
-                                className="input"
-                                value={message}
-                                onChange={messageChangeHandler}
-                                rows={7}
-                            />
-                        </div>
-                    </>
+                    <Textarea
+                        label="Messsage"
+                        value={message}
+                        onChange={messageChangeHandler}
+                        rows={7}
+
+                    />
                 );
             default:
-                break;
+                return Toast.failed('Something went wrong!');
         }
     };
 

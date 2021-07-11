@@ -13,33 +13,47 @@ const Razorpay = () => {
     const [amount, setAmount] = useState(0);
     const { email, fName } = useContext(Context);
     const [keyId, setKeyId] = useState('');
-    const { websiteName } = useContext(Context);
+    const { websiteName, updateBalance, balance } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
+
+    async function getKey() {
+        try {
+            const url = '/razorpay';
+            const { data } = await Axios.get(url);
+            setKeyId(data.keyId);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    }
 
     useEffect(() => {
         setIsLoading(true);
-        const url = '/razorpay';
-        Axios.get(url).then((res) => {
-            const { data } = res;
-            setKeyId(data.keyId);
-        }).catch((err) => Toast.failed(err.response.data.message || 'Something went wrong!'));
+        getKey();
         setIsLoading(false);
     }, []);
 
-    const razorpayHandler = async (e) => {
-        e.preventDefault();
+    function updateUserBalance(txnAmount) {
+        updateBalance(balance + txnAmount);
+        return Toast.success('Payment successful!');
+    }
 
-        const orderData = {
-            amount,
-            email,
-            fName,
-        };
-
+    async function verifyOrder(response, orderId) {
         try {
-            let url = '/razorpay/order';
-            const { data } = await Axios.post(url, { ...orderData });
-            const orderId = data.sub.id;
+            const url = '/razorpay/payment/verify';
+            const params = {
+                razorpay_order_id: orderId,
+                razorpay_signature: response.razorpay_signature,
+                razorpay_payment_id: response.razorpay_payment_id,
+            };
+            await Axios.post(url, { ...params });
+            return updateUserBalance(+amount);
+        } catch (err) {
+            return Toast.failed(err.response, 6000);
+        }
+    }
 
+    function createPayment(orderId) {
+        try {
             const options = {
                 currency: 'INR',
                 order_id: orderId,
@@ -48,17 +62,7 @@ const Razorpay = () => {
                 key: keyId || process.env.REACT_APP_RAZORPAY_KEY,
 
                 handler: async (response) => {
-                    try {
-                        url = '/razorpay/payment/verify';
-                        const params = {
-                            razorpay_order_id: orderId,
-                            razorpay_signature: response.razorpay_signature,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                        };
-                        await Axios.post(url, { ...params });
-                    } catch (err) {
-                        Toast.error(err);
-                    }
+                    await verifyOrder(response, orderId);
                 },
                 theme: { color: '#3f80ea' },
             };
@@ -66,22 +70,36 @@ const Razorpay = () => {
             const rzp1 = new window.Razorpay(options);
             rzp1.open();
         } catch (err) {
-            console.log(err.response.data.message);
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
+    }
 
-    const amountChangeHandler = (e) => {
+    async function getOrderId(e) {
+        e.preventDefault();
+        Toast.info('Loading please wait...', 1000);
+
+        try {
+            const orderData = { amount, email, fName };
+            const url = '/razorpay/order';
+            const { data } = await Axios.post(url, { ...orderData });
+            const orderId = data.sub.id;
+            createPayment(orderId);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
+    }
+
+    function amountChangeHandler(e) {
         setAmount(e.target.value);
-    };
+    }
+
     return (
         <>
             <Helmet>
                 <title>
                     RazorPay -
                     {' '}
-                    {websiteName || ''}
-                    {' '}
+                    {websiteName}
                 </title>
                 <script src="https://checkout.razorpay.com/v1/checkout.js" />
             </Helmet>
@@ -105,9 +123,7 @@ const Razorpay = () => {
                 <button
                     type="button"
                     className="btn btn-primary Razorpay_button"
-                    onClick={(e) => {
-                        razorpayHandler(e);
-                    }}
+                    onClick={(e) => getOrderId(e)}
                 >
                     Pay
                 </button>

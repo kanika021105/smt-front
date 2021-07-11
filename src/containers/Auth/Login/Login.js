@@ -36,8 +36,6 @@ const Login = () => {
             const { data } = await Axios.post(url, { ...loginData });
             setErrorMsg('');
 
-            console.log({ data });
-
             const remainingMilliseconds = 24 * 60 * 60 * 1000;
             const expiryDate = Date.now() + remainingMilliseconds;
 
@@ -49,6 +47,7 @@ const Login = () => {
 
             AuthCtx.login(
                 data.token,
+                client.id,
                 client.email,
                 client.role,
                 client.firstName,
@@ -99,36 +98,26 @@ const Login = () => {
                             <Link to="/">Home</Link>
                         </div>
                         <div className={classes.login__form__line}> </div>
-                        <h2
-                            className={[
-                                classes.login__form__heading,
-                                showError ? 'u-mb-3' : 'u-mb-7',
-                            ].join(' ')}
-                        >
+                        <h2 className={[classes.login__form__heading, showError ? 'u-mb-3' : 'u-mb-7'].join(' ')}>
                             Sing-In
                         </h2>
-                        <h4
-                            className={
-                                showError
-                                    ? classes.errorMsg
-                                    : classes.errorHidden
-                            }
-                        >
+                        <h4 className={showError ? classes.errorMsg : classes.errorHidden}>
                             {errorMsg}
                         </h4>
 
                         <form onSubmit={submitHandler}>
                             <div className={classes.inputSection}>
-                                <label className={classes.label}>Email</label>
-                                <input
-                                    className={
-                                        showError ? classes.invalid : ' '
-                                    }
-                                    type="email"
-                                    placeholder="example@gmail.com"
-                                    value={loginEmail}
-                                    onChange={emailChangeHandler}
-                                />
+                                <label htmlFor="email" className={classes.label}>
+                                    Email
+                                    <input
+                                        id="email"
+                                        className={showError ? classes.invalid : ' '}
+                                        type="email"
+                                        placeholder="example@gmail.com"
+                                        value={loginEmail}
+                                        onChange={emailChangeHandler}
+                                    />
+                                </label>
                             </div>
 
                             <div className={classes.inputSection}>
@@ -137,18 +126,16 @@ const Login = () => {
                                     className={classes.label}
                                 >
                                     Password
+                                    <input
+                                        id="password"
+                                        className={showError ? classes.invalid : ' '}
+                                        type="password"
+                                        placeholder="Your Password"
+                                        value={password}
+                                        minLength="6"
+                                        onChange={passwordChangeHandler}
+                                    />
                                 </label>
-                                <input
-                                    id="password"
-                                    className={
-                                        showError ? classes.invalid : ' '
-                                    }
-                                    type="password"
-                                    placeholder="Your Password"
-                                    value={password}
-                                    minLength="6"
-                                    onChange={passwordChangeHandler}
-                                />
                             </div>
 
                             <div className={classes.login__form__resetPassword}>
