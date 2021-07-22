@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-
 import { IconContext } from 'react-icons';
 import Modal from 'react-bootstrap/Modal';
 import { VscListSelection } from 'react-icons/vsc';
@@ -23,17 +22,14 @@ import 'bootstrap/js/dist/dropdown';
 
 const ApiServices = () => {
     const { id } = useParams();
+    const { websiteName } = useContext(Context);
 
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     const [profitMargin, setProfitMargin] = useState(10);
-
     const [selectedService, setSelectedService] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
-
-    const { websiteName } = useContext(Context);
-
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -45,25 +41,18 @@ const ApiServices = () => {
 
                 setServices(data.services);
                 setCategories(data.categories);
-
                 setIsLoading(false);
             })
             .catch((err) => {
                 setIsLoading(false);
-
-                // TODO Remove this
-                // eslint-disable-next-line no-console
-                console.log(err.response.data.message);
+                return Toast.failed(err.response.data.message);
             });
     }, [id]);
 
     const addButtonHandler = async (e) => {
         setShowAddModal(true);
         const serviceId = e.target.value;
-
-        const service = await services.filter(
-            (ser) => ser.service === serviceId,
-        );
+        const service = await services.filter((ser) => ser.service === serviceId);
 
         setSelectedService({
             description: service[0].desc,
@@ -79,7 +68,6 @@ const ApiServices = () => {
 
     const handleClose = () => {
         setShowAddModal(false);
-
         setSelectedService('');
     };
 
@@ -91,7 +79,7 @@ const ApiServices = () => {
     };
 
     const categoryChangeHandler = (e) => {
-        const value = +e.target.value;
+        const { value } = e.target;
         setSelectedService((preState) => ({
             ...preState,
             categoryId: value,
@@ -131,7 +119,7 @@ const ApiServices = () => {
         const serviceData = {
             ...selectedService,
             profitMargin,
-            provider: +id,
+            provider: id,
         };
         try {
             const url = '/admin/api-provider/service/add';
@@ -175,15 +163,14 @@ const ApiServices = () => {
                         onChange={categoryChangeHandler}
                     >
                         <option>Choose a category</option>
-                        {categories
-                                && categories.map((category) => (
-                                    <option
-                                        key={category.id}
-                                        value={category.id}
-                                    >
-                                        {category.title}
-                                    </option>
-                                ))}
+                        {categories && categories.map((category) => (
+                            <option
+                                key={category.id}
+                                value={category.id}
+                            >
+                                {category.title}
+                            </option>
+                        ))}
 
                     </Select>
 
@@ -219,12 +206,11 @@ const ApiServices = () => {
                             value={profitMargin}
                             onChange={profitMarginChangeHandler}
                         >
-                            {counter
-                                    && counter.map((count) => (
-                                        <option key={count} value={count}>
-                                            {`${count}%`}
-                                        </option>
-                                    ))}
+                            {counter && counter.map((count) => (
+                                <option key={count} value={count}>
+                                    {`${count}%`}
+                                </option>
+                            ))}
                         </Select>
                     </InputGroup>
 
@@ -278,13 +264,7 @@ const ApiServices = () => {
                                 <td>{`${service.min} / ${service.max}`}</td>
                                 <td>{service.rate}</td>
                                 <td>
-                                    <IconContext.Provider
-                                        value={{
-                                            style: {
-                                                fontSize: '30px',
-                                            },
-                                        }}
-                                    >
+                                    <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                                         <div className="dropdown ">
                                             <span
                                                 id="option"
@@ -301,13 +281,9 @@ const ApiServices = () => {
                                                     <button
                                                         type="button"
                                                         className="btn btn-info"
-                                                        style={{
-                                                            width: '100%',
-                                                        }}
+                                                        style={{ width: '100%' }}
                                                         value={service.service}
-                                                        onClick={
-                                                            addButtonHandler
-                                                        }
+                                                        onClick={addButtonHandler}
                                                     >
                                                         Add/Update
                                                     </button>

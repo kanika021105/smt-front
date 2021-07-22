@@ -55,7 +55,7 @@ const Orders = () => {
             case 'completed':
                 return <Button.OrderCompleted />;
 
-            case 'cancelled':
+            case 'canceled':
                 return <Button.OrderCancelled />;
 
             case 'partial':

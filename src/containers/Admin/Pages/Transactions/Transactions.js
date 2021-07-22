@@ -96,7 +96,6 @@ const Transactions = () => {
         ? <DataNotFound message="Please wait for users to make some transaction." />
         : transactionDataTable;
 
-    // TODO
     return (
         <>
             <Helmet>

@@ -23,138 +23,148 @@ const Orders = () => {
     const [clients, setClients] = useState();
     const [orders, setOrders] = useState();
     const [services, setServices] = useState();
-    const [editingOrder, setEditingOrder] = useState();
-    const { websiteName } = useContext(Context);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [editedDetails, setEditedDetails] = useState({
+
+    const [editingOrder, setEditingOrder] = useState({
+        id: '',
+        uid: '',
+        apiOrderId: '',
+        serviceId: '',
+        orderType: '',
+        userId: '',
+        amount: '',
+        quantity: '',
+        startCounter: '',
+        remains: '',
         link: '',
-        startCounter: 0,
-        remains: 0,
         status: '',
     });
+
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const { websiteName } = useContext(Context);
+
+    async function getData(url) {
+        const { data } = await Axios.get(url);
+        return data;
+    }
 
     useEffect(() => {
         setIsLoading(true);
 
         const url = '/admin/orders';
-        Axios.get(url)
-            .then((res) => {
+        Promise.resolve(getData(url))
+            .then((data) => {
                 setIsLoading(false);
-                const { data } = res;
+
                 setClients(data.clients);
                 setServices(data.services);
                 setOrders(data.orders);
-            })
-            .catch((err) => {
+            }).catch((err) => {
                 setIsLoading(false);
-                return Toast.failed(err.response.message || 'Something went wrong!');
+                return Toast.failed(err.response.message
+                    || 'Something went wrong!');
             });
     }, []);
 
-    const getServiceTitle = (id) => {
+    function getServiceTitle(id) {
         if (services) {
             const details = services.filter((service) => service.id === id);
             if (details[0]) return details[0].title;
             return '';
         }
         return '';
-    };
+    }
 
-    const getUserEmail = (id) => {
+    function getUserEmail(id) {
         if (clients) {
-            const { email } = clients.filter((client) => client.id === id);
-            if (email) return email;
-            return null;
+            clients.map((client) => {
+                if (client.id === id) return client.email;
+                return null;
+            });
         }
-        return '';
-    };
+        return null;
+    }
 
-    // Deleting Order
-    const deleteButtonHandler = async (e) => {
+    async function deleteButtonHandler(e) {
         const uid = e.target.value;
         const url = `/admin/order/delete/${uid}`;
+        const newList = await orders.filter((order) => order.uid !== uid);
 
         try {
             await Axios.delete(url);
-            const newList = await orders.filter((order) => order.uid !== uid);
             setOrders([...newList]);
-            Toast.warning(`Order id "${uid}" deleted!`);
+            return Toast.success(`Order id "${uid}" deleted!`);
         } catch (err) {
-            Toast.failed(err.response.message);
+            return Toast.failed(err.response.message);
         }
-    };
+    }
 
-    // Editing order
-    const editButtonHandler = (e) => {
+    function editButtonHandler(e) {
         setShowEditModal(true);
 
-        const orderUid = e.target.value;
-        if (!orders) throw new Error('Orders list not available!');
+        if (orders) {
+            const uid = e.target.value;
+            const orderDetails = orders.filter((order) => order.uid === uid);
+            return setEditingOrder((preState) => ({ ...preState, ...orderDetails[0] }));
+        }
+        return Toast.failed('Something went wrong!');
+    }
 
-        const order = orders.filter((ordr) => ordr.uid === orderUid);
-        if (!order) throw new Error('Orders not found');
+    function startCounterChangeHandler(e) {
+        setEditingOrder((preState) => ({
+            ...preState,
+            startCounter: e.target.value,
+        }));
+    }
 
-        setEditingOrder(order[0]);
-        const {
-            link,
-            startCounter,
-            remains,
-            status,
-        } = order[0];
+    function remainChangeHandler(e) {
+        setEditingOrder((preState) => ({
+            ...preState,
+            remains: e.target.value,
+        }));
+    }
 
-        setEditedDetails({
-            link,
-            startCounter,
-            remains,
-            status,
-        });
-    };
+    function statusChangeHandler(e) {
+        setEditingOrder((preState) => ({
+            ...preState,
+            status: e.target.value,
+        }));
+    }
 
-    const startCounterChangeHandler = (e) => {
-        setEditedDetails((preState) => ({ ...preState, startCounter: e.target.value }));
-    };
+    function linkChangeHandler(e) {
+        setEditingOrder((preState) => ({
+            ...preState,
+            link: e.target.value,
+        }));
+    }
 
-    const remainChangeHandler = (e) => {
-        setEditedDetails((preState) => ({ ...preState, remains: e.target.value }));
-    };
-
-    const statusChangeHandler = (e) => {
-        setEditedDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
-
-    const linkChangeHandler = (e) => {
-        setEditedDetails((preState) => ({ ...preState, link: e.target.value }));
-    };
-
-    const handleClose = () => {
-        setEditedDetails({
-            link: '',
-            startCounter: 0,
-            remains: 0,
-            status: '',
-        });
-        setEditingOrder('');
+    // TODO Update it
+    function handleClose() {
         setShowEditModal(false);
-    };
+    }
 
-    const editingSubmitHandler = async (e) => {
+    async function editingSubmitHandler(e) {
         e.preventDefault();
 
         const { uid } = editingOrder;
         const newList = orders.filter((order) => order.uid !== uid);
+        const url = `/admin/order/edit/${uid}`;
 
         try {
-            const url = `/admin/order/edit/${uid}`;
-            const { data } = await Axios.patch(url, { ...editedDetails });
+            const { data } = await Axios.patch(url, {
+                link: editingOrder.link,
+                startCounter: editingOrder.startCounter,
+                remains: editingOrder.remains,
+                status: editingOrder.status,
+            });
 
-            setOrders(() => [{ ...data.updatedOrder }, ...newList]);
             handleClose();
-            Toast.success(`Order id "${uid}"`);
+            setOrders(() => [{ ...data.updatedOrder }, ...newList]);
+            return Toast.success(`Order id "${uid}"`);
         } catch (err) {
-            Toast.failed(err.response.message);
+            return Toast.failed(err.response.data.message);
         }
-    };
+    }
 
     const editModal = (
         <Modal show={showEditModal} onHide={handleClose}>
@@ -218,14 +228,14 @@ const Orders = () => {
                                 <Input
                                     label="Start Counter"
                                     type="number"
-                                    value={editedDetails.startCounter || 0}
+                                    value={editingOrder.startCounter || 0}
                                     onChange={startCounterChangeHandler}
                                 />
 
                                 <Input
                                     label="Remains"
                                     type="number"
-                                    value={editedDetails.remains || 0}
+                                    value={editingOrder.remains || 0}
                                     onChange={remainChangeHandler}
                                 />
 
@@ -235,13 +245,13 @@ const Orders = () => {
                                 <Input
                                     label="Link"
                                     type="url"
-                                    value={editedDetails.link || ''}
+                                    value={editingOrder.link || ''}
                                     onChange={linkChangeHandler}
                                 />
 
                                 <Select
                                     label="Status"
-                                    value={editedDetails.status}
+                                    value={editingOrder.status}
                                     onChange={statusChangeHandler}
                                 >
                                     <option value="pending">Pending</option>
@@ -249,10 +259,9 @@ const Orders = () => {
                                     <option value="inprogress">In Progress</option>
                                     <option value="completed">Completed</option>
                                     <option value="partial">Partial</option>
-                                    <option value="cancelled">Cancelled</option>
+                                    <option value="canceled">Canceled</option>
                                 </Select>
                             </InputGroup>
-
                         </>
                     )}
                 </Modal.Body>
@@ -270,7 +279,7 @@ const Orders = () => {
         </Modal>
     );
 
-    const getStatus = (status) => {
+    function getStatus(status) {
         switch (status) {
             case 'pending':
                 return <Button.OrderPending />;
@@ -284,7 +293,7 @@ const Orders = () => {
             case 'completed':
                 return <Button.OrderCompleted />;
 
-            case 'cancelled':
+            case 'canceled':
                 return <Button.OrderCancelled />;
 
             case 'partial':
@@ -296,7 +305,7 @@ const Orders = () => {
             default:
                 return Toast.failed('Something went wrong!');
         }
-    };
+    }
 
     const ordersTable = orders && orders.length <= 0 ? (
         <DataNotFound message="Please wait for clients to create some order." />
@@ -334,9 +343,7 @@ const Orders = () => {
                             <td>{order.startCounter}</td>
                             <td>{getStatus(order.status)}</td>
                             <td>
-                                <IconContext.Provider
-                                    value={{ style: { fontSize: '30px', padding: 'auto' } }}
-                                >
+                                <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
                                     <div className="dropdown">
                                         <span
                                             id="option"

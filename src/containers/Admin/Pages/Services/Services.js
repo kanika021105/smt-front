@@ -572,18 +572,19 @@ const Services = () => {
     };
 
     function getProviderName(apiProviderId, apiServiceId) {
-        const providerDetail = providers
-         && providers.filter((apiProvider) => apiProvider.id === apiProviderId);
+        const providerDetail = providers && providers
+            .filter((apiProvider) => apiProvider.id === apiProviderId);
 
         return (
             <td>
-                {providerDetail && providerDetail[0] ? `${providerDetail[0].name} - ` : 'Manual - '}
-                {apiServiceId && apiServiceId}
+                {providerDetail && providerDetail[0]
+                    ? `${providerDetail[0].name} - ${apiServiceId} `
+                    : 'Manual'}
             </td>
         );
     }
 
-    const checkStatus = (status) => {
+    function checkStatus(status) {
         switch (status) {
             case 'active':
                 return <Button.Active />;
@@ -594,26 +595,26 @@ const Services = () => {
             default:
                 return Toast.failed('Something went wrong!');
         }
-    };
+    }
 
-    const getServiceByCategory = (id) => {
-        const servicesList = services
-            && services.filter((service) => service.categoryId === id);
+    function getServiceByCategory(id) {
+        const servicesList = services && services
+            .filter((service) => service.categoryId === id);
 
         return servicesList.map((service) => (
             <tr key={service.uid}>
                 <td>{service.id}</td>
                 <td>
-                    {service.title.length > 35
+                    {service.title}
+                    {/* To slice service name by 35 letters */}
+                    {/* {service.title.length > 35
                         ? `${service.title.slice(0, 35)}...`
-                        : service.title}
+                        : service.title} */}
                 </td>
                 {getProviderName(service.apiProviderId, service.apiServiceId)}
                 <td>
                     {service.min}
-                    {' '}
                     /
-                    {' '}
                     {service.max}
                 </td>
                 <td>{parseFloat(service.rate).toFixed(2)}</td>
@@ -673,63 +674,71 @@ const Services = () => {
                 </td>
             </tr>
         ));
-    };
+    }
 
     const servicesData = () => {
         if (services && services.length <= 0) {
             return (
-                <DataNotFound message="Please add some services in any category to show here." />
+                <DataNotFound
+                    message="Please add some services in any
+                    category to show here."
+                />
             );
         }
 
         if (categories && categories.length <= 0) {
             return (
-                <DataNotFound message="Please add some services in any category to show here." />
+                <DataNotFound
+                    message="Please add some services in any
+                    category to show here."
+                />
             );
         }
 
         return (
-            categories
-            && categories.map((category) => {
-                const serviceLength = getServiceByCategory(category.id);
+            categories && categories
+                .map((category) => {
+                    const serviceLength = getServiceByCategory(category.id);
 
-                if (serviceLength.length <= 0) return '';
-                if (serviceLength.length <= 0 && categories.length <= 1) {
+                    if (serviceLength.length <= 0) return '';
+                    if (serviceLength.length <= 0 && categories.length <= 1) {
+                        return (
+                            <DataNotFound
+                                message="Please add some services
+                                in any category to show here."
+                            />
+                        );
+                    }
+
                     return (
-                        <DataNotFound message="Please add some services in any category to show here." />
+                        <div key={category.id} className={classes.services__card}>
+                            <Card>
+                                <h3 className={classes.category__title}>{category.title}</h3>
+                                <Table>
+                                    <THead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Title</th>
+                                            <th>Provider - Service Id</th>
+                                            <th>Min / Max</th>
+                                            <th>Price</th>
+                                            <th>Drip Feed</th>
+                                            <th>Status</th>
+                                            <th>Option</th>
+                                        </tr>
+                                    </THead>
+
+                                    <TBody>
+                                        {getServiceByCategory(category.id)}
+                                    </TBody>
+                                </Table>
+                            </Card>
+                        </div>
                     );
-                }
-
-                return (
-                    <div key={category.id} className={classes.services__card}>
-                        <Card>
-                            <h3 className={classes.category__title}>{category.title}</h3>
-                            <Table>
-                                <THead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>Provider - Service Id</th>
-                                        <th>Min / Max</th>
-                                        <th>Price</th>
-                                        <th>Drip Feed</th>
-                                        <th>Status</th>
-                                        <th>Option</th>
-                                    </tr>
-                                </THead>
-
-                                <TBody>
-                                    {getServiceByCategory(category.id)}
-                                </TBody>
-                            </Table>
-                        </Card>
-                    </div>
-                );
-            })
+                })
         );
     };
 
-    // TODO
     return (
         <>
             <Helmet>
@@ -748,18 +757,13 @@ const Services = () => {
                 <div className={classes.Services}>
                     <div>
                         <h2 className="pageTitle">
-                            <IconContext.Provider
-                                value={{
-                                    style: {
-                                        fontSize: '30px',
-                                    },
-                                }}
-                            >
+                            <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                                 <VscListSelection />
                             </IconContext.Provider>
                             {' '}
                             Services
                         </h2>
+
                         <button
                             type="button"
                             className="add-button"

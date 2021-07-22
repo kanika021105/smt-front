@@ -127,7 +127,7 @@ function OrderCancelled({ className }) {
             type="button"
             className={`${classes['button__order--cancelled']} ${className}`}
         >
-            Cancelled
+            Canceled
         </button>
     );
 }
