@@ -17,6 +17,7 @@ import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 
 import classes from './dashboard.module.scss';
 
@@ -24,6 +25,7 @@ const Dashboard = () => {
     const [data, setData] = useState({});
     const [graphData, setGraphData] = useState();
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -105,7 +107,6 @@ const Dashboard = () => {
         }
     };
 
-    // TODO
     return (
         <>
             <Helmet>
@@ -118,7 +119,7 @@ const Dashboard = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.dashboard}>
                     <h2 className="pageTitle">
                         <IconContext.Provider

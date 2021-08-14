@@ -15,6 +15,7 @@ import Select from '../../../../components/UI/Select/Select';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Theme from '../../../../store/theme';
 
 import classes from './orders.module.scss';
 import 'bootstrap/js/dist/dropdown';
@@ -42,6 +43,7 @@ const Orders = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     async function getData(url) {
         const { data } = await Axios.get(url);
@@ -391,7 +393,7 @@ const Orders = () => {
             {editModal}
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.Orders}>
                     <h2 className="pageTitle">
                         <IconContext.Provider value={{ style: { fontSize: '30px' } }}>

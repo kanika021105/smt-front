@@ -19,6 +19,7 @@ import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import classes from './Dashboard.module.scss';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
@@ -26,6 +27,7 @@ const Dashboard = () => {
     const [graphData, setGraphData] = useState('');
 
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -76,8 +78,11 @@ const Dashboard = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container">
-                <div className={classes.dashboard}>
+            <div className={darkTheme ? 'dark container' : 'container'}>
+                <div className={darkTheme
+                    ? [classes.dark, classes.dashboard].join(' ')
+                    : classes.dashboard}
+                >
                     <h2 className="pageTitle">
                         <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                             <VscListSelection />
@@ -370,7 +375,7 @@ const Dashboard = () => {
                                 Top 10 best selling services
                             </div>
 
-                            <Table className="table">
+                            <Table>
                                 <THead>
                                     <tr>
                                         <th>ID</th>

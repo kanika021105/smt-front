@@ -14,6 +14,7 @@ import Input from '../../../../components/UI/Input/Input';
 import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Select from '../../../../components/UI/Select/Select';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 
 import '../../../../sass/pages/user/support.scss';
 
@@ -34,6 +35,7 @@ const Support = () => {
     const [user, setUser] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -369,7 +371,7 @@ const Support = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container Support">
+            <div className={darkTheme ? 'dark container Support' : 'container Support'}>
                 <div>
                     <h2 className="pageTitle">
                         <IconContext.Provider

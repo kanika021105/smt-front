@@ -16,6 +16,7 @@ import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Button from '../../../../components/UI/Button/Button';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import Theme from '../../../../store/theme';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
 import 'bootstrap/js/dist/dropdown';
@@ -23,9 +24,9 @@ import './categories.scss';
 
 const Categories = () => {
     const [categories, setCategories] = useState();
-
     const [showEditModal, setShowEditModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
+    const { darkTheme } = useContext(Theme);
 
     const [newCategoryDetails, setNewCategoryDetails] = useState({
         title: '',
@@ -365,7 +366,6 @@ const Categories = () => {
         </Card>
     );
 
-    // TODO
     return (
         <>
             <Helmet>
@@ -380,28 +380,26 @@ const Categories = () => {
             {addModal}
             <Loading show={isLoading} />
 
-            <main className="categories">
-                <div className="container">
-                    <div>
-                        <h2 className="pageTitle">
-                            <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                                <VscListSelection />
-                            </IconContext.Provider>
-                            {' '}
-                            Categories
-                        </h2>
-                        <button
-                            type="button"
-                            className="add-button"
-                            onClick={handleAddButtonClick}
-                        >
-                            +
-                        </button>
-                    </div>
-
-                    {categoriesTable}
+            <div className={darkTheme ? 'dark container categories' : 'container '}>
+                <div>
+                    <h2 className="pageTitle">
+                        <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
+                            <VscListSelection />
+                        </IconContext.Provider>
+                        {' '}
+                        Categories
+                    </h2>
+                    <button
+                        type="button"
+                        className="add-button"
+                        onClick={handleAddButtonClick}
+                    >
+                        +
+                    </button>
                 </div>
-            </main>
+
+                {categoriesTable}
+            </div>
         </>
     );
 };

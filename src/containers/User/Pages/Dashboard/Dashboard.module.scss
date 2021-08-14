@@ -2,11 +2,11 @@
 
 .dashboard{
     @media only screen and (max-width: $bp-14) {
-        margin: 0 2rem;
+        padding: 0 2rem;
     }
 
     @media only screen and (max-width: $bp-14) {
-        margin: 0 1rem;
+        padding: 0 1rem;
     }
 }
 
@@ -41,6 +41,18 @@
             display: block;
             font-size: 2.8rem;
             color: lighten($color-grey, 5);
+        }
+    }
+}
+
+.dark .section__one {
+    &__item {
+        &--title {
+            color: $dark-color-text--primary;
+        }
+
+        &--value {
+            color: $dark-color-text--secondary;
         }
     }
 }
@@ -81,16 +93,17 @@
         &--item{
             display: flex;
             flex-direction: row;
-
+            
             &--value{
                 flex: 1;
                 padding: 0.7rem 0.1rem;
-                color: lighten($color-grey, 2);
+                color: $dark-color-text--secondary;
+                // color: lighten($color-grey, 2);
             }
         }
     }
 }
 
 .section__third {
-    margin-bottom: 2rem;
+    padding-bottom: 2rem;
 }

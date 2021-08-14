@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Theme from '../../../store/theme';
 
 import './Table.scss';
 
-const Table = ({ children }) => <table>{children}</table>;
+const Table = ({ children }) => {
+    const { darkTheme } = React.useContext(Theme);
+
+    return <table className={darkTheme ? 'dark' : ''}>{children}</table>;
+};
 export const THead = ({ children }) => <thead>{children}</thead>;
 export const TBody = ({ children }) => <tbody>{children}</tbody>;
 

@@ -16,6 +16,7 @@ import Select from '../../../../components/UI/Select/Select';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Theme from '../../../../store/theme';
 
 import 'bootstrap/js/dist/dropdown';
 import './clients.scss';
@@ -37,6 +38,7 @@ const Clients = () => {
 
     const { websiteName } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -303,7 +305,6 @@ const Clients = () => {
     const isClientsEmpty = clients && clients.length <= 0;
     const toShow = isClientsEmpty ? <DataNotFound /> : clientDataTable;
 
-    // TODO Change title to dynamic
     return (
         <>
             <Helmet>
@@ -317,7 +318,7 @@ const Clients = () => {
             {editModal}
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="Clients">
                     <h2 className="pageTitle">
                         <IconContext.Provider value={{ style: { fontSize: '30px' } }}>

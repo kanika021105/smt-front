@@ -9,6 +9,7 @@ import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import Theme from '../../../../store/theme';
 
 import './support.scss';
 import Context from '../../../../store/context';
@@ -18,8 +19,8 @@ const Support = () => {
 
     const [tickets, setTickets] = useState();
     const [clients, setClients] = useState();
-
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -37,8 +38,6 @@ const Support = () => {
             })
             .catch((err) => {
                 setIsLoading(false);
-
-                // console.log(err.response.msg);
                 throw new Error(err.response.message);
             });
     }, []);
@@ -95,7 +94,6 @@ const Support = () => {
         supportDataTable
     );
 
-    // TODO
     return (
         <>
             <Helmet>
@@ -108,7 +106,7 @@ const Support = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="Support">
                     <h2 className="pageTitle">
                         <IconContext.Provider

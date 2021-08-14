@@ -9,6 +9,12 @@
     overflow-x: scroll;
 }
 
+
+.dark.Card {
+    background-color: #424242;
+    border: 1px solid #424242;
+}
+
 .Card::-webkit-scrollbar {
     display: none;
 }

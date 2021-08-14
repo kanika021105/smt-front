@@ -19,6 +19,12 @@ h2 {
     }
 }
 
+.dark h2 {
+    &.pageTitle {
+        color: $dark-color-primary
+    }
+}
+
 .tableTitle {
     @extend %titleStyle;
     padding: 0 0 0.5rem 0;

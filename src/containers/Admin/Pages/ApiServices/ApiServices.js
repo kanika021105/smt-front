@@ -16,6 +16,7 @@ import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Theme from '../../../../store/theme';
 
 import './apiServices.scss';
 import 'bootstrap/js/dist/dropdown';
@@ -30,6 +31,7 @@ const ApiServices = () => {
     const [profitMargin, setProfitMargin] = useState(10);
     const [selectedService, setSelectedService] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -306,7 +308,6 @@ const ApiServices = () => {
         apiServicesTable
     );
 
-    // TODO
     return (
         <>
             <Helmet>
@@ -320,7 +321,7 @@ const ApiServices = () => {
             {addUpdateModal}
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="apiServices">
                     <h2 className="pageTitle">
                         <IconContext.Provider

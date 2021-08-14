@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Theme from '../../../store/theme';
 
 import './Sidebar.scss';
 
 function Sidebar({ active, children }) {
+    const { darkTheme } = React.useContext(Theme);
+
     return (
         <>
-            <div className={`sidebar ${active && 'active'}`}>
+            <div className={`${darkTheme ? 'dark sidebar' : 'sidebar'} ${active ? 'active' : ''}`}>
                 {children}
             </div>
         </>

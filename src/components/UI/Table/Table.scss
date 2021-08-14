@@ -69,3 +69,30 @@ table {
         }
     }
 }
+
+
+.dark table {
+    & thead {
+        & tr {
+            & th {
+                padding: .5rem;
+                color: $dark-color-text--primary;
+            }
+        }
+    }
+
+    & tbody {
+        display: table-row-group;
+        color: $dark-color-text--primary;
+
+        & tr {
+            &:nth-child(odd) {
+                background: #626262;
+            }
+
+            &:hover {
+                background-color: #525252;
+            }
+        }
+    }
+}

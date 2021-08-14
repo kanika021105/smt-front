@@ -11,13 +11,14 @@ import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Theme from '../../../../store/theme';
 
 import './Transactions.scss';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState();
-
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -108,7 +109,7 @@ const Transactions = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="Transactions">
                     <h2 className="pageTitle">
                         <IconContext.Provider

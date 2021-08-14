@@ -16,6 +16,7 @@ import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Button from '../../../../components/UI/Button/Button';
 import Table, { TBody, THead } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Theme from '../../../../store/theme';
 
 import 'bootstrap/js/dist/dropdown';
 import classes from './services.module.scss';
@@ -55,6 +56,7 @@ const Services = () => {
 
     const { websiteName } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);
+    const { darkTheme } = useContext(Theme);
 
     async function getData() {
         try {
@@ -753,7 +755,7 @@ const Services = () => {
             {editModal}
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.Services}>
                     <div>
                         <h2 className="pageTitle">

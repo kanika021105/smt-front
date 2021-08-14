@@ -11,6 +11,7 @@ import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 
 import '../../../../sass/pages/user/transactions.scss';
 
@@ -18,6 +19,7 @@ function Transaction() {
     const [transactions, setTransactions] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -46,7 +48,7 @@ function Transaction() {
 
             <Loading show={isLoading} />
 
-            <div className="container Transactions">
+            <div className={darkTheme ? 'dark container Transactions' : 'container Transactions'}>
                 <h2 className="pageTitle">
                     <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                         <VscListSelection />

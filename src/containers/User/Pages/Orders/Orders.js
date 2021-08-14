@@ -10,6 +10,7 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 
 import '../../../../sass/pages/user/orders.scss';
 
@@ -18,6 +19,7 @@ const Orders = () => {
     const [services, setServices] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -81,7 +83,7 @@ const Orders = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container Orders">
+            <div className={darkTheme ? 'dark container Orders' : 'container Orders'}>
                 <h2 className="pageTitle">
                     <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                         <VscListSelection />

@@ -21,6 +21,7 @@ import Button from '../../../../components/UI/Button/Button';
 import Select from '../../../../components/UI/Select/Select';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import Toast from '../../../../components/UI/Toast/Toast';
+import Theme from '../../../../store/theme';
 import './apiProvider.scss';
 
 const ApiProvider = () => {
@@ -53,7 +54,7 @@ const ApiProvider = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showSyncModal, setShowSyncModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
+    const { darkTheme } = useContext(Theme);
     const { websiteName } = useContext(Context);
 
     useEffect(() => {
@@ -599,7 +600,7 @@ const ApiProvider = () => {
 
             <Loading show={isLoading} />
 
-            <div className="container">
+            <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="apiProvider">
                     <div>
                         <h2 className="pageTitle">

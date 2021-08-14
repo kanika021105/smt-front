@@ -26,3 +26,18 @@
         text-transform: capitalize;
     }
 }
+
+
+.dark.top-bar {
+    background: #323232;
+
+    & .sidebar-btn{
+        color: $dark-color-text--primary;
+    }
+
+    & .profile{
+        margin-right: 4rem;
+        text-transform: capitalize;
+        color: $dark-color-text--secondary;
+    }
+}

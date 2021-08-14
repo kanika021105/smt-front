@@ -7,6 +7,7 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 import '../../../../sass/pages/user/AddFund.scss';
 import Toast from '../../../../components/UI/Toast/Toast';
 
@@ -22,6 +23,7 @@ const NotFound = () => (
 
 const AddFund = () => {
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
     const [activeList, setActiveList] = useState({
         paytm: false,
         razorpay: false,
@@ -61,7 +63,7 @@ const AddFund = () => {
     // TODO Change title to dynamic
     return (
         <>
-            <div className="container addfund">
+            <div className={darkTheme ? 'dark container addfund' : 'container addfund'}>
                 <h2 className="pageTitle">
                     <IconContext.Provider
                         value={{

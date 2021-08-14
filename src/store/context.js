@@ -72,7 +72,8 @@ export const ContextProvider = ({ children }) => {
         setFirstName(null);
         setLastName(null);
         setBalance(null);
-        localStorage.clear();
+        localStorage.removeItem('token');
+        localStorage.removeItem('expiryDate');
     }
 
     const contextValue = {

@@ -1,8 +1,6 @@
 @import '../../sass/index';
 
 .footer {
-    width: 100%;
-    height: 100%;
     font-size: 1.6rem;
     padding: 1rem 2rem;
     background-color: #fff;
@@ -29,6 +27,18 @@
 
     & a {
         color: #6c757d;
+        padding: 0 0.5rem;
+        text-decoration: none;
+    }
+}
+
+
+.dark.footer {
+    background-color: #323232;
+    color: $dark-color-text--secondary;
+
+    & a {
+        color: $dark-color-text--secondary;
         padding: 0 0.5rem;
         text-decoration: none;
     }

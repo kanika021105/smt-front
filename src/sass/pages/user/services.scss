@@ -1,7 +1,7 @@
 @import '../../index';
 
 .Services {
-    min-height: 80vh;
+    min-height: calc(100vh - (8rem + 2.6rem));
 }
 
 .categoryTitle {

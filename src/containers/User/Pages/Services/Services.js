@@ -10,6 +10,7 @@ import Button from '../../../../components/UI/Button/Button';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 
 import '../../../../sass/pages/user/services.scss';
 
@@ -19,6 +20,7 @@ function Services() {
     const [isLoading, setIsLoading] = useState(false);
 
     const { websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(false);
@@ -66,7 +68,7 @@ function Services() {
 
             <Loading show={isLoading} />
 
-            <div className="container Services">
+            <div className={darkTheme ? 'dark container Services' : 'container Services'}>
                 <h2 className="pageTitle">
                     <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
                         <VscListSelection />

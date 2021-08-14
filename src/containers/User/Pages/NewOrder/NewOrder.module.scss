@@ -2,6 +2,7 @@
 
 .newOrder {
     min-height: calc(100vh - (8rem + 2.6rem));
+    padding-bottom: 2rem;
     
     &__container {
         display: flex;

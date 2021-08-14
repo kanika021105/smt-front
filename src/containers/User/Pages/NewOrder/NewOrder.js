@@ -12,6 +12,7 @@ import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
 import Select from '../../../../components/UI/Select/Select';
 import Context from '../../../../store/context';
+import Theme from '../../../../store/theme';
 import Toast from '../../../../components/UI/Toast/Toast';
 import classes from './NewOrder.module.scss';
 
@@ -42,6 +43,7 @@ const NewOrder = () => {
     });
 
     const { balance, updateBalance, websiteName } = useContext(Context);
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -211,7 +213,7 @@ const NewOrder = () => {
 
             <Loading show={isLoading} />
 
-            <div className={`container ${classes.newOrder}`}>
+            <div className={darkTheme ? `dark container ${classes.newOrder}` : `container ${classes.newOrder}`}>
                 <h2 className="pageTitle">
                     <IconContext.Provider
                         value={{
