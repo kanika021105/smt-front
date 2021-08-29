@@ -1,0 +1,27 @@
+.sidebar {
+    height: 100%;
+    width: 7rem;
+    position: fixed;
+    margin-top: 7rem;
+    padding-top: 10rem;
+    background-color: #fff;
+    transition: all .3s ease;
+}
+
+.sidebar + main {
+    margin-left: 7rem;
+    transition: all .3s ease;
+}
+
+.sidebar.expand {
+    width: 27rem;
+}
+
+.sidebar.expand + main {
+    margin-left: 27rem;
+}
+
+/* Dark theme */
+.sidebar.dark {
+    background: #242424;
+}

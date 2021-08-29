@@ -6,7 +6,7 @@ import { BiCollection, BiSupport } from 'react-icons/bi';
 import { AiOutlineHistory } from 'react-icons/ai';
 import * as RiIcons from 'react-icons/ri';
 
-import { ReactComponent as Logo } from '../../../../assets/images/logo.min.svg';
+import { ReactComponent as Logo } from '../../../../assets/img/logo.min.svg';
 import Context from '../../../../store/context';
 
 function Links() {

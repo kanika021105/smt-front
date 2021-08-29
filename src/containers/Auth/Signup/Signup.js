@@ -7,7 +7,7 @@ import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
 import Context from '../../../store/context';
 
-import SignUpImage from '../../../assets/images/signup.svg';
+import SignUpImage from '../../../assets/img/signup.svg';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({

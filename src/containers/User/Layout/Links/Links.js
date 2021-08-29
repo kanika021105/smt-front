@@ -7,7 +7,7 @@ import { AiOutlineHistory } from 'react-icons/ai';
 import { MdAddShoppingCart, MdAttachMoney } from 'react-icons/md';
 import * as RiIcons from 'react-icons/ri';
 
-import { ReactComponent as Logo } from '../../../../assets/images/logo.min.svg';
+import { ReactComponent as Logo } from '../../../../assets/img/logo.min.svg';
 import Context from '../../../../store/context';
 
 function Links() {
@@ -37,7 +37,7 @@ function Links() {
             <div className="user_balance">
                 <span className="title">Balance:</span>
                 <span className="amount">
-                    {balance.toFixed(2)}
+                    {balance && balance.toFixed(2)}
                 </span>
             </div>
 

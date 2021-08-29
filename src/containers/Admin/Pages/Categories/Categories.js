@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+    useContext, useEffect, useReducer, lazy,
+} from 'react';
 import { Helmet } from 'react-helmet';
 
 import Modal from 'react-bootstrap/Modal';
@@ -6,123 +8,226 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
-import Axios from '../../../../axiosIns';
-import Context from '../../../../store/context';
-import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
-import Input, { InputGroup } from '../../../../components/UI/Input/Input';
-import Select from '../../../../components/UI/Select/Select';
-import Textarea from '../../../../components/UI/Textarea/Textarea';
-import Button from '../../../../components/UI/Button/Button';
-import Toast from '../../../../components/UI/Toast/Toast';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-import Theme from '../../../../store/theme';
-import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import Context from '../../../../store/context';
+import Axios from '../../../../axiosIns';
 
 import 'bootstrap/js/dist/dropdown';
 import './categories.scss';
 
-const Categories = () => {
-    const [categories, setCategories] = useState();
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showAddModal, setShowAddModal] = useState(false);
-    const { darkTheme } = useContext(Theme);
+import Button from '../../../../components/UI/Button/Button';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import Toast from '../../../../components/UI/Toast/Toast';
 
-    const [newCategoryDetails, setNewCategoryDetails] = useState({
-        title: '',
-        description: '',
-        short: '',
-        status: 'active',
-    });
-    const [editingCategoryDetails, setEditingCategoryDetails] = useState({
-        id: '',
-        title: '',
-        description: '',
-        short: '',
-        status: '',
-    });
+const Card = lazy(() => import('../../../../components/UI/Card/Card'));
+const Select = lazy(() => import('../../../../components/UI/Select/Select'));
+const Textarea = lazy(() => import('../../../../components/UI/Textarea/Textarea'));
+const DataNotFound = lazy(() => import('../../../../components/UI/DataNotFound/DataNotFound'));
 
+// Reducer function to update state
+function reducer(state, action) {
+    switch (action.type) {
+        case 'loading':
+            return {
+                ...state,
+                isLoading: !state.isLoading,
+            };
+
+        case 'setCategory':
+            return {
+                ...state,
+                categories: [...action.payload],
+            };
+
+        case 'addModal':
+            return {
+                ...state,
+                showAddModal: !state.showAddModal,
+            };
+
+        case 'newCategory':
+            return {
+                ...state,
+                newCategory: { ...state.newCategory, ...action.payload },
+            };
+
+        case 'updateCategoriesList':
+            return {
+                ...state,
+                categories: [...state.categories, action.payload],
+            };
+
+        case 'clearAddCategory':
+            return {
+                ...state,
+                newCategory: {
+                    title: '',
+                    description: '',
+                    short: '',
+                    status: 'active',
+                },
+            };
+
+        case 'editModal':
+            return { ...state, showEditModal: !state.showEditModal };
+
+        case 'editCategory':
+            return {
+                ...state,
+                editingCategory: { ...action.payload },
+            };
+
+        case 'editingDetails':
+            return {
+                ...state,
+                editingCategory: {
+                    ...state.editingCategory,
+                    ...action.payload,
+                },
+            };
+
+        case 'clearEditingCategory':
+            return {
+                ...state,
+                editingCategory: {
+                    id: '',
+                    title: '',
+                    description: '',
+                    short: '',
+                    status: '',
+                },
+            };
+
+        case 'editCategoriesList':
+            return {
+                ...state,
+                categories: [action.payload, ...action.newList],
+            };
+
+        case 'deleteCategory':
+            return {
+                ...state,
+                categories: [...action.newList],
+            };
+
+        default:
+            return { ...state };
+    }
+}
+
+function Categories() {
     const { websiteName } = useContext(Context);
-
-    const [isLoading, setIsLoading] = useState(false);
+    const [state, dispatch] = useReducer(reducer, {
+        isLoading: false,
+        showAddModal: false,
+        showEditModal: false,
+        categories: '',
+        newCategory: {
+            title: '',
+            description: '',
+            short: '',
+            status: 'active',
+        },
+        editingCategory: {
+            id: '',
+            title: '',
+            description: '',
+            short: '',
+            status: '',
+        },
+    });
 
     useEffect(() => {
-        setIsLoading(true);
-
+        dispatch({ type: 'loading' });
         const url = '/admin/categories';
         Axios.get(url)
             .then((res) => {
-                setIsLoading(false);
-                setCategories(res.data.categories || {});
+                dispatch({ type: 'loading' });
+                dispatch({ type: 'setCategory', payload: res.data.categories });
             })
             .catch((err) => {
-                setIsLoading(false);
+                dispatch({ type: 'loading' });
                 Toast.failed(err.response.message);
             });
     }, []);
 
-    // Adding Category
-    const handleAddButtonClick = () => {
-        setShowAddModal(true);
-    };
+    // Open Add Category Modal
+    function handleAddButtonClick() {
+        dispatch({ type: 'addModal' });
+    }
 
-    const addTitleChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({ ...preState, title: e.target.value }));
-    };
+    // Update title of new category details
+    function addTitleChangeHandler(e) {
+        dispatch({ type: 'newCategory', payload: { title: e.target.value } });
+    }
 
-    const addShortChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({ ...preState, short: e.target.value }));
-    };
+    // Update short number of new category details
+    function addShortChangeHandler(e) {
+        dispatch({ type: 'newCategory', payload: { short: e.target.value } });
+    }
 
-    const addDescChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({ ...preState, desc: e.target.value }));
-    };
+    // Update description of new category details
+    function addDescChangeHandler(e) {
+        dispatch({ type: 'newCategory', payload: { description: e.target.value } });
+    }
 
-    const addStatusChangeHandler = (e) => {
-        setNewCategoryDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    // Update status of new category details
+    function addStatusChangeHandler(e) {
+        dispatch({ type: 'newCategory', payload: { status: e.target.value } });
+    }
 
-    const formSubmitHandler = async (e) => {
+    // Handle form submission of create and update category list on website
+    async function formSubmitHandler(e) {
         e.preventDefault();
 
         const url = '/admin/category/add';
-        const cateData = { ...newCategoryDetails };
+        const categoryData = { ...state.newCategory };
 
         try {
-            const { data } = await Axios.post(url, cateData);
-            setCategories((preState) => [{ ...data.createdCategory }, ...preState]);
-            setShowAddModal(false);
+            const { data } = await Axios.post(url, categoryData);
+            dispatch({ type: 'addModal' });
+            dispatch({ type: 'updateCategoriesList', payload: { ...data.createdCategory } });
             Toast.success('Category created!');
         } catch (err) {
             Toast.failed(err.response.data.message || 'Failed to add category!');
         }
-    };
+    }
 
-    const handleBackdropClick = () => {
-        setShowAddModal(false);
-        setNewCategoryDetails({
-            title: '',
-            short: '',
-            description: '',
-            status: 'active',
-        });
-    };
+    // Handle modal close from different method and clear data from add modal inputs
+    function handleBackdropClick() {
+        dispatch({ type: 'addModal' });
+        dispatch({ type: 'clearAddCategory' });
+    }
 
+    // Add Modal codes
     const addModal = (
-        <Modal show={showAddModal} onHide={handleBackdropClick}>
+        <Modal show={state.showAddModal} onHide={handleBackdropClick}>
             <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Add Category</Modal.Title>
             </Modal.Header>
 
             <form onSubmit={formSubmitHandler}>
                 <Modal.Body>
-                    <Input label="Title" placeholder="Enter title" type="text" value={newCategoryDetails.title} onChange={addTitleChangeHandler} />
+                    <Input
+                        label="Title"
+                        placeholder="Enter title"
+                        type="text"
+                        value={state.newCategory.title}
+                        onChange={addTitleChangeHandler}
+                    />
 
                     <InputGroup>
-                        <Input label="Short" placeholder="Enter short number" type="number" value={newCategoryDetails.short} onChange={addShortChangeHandler} />
+                        <Input
+                            label="Short"
+                            placeholder="Enter short number"
+                            type="number"
+                            value={state.newCategory.short}
+                            onChange={addShortChangeHandler}
+                        />
                         <Select
                             label="Status"
-                            value={newCategoryDetails.status}
+                            value={state.newCategory.status}
                             onChange={addStatusChangeHandler}
                         >
                             <option value="active">Active</option>
@@ -133,7 +238,7 @@ const Categories = () => {
                     <Textarea
                         label="Description"
                         placeholder="Enter description..."
-                        value={newCategoryDetails.desc || ''}
+                        value={state.newCategory.description || ''}
                         rows={4}
                         onChange={addDescChangeHandler}
                     />
@@ -159,74 +264,74 @@ const Categories = () => {
     );
 
     // Editing Category
-    const editButtonHandler = async (e) => {
-        setShowEditModal(true);
+    async function editButtonHandler(e) {
+        dispatch({ type: 'editModal' });
 
         const categoryId = e.target.value;
-        const category = await categories.filter((cate) => cate.id === categoryId);
+        const category = await state.categories.filter((cate) => cate.id === categoryId);
         const {
-            id,
-            title,
-            description,
-            short,
-            status,
+            id, title, description, short, status,
         } = category[0];
-        setEditingCategoryDetails({
-            id,
-            title,
-            description,
-            short,
-            status,
+        dispatch({
+            type: 'editCategory',
+            payload: {
+                id, title, description, short, status,
+            },
         });
-    };
+    }
 
-    const titleChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({ ...preState, title: e.target.value }));
-    };
+    // Saving changes for title in state data
+    function titleChangeHandler(e) {
+        dispatch({ type: 'editingDetails', payload: { title: e.target.value } });
+    }
 
-    const descChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({ ...preState, description: e.target.value }));
-    };
+    // Saving changes for description in state data
+    function descChangeHandler(e) {
+        dispatch({ type: 'editingDetails', payload: { description: e.target.value } });
+    }
 
-    const shortChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({ ...preState, short: e.target.value }));
-    };
+    // Saving changes for short in state data
+    function shortChangeHandler(e) {
+        dispatch({ type: 'editingDetails', payload: { short: e.target.value } });
+    }
 
-    const statusChangeHandler = (e) => {
-        setEditingCategoryDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    // Saving changes for status in state data
+    function statusChangeHandler(e) {
+        dispatch({ type: 'editingDetails', payload: { status: e.target.value } });
+    }
 
-    const handleClose = () => {
-        setEditingCategoryDetails({
-            id: '',
-            title: '',
-            description: '',
-            short: '',
-            status: '',
-        });
-        setShowEditModal(false);
-    };
+    // Handle edit modal close
+    function handleClose() {
+        dispatch({ type: 'clearEditingCategory' });
+        dispatch({ type: 'editModal' });
+    }
 
-    const editingSubmitHandler = async (e) => {
+    // Handling form submission for edit Modal
+    async function editingSubmitHandler(e) {
         e.preventDefault();
 
-        const { id } = editingCategoryDetails;
+        const { id } = state.editingCategory;
         const url = `/admin/category/update/${id}`;
-        const newList = await categories.filter((cate) => cate.id !== id);
+        const newList = await state.categories.filter((cate) => cate.id !== id);
 
         try {
-            await Axios.patch(url, { ...editingCategoryDetails });
-            setCategories([{ ...editingCategoryDetails }, ...newList]);
+            await Axios.patch(url, { ...state.editingCategory });
+            dispatch({
+                type: 'editCategoriesList',
+                payload: { ...state.editingCategory },
+                newList,
+            });
 
             handleClose();
-            Toast.success(`Category "${id}" update!`);
+            Toast.success('Category update!');
         } catch (err) {
             Toast.failed(err.response.message || 'Something went wrong!');
         }
-    };
+    }
 
+    // Edit Modal code
     const editModal = (
-        <Modal show={showEditModal} onHide={handleClose}>
+        <Modal show={state.showEditModal} onHide={handleClose}>
             <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Edit Category</Modal.Title>
             </Modal.Header>
@@ -234,14 +339,26 @@ const Categories = () => {
             <form onSubmit={editingSubmitHandler}>
                 <Modal.Body>
 
-                    <Input label="Title" placeholder="Title" type="text" value={editingCategoryDetails.title} onChange={titleChangeHandler} />
+                    <Input
+                        label="Title"
+                        placeholder="Title"
+                        type="text"
+                        value={state.editingCategory.title}
+                        onChange={titleChangeHandler}
+                    />
 
                     <InputGroup>
-                        <Input label="Short" placeholder="Short" type="number" value={editingCategoryDetails.short} onChange={shortChangeHandler} />
+                        <Input
+                            label="Short"
+                            placeholder="Short"
+                            type="number"
+                            value={state.editingCategory.short}
+                            onChange={shortChangeHandler}
+                        />
 
                         <Select
                             label="Status"
-                            value={editingCategoryDetails.status}
+                            value={state.editingCategory.status}
                             onChange={statusChangeHandler}
                         >
                             <option value="disable">Disable</option>
@@ -253,7 +370,7 @@ const Categories = () => {
                         label="Description"
                         rows={4}
                         placeholder="Description..."
-                        value={editingCategoryDetails.description}
+                        value={state.editingCategory.description}
                         onChange={descChangeHandler}
                     />
                 </Modal.Body>
@@ -276,23 +393,23 @@ const Categories = () => {
         </Modal>
     );
 
-    // Delete
-    const deleteButtonHandler = async (e) => {
+    // Delete functionality
+    async function deleteButtonHandler(e) {
         const id = e.target.value;
         const url = `/admin/category/delete/${id}`;
-        const newList = categories.filter((category) => category.id !== id);
+        const newList = state.categories.filter((category) => category.id !== id);
 
         try {
             await Axios.delete(url, { id });
-            setCategories([...newList]);
-
+            dispatch({ type: 'deleteCategory', newList });
             Toast.warning(`Category "${id}" deleted!`);
         } catch (err) {
             Toast.failed(err.response.message);
         }
-    };
+    }
 
-    const checkStatus = (status) => {
+    // Check status and return button for the status
+    function checkStatus(status) {
         switch (status) {
             case 'active':
                 return <Button.Active />;
@@ -303,9 +420,10 @@ const Categories = () => {
             default:
                 return Toast.failed('Something went wrong!');
         }
-    };
+    }
 
-    const categoriesTable = categories && categories.length <= 0 ? (
+    // Categories Table check for categories data show table or empty page accordingly
+    const categoriesTable = state.categories && state.categories.length <= 0 ? (
         <DataNotFound message="Please addd some categories to show here." />
     ) : (
         <Card>
@@ -321,12 +439,12 @@ const Categories = () => {
                 </THead>
 
                 <TBody>
-                    {categories && categories.map((category) => (
+                    {state.categories.length >= 1 && state.categories.map((category) => (
                         <tr key={category.id}>
                             <td>{category.title}</td>
                             <td>{category.description}</td>
                             <td>{category.short}</td>
-                            <td>{checkStatus(category.status)}</td>
+                            <td>{category.status && checkStatus(category.status)}</td>
                             <td>
                                 <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
                                     <div className="dropdown ">
@@ -378,9 +496,9 @@ const Categories = () => {
 
             {editModal}
             {addModal}
-            <Loading show={isLoading} />
+            <Loading show={state.isLoading} />
 
-            <div className={darkTheme ? 'dark container categories' : 'container '}>
+            <div className="container categories">
                 <div>
                     <h2 className="pageTitle">
                         <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
@@ -402,6 +520,6 @@ const Categories = () => {
             </div>
         </>
     );
-};
+}
 
 export default Categories;

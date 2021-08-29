@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import Axios from '../../../axiosIns';
 import classes from './Login.module.scss';
 
-import LoginImage from '../../../assets/images/login.svg';
+import LoginImage from '../../../assets/img/login.svg';
 import Context from '../../../store/context';
 import Toast from '../../../components/UI/Toast/Toast';
 
@@ -23,14 +23,10 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-
         setShowError(false);
 
         const url = '/login';
-        const loginData = {
-            email: loginEmail,
-            password,
-        };
+        const loginData = { email: loginEmail, password };
 
         try {
             const { data } = await Axios.post(url, { ...loginData });

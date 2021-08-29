@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Footer from '../../../components/Footer/Footer';
-import Sidebar from '../../../components/UI/Sidebar/Sidebar';
-import TopBar from '../../../components/UI/Topbar/Topbar';
+import Sidebar from '../../../components/Navigation/Sidebar/Sidebar';
+import TopBar from '../../../components/Navigation/Topbar/Topbar';
 
 import './UserLayout.scss';
 import Links from './Links/Links';
