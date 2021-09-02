@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {
+    useEffect, useContext, useReducer,
+} from 'react';
 import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
@@ -18,149 +20,193 @@ import Theme from '../../../../store/theme';
 
 import '../../../../sass/pages/user/support.scss';
 
+// Reducer function for useReducer hook
+function reducer(state, action) {
+    switch (action.type) {
+        case 'loading':
+            return {
+                ...state,
+                isLoading: !state.isLoading,
+            };
+
+        case 'onLoad':
+            return {
+                ...state,
+                tickets: [...action.payload.tickets.reverse()],
+            };
+
+        case 'showAddModal':
+            return {
+                ...state,
+                showAddModal: !state.showAddModal,
+            };
+
+        case 'clearNewTicket':
+            return {
+                ...state,
+                newTicket: {
+                    orderId: '',
+                    message: '',
+                    serviceId: '',
+                    transactionId: '',
+                    subject: 'order',
+                    request: '',
+                    paymentMethod: '',
+                },
+            };
+
+        case 'newTicket':
+            return {
+                ...state,
+                newTicket: {
+                    ...state.newTicket,
+                    ...action.payload,
+                },
+            };
+
+        case 'addTicket':
+            return {
+                ...state,
+                tickets: [
+                    { ...action.payload },
+                    ...state.tickets,
+                ],
+            };
+
+        default:
+            return { ...state };
+    }
+}
+
 const Support = () => {
     const history = useHistory();
 
-    const [errorMsg, setErrorMsg] = useState('');
-    const [showError, setShowError] = useState(false);
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [orderId, setOrderId] = useState('');
-    const [message, setMessage] = useState('');
-    const [serviceId, setServiceId] = useState('');
-    const [transactionId, setTransactionId] = useState('');
-    const [selectedSubject, setSelectedSubject] = useState('');
-    const [selectedRequest, setSelectedRequest] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('');
-    const [tickets, setTickets] = useState();
-    const [user, setUser] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(Context);
+    const [state, dispatch] = useReducer(reducer, {
+        tickets: [],
+        isLoading: false,
+        showAddModal: false,
+        newTicket: {
+            orderId: '',
+            message: '',
+            serviceId: '',
+            transactionId: '',
+            subject: 'order',
+            request: '',
+            paymentMethod: '',
+        },
+    });
+
+    const { email, websiteName } = useContext(Context);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
-        setIsLoading(true);
-
-        setShowError(false);
-        setErrorMsg('');
+        dispatch({ type: 'loading' });
 
         const url = '/support';
-        Axios.get(url).then((res) => {
-            const { data } = res;
-
-            if (data.status !== 'success') {
-                setShowError(true);
-                setErrorMsg(
-                    'Failed to load tickets, Please try again or contact support team',
-                );
-                return;
-            }
-            setIsLoading(false);
-
-            setUser(data.user);
-            setTickets(data.tickets.reverse());
-        });
+        Axios.get(url)
+            .then((res) => {
+                const { data } = res;
+                dispatch({ type: 'loading' });
+                dispatch({ type: 'onLoad', payload: { ...data } });
+            }).catch((err) => {
+                Toast.failed(err.response.data.message);
+            });
     }, []);
 
     const ticketClickHandler = (id) => {
-        setShowError(false);
-        setErrorMsg('');
-
         const path = `/support/ticket/${id}`;
         return history.push(path);
     };
 
-    const ticketList = tickets
-        && user
-        && tickets.map((ticket) => (
+    const ticketList = state.tickets
+        && state.tickets.map((ticket) => (
             <tr key={ticket.id} onClick={() => ticketClickHandler(ticket.id)}>
                 <td>{ticket.id}</td>
-                <td>{user.email}</td>
+                <td>{email}</td>
                 <td>{ticket.subject}</td>
                 <td>{ticket.status}</td>
             </tr>
         ));
 
     const handleAddButtonClick = () => {
-        setShowAddModal(true);
-    };
-
-    const resetState = () => {
-        setOrderId('');
-        setMessage('');
-        setServiceId('');
-        setTransactionId('');
-        setSelectedSubject('');
-        setSelectedRequest('');
-        setPaymentMethod('');
+        // setShowAddModal(true);
+        dispatch({ type: 'showAddModal' });
     };
 
     const subjectChangeHandler = (e) => {
-        resetState();
+        dispatch({ type: 'clearNewTicket' });
 
-        setSelectedSubject(e.target.value);
+        dispatch({ type: 'newTicket', payload: { subject: e.target.value } });
+        // setSelectedSubject(e.target.value);
     };
 
     const orderIdChangeHandler = (e) => {
-        setOrderId(e.target.value);
+        // setOrderId(e.target.value);
+        dispatch({ type: 'newTicket', payload: { orderId: e.target.value } });
     };
 
     const requestChangeHandler = (e) => {
-        setSelectedRequest(e.target.value);
+        // setSelectedRequest(e.target.value);
+        dispatch({ type: 'newTicket', payload: { request: e.target.value } });
     };
 
     const messageChangeHandler = (e) => {
-        setMessage(e.target.value);
+        // setMessage(e.target.value);
+        dispatch({ type: 'newTicket', payload: { message: e.target.value } });
     };
 
     const serviceIdChangeHandler = (e) => {
-        setServiceId(e.target.value);
+        // setServiceId(e.target.value);
+        dispatch({ type: 'newTicket', payload: { serviceId: e.target.value } });
     };
 
     const paymentMethodChangeHandler = (e) => {
-        setPaymentMethod(e.target.value);
+        // setPaymentMethod(e.target.value);
+        dispatch({ type: 'newTicket', payload: { paymentMethod: e.target.value } });
     };
 
     const transactionIdChangeHandler = (e) => {
-        setTransactionId(e.target.value);
+        // setTransactionId(e.target.value);
+        dispatch({ type: 'newTicket', payload: { transactionId: e.target.value } });
     };
 
     const addFormSubmitHandler = async (e) => {
         e.preventDefault();
 
-        setErrorMsg('');
+        // setErrorMsg('');
 
-        let ticketData = {};
-        switch (selectedSubject) {
+        let ticketData;
+        switch (state.newTicket.subject) {
             case 'order':
                 ticketData = {
-                    orderId,
-                    message,
-                    subject: selectedSubject,
-                    request: selectedRequest,
+                    orderId: state.newTicket.orderId,
+                    message: state.newTicket.message,
+                    subject: state.newTicket.subject,
+                    request: state.newTicket.request,
                 };
                 break;
 
             case 'payment':
                 ticketData = {
-                    message,
-                    transactionId,
-                    subject: selectedSubject,
-                    method: paymentMethod,
+                    message: state.newTicket.message,
+                    transactionId: state.newTicket.transactionId,
+                    subject: state.newTicket.subject,
+                    paymentMethod: state.newTicket.paymentMethod,
                 };
                 break;
 
             case 'service':
                 ticketData = {
-                    message,
-                    serviceId,
-                    subject: selectedSubject,
+                    message: state.newTicket.message,
+                    serviceId: state.newTicket.serviceId,
+                    subject: state.newTicket.subject,
                 };
                 break;
 
             case 'other':
                 ticketData = {
-                    message,
-                    subject: selectedSubject,
+                    message: state.newTicket.message,
+                    subject: state.newTicket.subject,
                 };
                 break;
 
@@ -171,31 +217,33 @@ const Support = () => {
         try {
             const url = '/support/create-ticket';
             const { data } = await Axios.post(url, { ...ticketData });
+            dispatch({ type: 'addTicket', payload: { ...data.ticket } });
+            dispatch({ type: 'showAddModal' });
 
-            setTickets((preState) => [{ ...data.ticket }, ...preState]);
-            setShowAddModal(false);
             Toast.success('Ticket created!');
-            return resetState();
+            return dispatch({ type: 'clearNewTicket' });
         } catch (err) {
-            return Toast.failed(err.response.message || 'Something went wrong!');
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     };
 
     const handleBackdropClick = () => {
-        resetState();
-        setErrorMsg('');
-        setShowAddModal(false);
+        // resetState();
+        dispatch({ type: 'clearNewTicket' });
+        // setErrorMsg('');
+        // setShowAddModal(false);
+        dispatch({ type: 'showAddModal' });
     };
 
     const selectedSubjectSection = () => {
-        switch (selectedSubject) {
+        switch (state.newTicket.subject) {
             case 'order':
                 return (
                     <>
                         <Input
                             label="Order Id"
                             type="number"
-                            value={orderId}
+                            value={state.newTicket.orderId}
                             placeholder="Order Id"
                             onChange={orderIdChangeHandler}
                             required
@@ -203,7 +251,7 @@ const Support = () => {
 
                         <Select
                             label="Request"
-                            value={selectedRequest}
+                            value={state.newTicket.request}
                             onChange={requestChangeHandler}
                             required
                         >
@@ -226,7 +274,7 @@ const Support = () => {
 
                         <Textarea
                             label="Message"
-                            value={message}
+                            value={state.newTicket.message}
                             onChange={messageChangeHandler}
                             rows={5}
                         />
@@ -238,7 +286,7 @@ const Support = () => {
                     <>
                         <Select
                             label="Select Payment Method"
-                            value={paymentMethod}
+                            value={state.newTicket.paymentMethod}
                             onChange={paymentMethodChangeHandler}
                             required
                         >
@@ -256,14 +304,14 @@ const Support = () => {
                         <Input
                             label="Transaction Id"
                             type="text"
-                            value={transactionId}
+                            value={state.newTicket.transactionId}
                             placeholder="Transaction Id"
                             onChange={transactionIdChangeHandler}
                         />
 
                         <Textarea
                             label="Message"
-                            value={message}
+                            value={state.newTicket.message}
                             onChange={messageChangeHandler}
                             rows={7}
                         />
@@ -276,14 +324,14 @@ const Support = () => {
                         <Input
                             label="Service Id"
                             type="number"
-                            value={serviceId}
+                            value={state.newTicket.serviceId}
                             placeholder="Service Id"
                             onChange={serviceIdChangeHandler}
                         />
 
                         <Textarea
                             label="Message"
-                            value={message}
+                            value={state.newTicket.message}
                             onChange={messageChangeHandler}
                             rows={5}
                         />
@@ -294,19 +342,20 @@ const Support = () => {
                 return (
                     <Textarea
                         label="Messsage"
-                        value={message}
+                        value={state.newTicket.message}
                         onChange={messageChangeHandler}
                         rows={7}
 
                     />
                 );
+
             default:
                 return Toast.failed('Something went wrong!');
         }
     };
 
     const addModal = (
-        <Modal show={showAddModal} onHide={handleBackdropClick}>
+        <Modal show={state.showAddModal} onHide={handleBackdropClick}>
             <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Create Ticket</Modal.Title>
             </Modal.Header>
@@ -315,10 +364,10 @@ const Support = () => {
                 <Modal.Body>
                     <Select
                         label="Subject"
-                        value={selectedSubject}
+                        value={state.newTicket.subject}
                         onChange={subjectChangeHandler}
                     >
-                        <option key={0} value={null}>
+                        <option key={0} value="">
                             Choose a subject!
                         </option>
                         <option key="order" value="order">
@@ -369,7 +418,7 @@ const Support = () => {
             </Helmet>
             {addModal}
 
-            <Loading show={isLoading} />
+            <Loading show={state.isLoading} />
 
             <div className={darkTheme ? 'dark container Support' : 'container Support'}>
                 <div>
@@ -396,11 +445,6 @@ const Support = () => {
                 </div>
 
                 <Card>
-                    {showError && (
-                        <div>
-                            <small className="errorMsg">{errorMsg}</small>
-                        </div>
-                    )}
                     <Table className="table">
                         <THead>
                             <tr>
