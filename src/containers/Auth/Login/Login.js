@@ -61,6 +61,7 @@ const Login = () => {
                 return;
             }
         } catch (err) {
+            console.log(err);
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     };

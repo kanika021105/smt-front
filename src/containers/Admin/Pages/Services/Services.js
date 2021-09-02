@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+    useContext, useEffect, lazy, useReducer,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import Modal from 'react-bootstrap/Modal';
 import { IconContext } from 'react-icons';
@@ -6,56 +8,190 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
+import Theme from '../../../../store/theme';
 import Context from '../../../../store/context';
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
+import Button from '../../../../components/UI/Button/Button';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
-import Select from '../../../../components/UI/Select/Select';
-import Textarea from '../../../../components/UI/Textarea/Textarea';
-import Button from '../../../../components/UI/Button/Button';
 import Table, { TBody, THead } from '../../../../components/UI/Table/Table';
-import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import Theme from '../../../../store/theme';
 
 import 'bootstrap/js/dist/dropdown';
 import classes from './services.module.scss';
 
+const Card = lazy(() => import('../../../../components/UI/Card/Card'));
+const Select = lazy(() => import('../../../../components/UI/Select/Select'));
+const Textarea = lazy(() => import('../../../../components/UI/Textarea/Textarea'));
+const DataNotFound = lazy(() => import('../../../../components/UI/DataNotFound/DataNotFound'));
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'loading':
+            return {
+                ...state,
+                isLoading: !state.isLoading,
+            };
+
+        case 'setServices':
+            return {
+                ...state,
+                services: [...action.payload],
+            };
+
+        case 'setCategories':
+            return {
+                ...state,
+                categories: [...action.payload],
+            };
+
+            // case 'setProviders':
+            //     console.log(action.payload);
+            //     return {
+            //         ...state,
+            //         provider: [...action.payload],
+            //     };
+
+        case 'showAddModal':
+            return {
+                ...state,
+                showAddModal: !state.showAddModal,
+            };
+
+        case 'showEditModal':
+            return {
+                ...state,
+                showEditModal: !state.showEditModal,
+            };
+
+        case 'newServiceDetail':
+            return {
+                ...state,
+                newService: {
+                    ...state.newService,
+                    ...action.payload,
+                },
+            };
+
+        case 'clearNewServiceDetail':
+            return {
+                ...state,
+                newService: {
+                    categoryId: 0,
+                    title: '',
+                    apiProviderId: '',
+                    apiServiceId: 0,
+                    min: 0,
+                    max: 0,
+                    rate: 0,
+                    status: 'active',
+                    dripFeed: 'disable',
+                    description: '',
+                },
+            };
+
+        case 'addNewService':
+            return {
+                ...state,
+                services: [
+                    ...state.services,
+                    { ...action.payload },
+                ],
+            };
+
+        case 'editingService':
+            return {
+                ...state,
+                editingService: {
+                    ...state.editingService,
+                    ...action.payload,
+                },
+            };
+
+        case 'editingServiceDetail':
+            return {
+                ...state,
+                editingService: {
+                    ...state.editingService,
+                    ...action.payload,
+                },
+            };
+
+        case 'clearEditingService':
+            return {
+                ...state,
+                editingService: {
+                    id: '',
+                    uid: '',
+                    categoryId: 0,
+                    title: '',
+                    apiProviderId: 0,
+                    apiServiceId: '',
+                    min: '',
+                    max: '',
+                    rate: '',
+                    status: '',
+                    dripFeed: '',
+                    description: '',
+                },
+            };
+
+        case 'updateServices':
+            return {
+                ...state,
+                services: [
+                    ...action.newList,
+                    ...action.payload,
+                ],
+            };
+
+        case 'updateServiceList':
+            return {
+                ...state,
+                services: [...action.payload],
+            };
+
+        default:
+            return { ...state };
+    }
+}
+
 const Services = () => {
-    const [services, setServices] = useState();
-    const [providers, setProviders] = useState();
-    const [categories, setCategories] = useState();
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [addServiceDetails, setAddServiceDetails] = useState({
-        categoryId: 0,
-        title: '',
-        apiProviderId: '',
-        apiServiceId: 0,
-        min: 0,
-        max: 0,
-        rate: 0,
-        status: 'active',
-        dripFeed: 'disable',
-        description: '',
-    });
-    const [editingServiceDetails, setEditingServiceDetails] = useState({
-        id: '',
-        uid: '',
-        categoryId: 0,
-        title: '',
-        apiProviderId: 0,
-        apiServiceId: '',
-        min: '',
-        max: '',
-        rate: '',
-        status: '',
-        dripFeed: '',
-        description: '',
+    const [state, dispatch] = useReducer(reducer, {
+        services: '',
+        providers: '',
+        categories: '',
+        isLoading: false,
+        showAddModal: false,
+        showEditModal: false,
+        newService: {
+            categoryId: 0,
+            title: '',
+            apiProviderId: '',
+            apiServiceId: 0,
+            min: 0,
+            max: 0,
+            rate: 0,
+            status: 'active',
+            dripFeed: 'disable',
+            description: '',
+        },
+        editingService: {
+            id: '',
+            uid: '',
+            categoryId: 0,
+            title: '',
+            apiProviderId: 0,
+            apiServiceId: '',
+            min: '',
+            max: '',
+            rate: '',
+            status: '',
+            dripFeed: '',
+            description: '',
+        },
     });
 
     const { websiteName } = useContext(Context);
-    const [isLoading, setIsLoading] = useState(false);
     const { darkTheme } = useContext(Theme);
 
     async function getData() {
@@ -63,114 +199,71 @@ const Services = () => {
             const url = '/admin/services';
             const { data } = await Axios.get(url);
 
-            setServices(data.services);
-            setCategories(data.categories);
-            setProviders(data.apiProviders);
+            dispatch({ type: 'setServices', payload: data.services });
+            dispatch({ type: 'setCategories', payload: data.categories });
         } catch (err) {
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     }
 
     useEffect(() => {
-        setIsLoading(true);
+        dispatch({ type: 'loading' });
         getData();
-        setIsLoading(false);
+        dispatch({ type: 'loading' });
     }, []);
 
     function categoriesCount() {
-        return categories && categories.length <= 0;
+        return state.categories && state.categories.length <= 0;
     }
 
     // Adding Services
     function handleAddButtonClick() {
-        setShowAddModal(true);
+        dispatch({ type: 'showAddModal' });
     }
 
-    function addCategoryChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            categoryId: e.target.value,
-        }));
+    function addServiceCategory(e) {
+        dispatch({ type: 'newServiceDetail', payload: { categoryId: e.target.value } });
     }
 
     function addTitleChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            title: e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { title: e.target.value } });
     }
 
     function addApiProviderChange(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            apiProviderId: e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { apiProviderId: e.target.value } });
     }
 
     function addApiServiceIdChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            apiServiceId: +e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { apiServiceId: e.target.value } });
     }
 
     function addMinChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            min: +e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { min: e.target.value } });
     }
 
     function addMaxChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            max: +e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { max: e.target.value } });
     }
 
     function addPriceChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            rate: +e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { rate: e.target.value } });
     }
 
     function addStatusChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            status: e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { status: e.target.value } });
     }
 
     function addDripFeedChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            dripFeed: e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { dripFeed: e.target.value } });
     }
 
     function addDescChangeHandler(e) {
-        setAddServiceDetails((preState) => ({
-            ...preState,
-            description: e.target.value,
-        }));
+        dispatch({ type: 'newServiceDetail', payload: { description: e.target.value } });
     }
 
     function handleBackdropClick() {
-        setShowAddModal(false);
-
-        setAddServiceDetails({
-            categoryId: '',
-            title: '',
-            apiProviderId: '',
-            apiServiceId: '',
-            min: '',
-            max: '',
-            rate: '',
-            status: 'active',
-            dripFeed: 'disable',
-            description: '',
-        });
+        dispatch({ type: 'showAddModal' });
+        dispatch({ type: 'clearNewServiceDetail' });
     }
 
     async function createService(e) {
@@ -178,8 +271,8 @@ const Services = () => {
 
         try {
             const url = '/admin/service/add';
-            const { data } = await Axios.post(url, { ...addServiceDetails });
-            setServices((preState) => [{ ...data.createdService }, ...preState]);
+            const { data } = await Axios.post(url, { ...state.newService });
+            dispatch({ type: 'addNewService', payload: { ...data.createdService } });
 
             Toast.success('Service created!');
             return handleBackdropClick();
@@ -189,7 +282,7 @@ const Services = () => {
     }
 
     const addModal = (
-        <Modal show={showAddModal} onHide={handleBackdropClick}>
+        <Modal show={state.showAddModal} onHide={handleBackdropClick}>
             <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Add Service</Modal.Title>
             </Modal.Header>
@@ -198,14 +291,14 @@ const Services = () => {
                 <Modal.Body>
                     <Select
                         label="Category"
-                        value={addServiceDetails.categoryId}
-                        onChange={addCategoryChangeHandler}
+                        value={state.newService.categoryId}
+                        onChange={addServiceCategory}
                         disabled={categoriesCount()}
                     >
                         <option key={0} value="">
                             {categoriesCount() ? 'No category to choose!' : 'Choose a Category'}
                         </option>
-                        {categories && categories.map((category) => (
+                        {state.categories.length >= 1 && state.categories.map((category) => (
                             <option key={category.id} value={category.id}>
                                 {category.title}
                             </option>
@@ -216,22 +309,22 @@ const Services = () => {
                         label="Title"
                         placeholder="Title"
                         type="text"
-                        value={addServiceDetails.title}
+                        value={state.newService.title}
                         onChange={addTitleChangeHandler}
                     />
 
                     <InputGroup>
                         <Select
                             label="Api Provider"
-                            value={addServiceDetails.apiProviderId}
+                            value={state.newService.apiProviderId}
                             onChange={addApiProviderChange}
                         >
                             <option key={0} value="">
                                 Manual
                             </option>
-                            {providers && providers.map((providr) => (
-                                <option key={providr.id} value={providr.id}>
-                                    {providr.name}
+                            {state.providers && state.providers.map((_provider) => (
+                                <option key={_provider.id} value={_provider.id}>
+                                    {_provider.name}
                                 </option>
                             ))}
                         </Select>
@@ -240,7 +333,7 @@ const Services = () => {
                             label="Api Service Id"
                             placeholder="Api Service Id"
                             type="number"
-                            value={addServiceDetails.apiServiceId}
+                            value={state.newService.apiServiceId}
                             onChange={addApiServiceIdChangeHandler}
                         />
                     </InputGroup>
@@ -250,7 +343,7 @@ const Services = () => {
                             label="Min"
                             placeholder="Min"
                             type="number"
-                            value={addServiceDetails.min}
+                            value={state.newService.min}
                             onChange={addMinChangeHandler}
                         />
 
@@ -258,7 +351,7 @@ const Services = () => {
                             label="Max"
                             placeholder="Max"
                             type="number"
-                            value={addServiceDetails.max}
+                            value={state.newService.max}
                             onChange={addMaxChangeHandler}
                         />
                     </InputGroup>
@@ -268,13 +361,13 @@ const Services = () => {
                             label="Price"
                             placeholder="Price"
                             type="number"
-                            value={addServiceDetails.rate}
+                            value={state.newService.rate}
                             onChange={addPriceChangeHandler}
                         />
 
                         <Select
                             label="Status"
-                            value={addServiceDetails.status}
+                            value={state.newService.status}
                             onChange={addStatusChangeHandler}
                         >
                             <option value="active">Active</option>
@@ -283,7 +376,7 @@ const Services = () => {
 
                         <Select
                             label="Drip Feed"
-                            value={addServiceDetails.dripFeed}
+                            value={state.newService.dripFeed}
                             onChange={addDripFeedChangeHandler}
                         >
                             <option value="active">Active</option>
@@ -294,7 +387,7 @@ const Services = () => {
                     <Textarea
                         label="Description"
                         placeholder="Description..."
-                        value={addServiceDetails.description}
+                        value={state.newService.description}
                         rows={4}
                         onChange={addDescChangeHandler}
                     />
@@ -316,111 +409,71 @@ const Services = () => {
     // Editing Services
     function editButtonHandler(e) {
         const uid = e.target.value;
-        const serviceDetails = services.filter((service) => service.uid === uid);
+        const serviceDetails = state.services.filter((service) => service.uid === uid);
 
-        setEditingServiceDetails({ ...serviceDetails[0] });
-        setShowEditModal(true);
+        dispatch({ type: 'editingService', payload: { ...serviceDetails[0] } });
+        dispatch({ type: 'showEditModal' });
     }
 
     function categoryChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            categoryId: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { categoryId: e.target.value } });
     }
 
     function titleChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            title: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { title: e.target.value } });
     }
 
     function providerChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            apiProviderId: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { apiProviderId: e.target.value } });
     }
 
     function apiServiceChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            apiServiceId: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { apiServiceId: e.target.value } });
     }
 
     function minChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            min: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { min: e.target.value } });
     }
 
     function maxChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            max: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { max: e.target.value } });
     }
 
     function priceChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            rate: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { rate: e.target.value } });
     }
 
     function statusChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            status: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { status: e.target.value } });
     }
 
     function dripFeedChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            dripFeed: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { dripFeed: e.target.value } });
     }
 
     function descChangeHandler(e) {
-        setEditingServiceDetails((preState) => ({
-            ...preState,
-            description: e.target.value,
-        }));
+        dispatch({ type: 'editingServiceDetail', payload: { description: e.target.value } });
     }
 
     const handleClose = () => {
-        setEditingServiceDetails({
-            id: '',
-            categoryId: '',
-            title: '',
-            provider: '',
-            apiServiceId: '',
-            min: '',
-            max: '',
-            rate: '',
-            status: '',
-            dripFeed: '',
-            description: '',
-        });
-
-        setShowEditModal(false);
+        dispatch({ type: 'clearEditingService' });
+        dispatch({ type: 'showEditModal ' });
     };
 
     const editingSubmitHandler = async (e) => {
         e.preventDefault();
 
-        const { uid, id } = editingServiceDetails;
+        const { uid, id } = state.editingService;
         const url = `admin/service/update/${uid}`;
-        const newList = services.filter((service) => service.uid !== uid);
+        const newList = state.services.filter((service) => service.uid !== uid);
 
         try {
-            const { data } = await Axios.patch(url, { ...editingServiceDetails });
-            setServices(() => [...newList, { ...data.updatedService }]);
-
+            const { data } = await Axios.patch(url, { ...state.editingService });
+            dispatch({
+                type: 'updateServices',
+                payload: { ...data.updatedService },
+                newList: { ...newList },
+            });
             handleClose();
             Toast.success(`Service "${id}" updated!`);
         } catch (err) {
@@ -430,20 +483,20 @@ const Services = () => {
 
     // Edit
     const editModal = (
-        <Modal show={showEditModal} onHide={handleClose}>
+        <Modal show={state.showEditModal} onHide={handleClose}>
             <Modal.Header closeButton closeLabel="">
                 <Modal.Title>Edit Service</Modal.Title>
             </Modal.Header>
 
             <form onSubmit={editingSubmitHandler}>
                 <Modal.Body>
-                    {categories && (
+                    {state.categories >= 1 && (
                         <Select
                             label="Category"
-                            value={editingServiceDetails.categoryId}
+                            value={state.editingService.categoryId}
                             onChange={categoryChangeHandler}
                         >
-                            {categories && categories.map((category) => (
+                            {state.categories && state.categories.map((category) => (
                                 <option key={category.id} value={category.id}>
                                     {category.title}
                                 </option>
@@ -455,7 +508,7 @@ const Services = () => {
                         label="Title"
                         placeholder="Title"
                         type="text"
-                        value={editingServiceDetails.title}
+                        value={state.editingService.title}
                         onChange={titleChangeHandler}
                     />
 
@@ -463,15 +516,15 @@ const Services = () => {
 
                         <Select
                             label="Api Provider"
-                            value={editingServiceDetails.apiProviderId}
+                            value={state.editingService.apiProviderId}
                             onChange={providerChangeHandler}
                         >
                             <option key={0} value="">
                                 Manual
                             </option>
-                            {providers && providers.map((providr) => (
-                                <option key={providr.id} value={providr.id}>
-                                    {providr.name}
+                            {state.providers && state.providers.map((_provider) => (
+                                <option key={_provider.id} value={_provider.id}>
+                                    {_provider.name}
                                 </option>
                             ))}
                         </Select>
@@ -480,7 +533,7 @@ const Services = () => {
                             label="Api Service Id"
                             placeholder="Api Service Id"
                             type="number"
-                            value={editingServiceDetails.apiServiceId}
+                            value={state.editingService.apiServiceId}
                             onChange={apiServiceChangeHandler}
                         />
                     </InputGroup>
@@ -489,7 +542,7 @@ const Services = () => {
                         <Input
                             label="Min"
                             placeholder="Min"
-                            value={editingServiceDetails.min}
+                            value={state.editingService.min}
                             onChange={minChangeHandler}
                         />
 
@@ -497,7 +550,7 @@ const Services = () => {
                             label="Max"
                             placeholder="Max"
                             type="number"
-                            value={editingServiceDetails.max}
+                            value={state.editingService.max}
                             onChange={maxChangeHandler}
                         />
                     </InputGroup>
@@ -507,13 +560,13 @@ const Services = () => {
                             label="Price"
                             placeholder="Price"
                             type="number"
-                            value={editingServiceDetails.rate}
+                            value={state.editingService.rate}
                             onChange={priceChangeHandler}
                         />
 
                         <Select
                             label="Status"
-                            value={editingServiceDetails.status}
+                            value={state.editingService.status}
                             onChange={statusChangeHandler}
                         >
                             <option value="active">Active</option>
@@ -522,7 +575,7 @@ const Services = () => {
 
                         <Select
                             label="Drip Feed"
-                            value={editingServiceDetails.dripFeed}
+                            value={state.editingService.dripFeed}
                             onChange={dripFeedChangeHandler}
                         >
                             <option value="active">Active</option>
@@ -533,7 +586,7 @@ const Services = () => {
                     <Textarea
                         label="Description"
                         placeholder="Description..."
-                        value={editingServiceDetails.description}
+                        value={state.editingService.description}
                         rows={4}
                         onChange={descChangeHandler}
                     />
@@ -560,13 +613,12 @@ const Services = () => {
 
     const deleteButtonHandler = async (e) => {
         const uid = e.target.value;
-        const newList = await services.filter((service) => service.uid !== uid);
+        const newList = await state.services.filter((service) => service.uid !== uid);
 
         try {
             const url = `/admin/service/delete/${uid}`;
             await Axios.delete(url);
-            setServices([...newList]);
-
+            dispatch({ type: 'updateServiceList', payload: newList });
             Toast.warning(`Service "${uid}" deleted`);
         } catch (err) {
             Toast.failed(err.response.data || 'Failed to delete service!');
@@ -574,7 +626,7 @@ const Services = () => {
     };
 
     function getProviderName(apiProviderId, apiServiceId) {
-        const providerDetail = providers && providers
+        const providerDetail = state.providers && state.providers
             .filter((apiProvider) => apiProvider.id === apiProviderId);
 
         return (
@@ -600,7 +652,8 @@ const Services = () => {
     }
 
     function getServiceByCategory(id) {
-        const servicesList = services && services
+        console.log(state.services);
+        const servicesList = state.services && state.services
             .filter((service) => service.categoryId === id);
 
         return servicesList.map((service) => (
@@ -679,7 +732,7 @@ const Services = () => {
     }
 
     const servicesData = () => {
-        if (services && services.length <= 0) {
+        if (state.services && state.services.length <= 0) {
             return (
                 <DataNotFound
                     message="Please add some services in any
@@ -688,7 +741,7 @@ const Services = () => {
             );
         }
 
-        if (categories && categories.length <= 0) {
+        if (state.categories && state.categories.length <= 0) {
             return (
                 <DataNotFound
                     message="Please add some services in any
@@ -698,12 +751,12 @@ const Services = () => {
         }
 
         return (
-            categories && categories
+            state.categories.length >= 1 && state.categories
                 .map((category) => {
                     const serviceLength = getServiceByCategory(category.id);
 
                     if (serviceLength.length <= 0) return '';
-                    if (serviceLength.length <= 0 && categories.length <= 1) {
+                    if (serviceLength.length <= 0 && state.categories.length <= 1) {
                         return (
                             <DataNotFound
                                 message="Please add some services
@@ -753,7 +806,7 @@ const Services = () => {
 
             {addModal}
             {editModal}
-            <Loading show={isLoading} />
+            <Loading show={state.isLoading} />
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.Services}>
