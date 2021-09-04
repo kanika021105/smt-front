@@ -9,7 +9,7 @@ import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Loading from '../../../../components/UI/Loading/Loading';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Axios from '../../../../axiosIns';
 
 import 'bootstrap/js/dist/dropdown';
@@ -117,7 +117,7 @@ function reducer(state, action) {
 }
 
 function Categories() {
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const [state, dispatch] = useReducer(reducer, {
         isLoading: false,
         showAddModal: false,

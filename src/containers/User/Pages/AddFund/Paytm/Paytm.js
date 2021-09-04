@@ -6,16 +6,14 @@ import Axios from '../../../../../axiosIns';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Input from '../../../../../components/UI/Input/Input';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
-import Context from '../../../../../store/context';
+import AuthContext from '../../../../../store/AuthContext';
 
 const Paytm = () => {
     const [config, setConfig] = useState('');
     const [showCheckout, setShowCheckout] = useState(false);
     const [amount, setAmount] = useState('');
     const [merchantId, setMerchantId] = useState('');
-
-    const { websiteName } = useContext(Context);
-    const { balance, updateBalance } = useContext(Context);
+    const { websiteName, balance, updateBalance } = useContext(AuthContext);
 
     async function verifyPayment(paymentStatus) {
         try {

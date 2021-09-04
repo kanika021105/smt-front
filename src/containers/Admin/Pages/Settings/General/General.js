@@ -6,7 +6,7 @@ import Loading from '../../../../../components/UI/Loading/Loading';
 import Input from '../../../../../components/UI/Input/Input';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Textarea from '../../../../../components/UI/Textarea/Textarea';
-import Context from '../../../../../store/context';
+import AuthContext from '../../../../../store/AuthContext';
 
 const General = () => {
     const [name, setName] = useState('');
@@ -14,7 +14,7 @@ const General = () => {
     const [keywords, setKeywords] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { websiteName, updateWebsiteName } = useContext(Context);
+    const { websiteName, updateWebsiteName } = useContext(AuthContext);
 
     useEffect(() => {
         const url = '/admin/settings/general';

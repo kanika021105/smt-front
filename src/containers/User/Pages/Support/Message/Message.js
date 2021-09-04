@@ -7,23 +7,19 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
 import classes from './messages.module.scss';
-import Context from '../../../../../store/context';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
-const Message = () => {
-    // const [errorMsg, setErrorMsg] = useState('');
-    // const [blockInput, setBlockInput] = useState(false);
-    // const [showError, setShowError] = useState(false);
+import AuthContext from '../../../../../store/AuthContext';
 
+const Message = () => {
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
 
-    const { websiteName } = useContext(Context);
+    const { websiteName, email } = useContext(AuthContext);
 
-    const { email } = useContext(Context);
     const params = useParams();
     const { id } = params;
 

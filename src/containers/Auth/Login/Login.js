@@ -1,70 +1,97 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useReducer } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../axiosIns';
 import classes from './Login.module.scss';
 
+import AuthContext from '../../../store/AuthContext';
 import LoginImage from '../../../assets/img/login.svg';
-import Context from '../../../store/context';
 import Toast from '../../../components/UI/Toast/Toast';
 
+// Defining reducer function for useReducer
+function reducer(state, action) {
+    switch (action.type) {
+        case 'email':
+            return {
+                ...state,
+                email: action.payload,
+            };
+
+        case 'password':
+            return {
+                ...state,
+                password: action.payload,
+            };
+
+        default:
+            return { ...state };
+    }
+}
+
 const Login = () => {
-    const [loginEmail, setLoginEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { login, websiteName } = useContext(AuthContext);
+    const [state, dispatch] = useReducer(reducer, {
+        email: '',
+        password: '',
+    });
 
-    const [errorMsg, setErrorMsg] = useState('');
-    const [showError, setShowError] = useState(false);
+    // Handling email input
+    function emailChangeHandler(e) {
+        dispatch({ type: 'email', payload: e.target.value });
+    }
 
-    const AuthCtx = useContext(Context);
+    // Handling password Input
+    function passwordChangeHandler(e) {
+        dispatch({ type: 'password', payload: e.target.value });
+    }
 
-    const emailChangeHandler = (e) => setLoginEmail(e.target.value);
-    const passwordChangeHandler = (e) => setPassword(e.target.value);
-
-    const submitHandler = async (e) => {
+    // Handling form submit
+    async function submitHandler(e) {
         e.preventDefault();
-        setShowError(false);
 
         const url = '/login';
-        const loginData = { email: loginEmail, password };
+        const loginData = {
+            email: state.email,
+            password: state.password,
+        };
 
         try {
             const { data } = await Axios.post(url, { ...loginData });
-            setErrorMsg('');
+            const { client } = data;
+            const { role } = client;
 
+            // Calculating token expiry time
             const remainingMilliseconds = 24 * 60 * 60 * 1000;
             const expiryDate = Date.now() + remainingMilliseconds;
 
+            // Setting token and expiry time
             localStorage.setItem('expiryDate', expiryDate);
             localStorage.setItem('token', data.token);
 
-            const { client } = data;
-            if (!client) throw new Error('Something went wrong!');
-
-            AuthCtx.login(
+            login(
                 data.token,
                 client.id,
                 client.email,
-                client.role,
+                role,
                 client.firstName,
                 client.lastName,
                 client.balance,
             );
 
-            if (client.role === 'admin') {
+            if (role === 'admin') {
                 window.location = '/admin/dashboard';
                 return;
             }
 
-            if (client.role === 'user') {
+            if (role === 'user') {
                 window.location = '/dashboard';
                 return;
             }
         } catch (err) {
-            console.log(err);
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
+    }
 
     return (
         <>
@@ -72,7 +99,7 @@ const Login = () => {
                 <title>
                     Login -
                     {' '}
-                    {AuthCtx.websiteName || ' '}
+                    {websiteName || ' '}
                 </title>
             </Helmet>
 
@@ -95,12 +122,8 @@ const Login = () => {
                             <Link to="/">Home</Link>
                         </div>
                         <div className={classes.login__form__line}> </div>
-                        <h2 className={[classes.login__form__heading, showError ? 'u-mb-3' : 'u-mb-7'].join(' ')}>
-                            Sing-In
-                        </h2>
-                        <h4 className={showError ? classes.errorMsg : classes.errorHidden}>
-                            {errorMsg}
-                        </h4>
+
+                        <h2 className={`${classes.login__form__heading} u-mb-7`}>Sing-In</h2>
 
                         <form onSubmit={submitHandler}>
                             <div className={classes.inputSection}>
@@ -108,10 +131,9 @@ const Login = () => {
                                     Email
                                     <input
                                         id="email"
-                                        className={showError ? classes.invalid : ' '}
                                         type="email"
                                         placeholder="example@gmail.com"
-                                        value={loginEmail}
+                                        value={state.email}
                                         onChange={emailChangeHandler}
                                     />
                                 </label>
@@ -125,10 +147,9 @@ const Login = () => {
                                     Password
                                     <input
                                         id="password"
-                                        className={showError ? classes.invalid : ' '}
                                         type="password"
                                         placeholder="Your Password"
-                                        value={password}
+                                        value={state.password}
                                         minLength="6"
                                         onChange={passwordChangeHandler}
                                     />

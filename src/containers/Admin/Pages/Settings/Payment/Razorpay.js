@@ -2,18 +2,19 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
-import Context from '../../../../../store/context';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Input from '../../../../../components/UI/Input/Input';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 import Loading from '../../../../../components/UI/Loading/Loading';
+
+import AuthContext from '../../../../../store/AuthContext';
 
 const Razorpay = () => {
     const [keyId, setKeyId] = useState('');
     const [keySecret, setKeySecret] = useState('');
     const [enable, setEnable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
 
     useEffect(() => {
         setIsLoading(true);

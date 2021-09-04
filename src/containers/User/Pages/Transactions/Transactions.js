@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
@@ -10,15 +9,15 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
-import Context from '../../../../store/context';
 import Theme from '../../../../store/theme';
 
+import AuthContext from '../../../../store/AuthContext';
 import '../../../../sass/pages/user/transactions.scss';
 
 function Transaction() {
     const [transactions, setTransactions] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {

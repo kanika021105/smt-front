@@ -4,7 +4,7 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
@@ -17,7 +17,7 @@ import './Transactions.scss';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState();
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
     const [isLoading, setIsLoading] = useState(false);
 

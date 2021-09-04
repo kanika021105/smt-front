@@ -6,10 +6,11 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
-import Context from '../../../../store/context';
 import Theme from '../../../../store/theme';
 import '../../../../sass/pages/user/AddFund.scss';
 import Toast from '../../../../components/UI/Toast/Toast';
+
+import AuthContext from '../../../../store/AuthContext';
 
 const Paytm = React.lazy(() => import('./Paytm/Paytm'));
 const Razorpay = React.lazy(() => import('./RazorPay/Razorpay'));
@@ -22,7 +23,7 @@ const NotFound = () => (
 );
 
 const AddFund = () => {
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
     const [activeList, setActiveList] = useState({
         paytm: false,

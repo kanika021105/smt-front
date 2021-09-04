@@ -8,7 +8,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import Axios from '../../../../axiosIns';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
@@ -36,7 +36,7 @@ const Clients = () => {
         status: '',
     });
 
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {

@@ -7,8 +7,9 @@ import React, {
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 import Axios from './axiosIns';
-import Context from './store/context';
+import AuthContext from './store/AuthContext';
 import Layout from './containers/Layout/Layout';
+import Toast from './components/UI/Toast/Toast';
 
 const User = lazy(() => import('./containers/User/User'));
 const Admin = lazy(() => import('./containers/Admin/Admin'));
@@ -17,43 +18,37 @@ const Signup = lazy(() => import('./containers/Auth/Signup/Signup'));
 const PrivacyPolicy = lazy(() => import('./containers/ExtraPages/Terms&Policy/PrivacyPolicy'));
 
 const App = () => {
-    const Ctx = useContext(Context);
-    const { isLoggedIn, role, token } = Ctx;
+    const {
+        isLoggedIn, verify, role, token,
+    } = useContext(AuthContext);
     const history = useHistory();
 
     useEffect(() => {
-        const expireTime = localStorage.getItem('expiryDate');
-        if (expireTime <= Date.now()) {
-            localStorage.clear();
-            return;
+        if (token) {
+            const expireTime = localStorage.getItem('expiryDate');
+            if (expireTime <= Date.now()) {
+                localStorage.clear();
+                return;
+            }
+
+            const url = '/verify-token';
+            Axios.post(url, { token })
+                .then((res) => {
+                    const { data } = res;
+                    verify(
+                        data.clientId,
+                        data.email,
+                        data.role,
+                        data.firstName,
+                        data.lastName,
+                        data.balance,
+                        data.websiteName,
+                    );
+                })
+                .catch((err) => {
+                    Toast.failed(err.response.data.message);
+                });
         }
-
-        if (!token) {
-            // eslint-disable-next-line no-console
-            console.log('token not found');
-            return;
-        }
-
-        const url = '/verify-token';
-        Axios.post(url, { token })
-            .then((res) => {
-                const { data } = res;
-
-                Ctx.verify(
-                    data.clientId,
-                    data.email,
-                    data.role,
-                    data.firstName,
-                    data.lastName,
-                    data.balance,
-                    data.websiteName,
-                );
-            })
-            .catch((err) => {
-                // TODO Remove this
-                // eslint-disable-next-line no-console
-                console.log(err);
-            });
     }, []);
 
     return (

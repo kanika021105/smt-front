@@ -1,12 +1,12 @@
 import React from 'react';
 
 import Axios from '../../../../axiosIns';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Input from '../../../../components/UI/Input/Input';
 import Toast from '../../../../components/UI/Toast/Toast';
 
 function profile() {
-    const Ctx = React.useContext(Context);
+    const Ctx = React.useContext(AuthContext);
     const [clientInfo, setClientInfo] = React.useState({
         firstName: '',
         lastName: '',

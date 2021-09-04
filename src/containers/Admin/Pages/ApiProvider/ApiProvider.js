@@ -12,7 +12,8 @@ import { AiOutlineUnorderedList } from 'react-icons/ai';
 import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import Context from '../../../../store/context';
+// import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
@@ -55,7 +56,7 @@ const ApiProvider = () => {
     const [showSyncModal, setShowSyncModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { darkTheme } = useContext(Theme);
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
 
     useEffect(() => {
         setIsLoading(true);

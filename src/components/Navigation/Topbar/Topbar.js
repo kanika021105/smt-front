@@ -6,12 +6,12 @@ import * as HiIcons from 'react-icons/hi';
 import * as RiIcons from 'react-icons/ri';
 import ProfilePic from '../../../assets/img/profile.png';
 
-import Context from '../../../store/context';
+import AuthContext from '../../../store/AuthContext';
 import Theme from '../../../store/theme';
 import './Topbar.scss';
 
 function Topbar({ clicked }) {
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { toggleTheme, darkTheme } = useContext(Theme);
 
     return (

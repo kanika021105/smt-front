@@ -18,7 +18,7 @@ import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard
 import Button from '../../../../components/UI/Button/Button';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import classes from './Dashboard.module.scss';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Theme from '../../../../store/theme';
 
 const Dashboard = () => {
@@ -26,7 +26,7 @@ const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [graphData, setGraphData] = useState('');
 
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {

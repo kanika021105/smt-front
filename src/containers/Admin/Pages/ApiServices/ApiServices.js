@@ -7,7 +7,7 @@ import { VscListSelection } from 'react-icons/vsc';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
@@ -23,7 +23,7 @@ import 'bootstrap/js/dist/dropdown';
 
 const ApiServices = () => {
     const { id } = useParams();
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
 
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();

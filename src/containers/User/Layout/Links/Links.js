@@ -7,11 +7,11 @@ import { AiOutlineHistory } from 'react-icons/ai';
 import { MdAddShoppingCart, MdAttachMoney } from 'react-icons/md';
 import * as RiIcons from 'react-icons/ri';
 
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import './Links.css';
 
 function Links() {
-    const { logout } = useContext(Context);
+    const { logout } = useContext(AuthContext);
 
     function logoutHandler() {
         logout();

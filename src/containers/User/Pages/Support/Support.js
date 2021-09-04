@@ -15,9 +15,9 @@ import Toast from '../../../../components/UI/Toast/Toast';
 import Input from '../../../../components/UI/Input/Input';
 import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Select from '../../../../components/UI/Select/Select';
-import Context from '../../../../store/context';
 import Theme from '../../../../store/theme';
 
+import AuthContext from '../../../../store/AuthContext';
 import '../../../../sass/pages/user/support.scss';
 
 // Reducer function for useReducer hook
@@ -96,7 +96,7 @@ const Support = () => {
         },
     });
 
-    const { email, websiteName } = useContext(Context);
+    const { email, websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {

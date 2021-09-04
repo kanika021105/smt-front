@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
-import Context from '../../../store/context';
+import AuthContext from '../../../store/AuthContext';
 
 import SignUpImage from '../../../assets/img/signup.svg';
 
@@ -23,7 +23,7 @@ const Signup = () => {
     const [showError, setShowError] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
 
     const firstNameChangeHandler = (e) => {
         setUserDetails((preState) => ({

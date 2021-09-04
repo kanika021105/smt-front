@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { Navbar } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AuthContext from '../../../store/AuthContext';
 import NavigationItems from '../NavigationItems/NavigationItems';
-import Context from '../../../store/context';
 import classes from './Navbar.module.css';
 
 const NavbarComponent = () => {
-    const { isLoggedIn } = useContext(Context);
+    const { isLoggedIn } = useContext(AuthContext);
 
     const logoutClickHandler = (e) => {
         e.preventDefault();

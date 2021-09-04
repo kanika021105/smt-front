@@ -16,7 +16,7 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Theme from '../../../../store/theme';
 
 import classes from './dashboard.module.scss';
@@ -24,7 +24,7 @@ import classes from './dashboard.module.scss';
 const Dashboard = () => {
     const [data, setData] = useState({});
     const [graphData, setGraphData] = useState();
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     const [isLoading, setIsLoading] = useState(false);

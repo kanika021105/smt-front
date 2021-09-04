@@ -12,14 +12,14 @@ import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Theme from '../../../../store/theme';
 
 import './support.scss';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 
 const Support = () => {
     const history = useHistory();
 
     const [tickets, setTickets] = useState();
     const [clients, setClients] = useState();
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
     const [isLoading, setIsLoading] = useState(false);
 

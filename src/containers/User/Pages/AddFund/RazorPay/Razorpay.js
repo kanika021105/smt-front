@@ -3,15 +3,15 @@ import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
 import Loading from '../../../../../components/UI/Loading/Loading';
-import Context from '../../../../../store/context';
 import Toast from '../../../../../components/UI/Toast/Toast';
 
+import AuthContext from '../../../../../store/AuthContext';
 import '../../../../../sass/pages/user/Razorpay.scss';
 
 // TODO Change clientId useage to email
 const Razorpay = () => {
     const [amount, setAmount] = useState(0);
-    const { email, fName } = useContext(Context);
+    const { email, fName } = useContext(AuthContext);
     const [keyId, setKeyId] = useState('');
     const { websiteName, updateBalance, balance } = useContext(Context);
     const [isLoading, setIsLoading] = useState(false);

@@ -5,15 +5,15 @@ import Axios from '../../../../../axiosIns';
 import Input from '../../../../../components/UI/Input/Input';
 import Loading from '../../../../../components/UI/Loading/Loading';
 import Toast from '../../../../../components/UI/Toast/Toast';
-import Context from '../../../../../store/context';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
+import AuthContext from '../../../../../store/AuthContext';
 
 const Razorpay = () => {
     const [merchantId, setMerchantId] = useState('');
     const [merchantKey, setMerchantKey] = useState('');
     const [enable, setEnable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
 
     useEffect(() => {
         setIsLoading(true);

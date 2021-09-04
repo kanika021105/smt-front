@@ -11,9 +11,11 @@ import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
 import Select from '../../../../components/UI/Select/Select';
-import Context from '../../../../store/context';
 import Theme from '../../../../store/theme';
 import Toast from '../../../../components/UI/Toast/Toast';
+
+// import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import classes from './NewOrder.module.scss';
 
 const NewOrder = () => {
@@ -42,7 +44,7 @@ const NewOrder = () => {
         message: '',
     });
 
-    const { balance, updateBalance, websiteName } = useContext(Context);
+    const { balance, updateBalance, websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {

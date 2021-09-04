@@ -8,7 +8,7 @@ import { VscListSelection } from 'react-icons/vsc';
 import Axios from '../../../../../axiosIns';
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
-import Context from '../../../../../store/context';
+import AuthContext from '../../../../../store/AuthContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classes from './messages.module.scss';
@@ -20,7 +20,7 @@ const Message = () => {
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
-    const { email, websiteName } = useContext(Context);
+    const { email, websiteName } = useContext(AuthContext);
 
     useEffect(() => {
         const url = `/admin/support/ticket/${id}`;

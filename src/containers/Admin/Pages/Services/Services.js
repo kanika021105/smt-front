@@ -9,7 +9,7 @@ import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
 import Theme from '../../../../store/theme';
-import Context from '../../../../store/context';
+import AuthContext from '../../../../store/AuthContext';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import Loading from '../../../../components/UI/Loading/Loading';
@@ -191,7 +191,7 @@ const Services = () => {
         },
     });
 
-    const { websiteName } = useContext(Context);
+    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     async function getData() {
