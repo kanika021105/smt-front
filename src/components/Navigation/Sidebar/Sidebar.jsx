@@ -4,12 +4,12 @@ import Theme from '../../../store/theme';
 
 import './Sidebar.scss';
 
-function Sidebar({ active, children }) {
+function Sidebar({ active: expand, children }) {
     const { darkTheme } = React.useContext(Theme);
 
     return (
         <>
-            <div className={`${darkTheme ? 'dark sidebar' : 'sidebar'} ${active ? 'active' : ''}`}>
+            <div className={`sidebar ${expand && 'expand'} ${darkTheme && 'dark'}`}>
                 {children}
             </div>
         </>

@@ -23,8 +23,8 @@ import './clients.scss';
 
 const Clients = () => {
     const [clients, setClients] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-
     const [editingUserDetails, setEditingUserDetails] = useState({
         id: '',
         firstName: '',
@@ -37,7 +37,6 @@ const Clients = () => {
     });
 
     const { websiteName } = useContext(Context);
-    const [isLoading, setIsLoading] = useState(false);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {

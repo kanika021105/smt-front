@@ -15,16 +15,15 @@ function Layout({ children }) {
 
     return (
         <>
-            <div className="layout-container">
+            <TopBar clicked={clickHandler} />
+            <div className="main_container">
                 <Sidebar active={active}>
                     <Links />
                 </Sidebar>
-
-                <main className="main">
-                    <TopBar clicked={clickHandler} />
+                <main className="dark">
                     {children}
+                    <Footer />
                 </main>
-                <Footer />
             </div>
         </>
     );

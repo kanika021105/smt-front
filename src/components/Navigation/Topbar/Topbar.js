@@ -1,41 +1,44 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { FaBars } from 'react-icons/fa';
-import { CgProfile } from 'react-icons/cg';
+
+import * as HiIcons from 'react-icons/hi';
+import * as RiIcons from 'react-icons/ri';
+import ProfilePic from '../../../assets/img/profile.png';
 
 import Context from '../../../store/context';
 import Theme from '../../../store/theme';
 import './Topbar.scss';
 
 function Topbar({ clicked }) {
-    const Ctx = React.useContext(Context);
-    const themeCtx = React.useContext(Theme);
+    const { websiteName } = useContext(Context);
+    const { toggleTheme, darkTheme } = useContext(Theme);
 
     return (
         <>
-            <div className={themeCtx.darkTheme ? 'dark top-bar' : 'top-bar'}>
-                <FaBars onClick={clicked} className="sidebar-btn" />
-
-                <input
-                    onChange={() => {
-                        themeCtx.toggleTheme();
-                        console.log(themeCtx.darkTheme);
-                    }}
-                    type="checkbox"
-                    checked={themeCtx.darkTheme}
-                />
-
-                <div className="profile">
-                    Hi,
-                    {' '}
-                    {Ctx.firstName}
-                    {' '}
-                    <Link to={`/profile/${Ctx.clientId}`}>
-                        <CgProfile />
-                    </Link>
+            <nav className={darkTheme && 'dark'}>
+                <div className="topbar_left">
+                    <h3 className="logo">{websiteName}</h3>
+                    <RiIcons.RiMenuFill onClick={clicked} className="sidebar_button" />
                 </div>
-            </div>
+
+                <div className="topbar_right">
+                    <div className="theme_changer">
+                        <input type="checkbox" onChange={toggleTheme} className="theme_checkbox" id="theme_checkbox" checked={darkTheme} />
+                        <label htmlFor="theme_checkbox" className="theme_checkbox_label">
+                            <RiIcons.RiSunFill className="sun" />
+                            <RiIcons.RiMoonFill className="moon" />
+                            <div className="ball" />
+                        </label>
+                    </div>
+
+                    <div className="user-detail">
+                        <img src={ProfilePic} alt="Profile Pic" className="profilePic" loading="lazy" />
+                        <p className="user_name">Sofia Leon</p>
+                        <HiIcons.HiOutlineChevronDown className="profile_dropdown" />
+                    </div>
+                </div>
+            </nav>
         </>
     );
 }

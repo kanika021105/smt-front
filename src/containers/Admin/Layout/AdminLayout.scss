@@ -1,49 +1,15 @@
 @import '../../../sass/index';
 
-.layout-container{
-    overflow-x: hidden;
+.main_container {
+    display: 'flex';
+    flex-direction: 'row'; 
 }
 
-.sidebar.active ~ .main {
-    margin-left: 26rem;
-    transition: all .5s;
-
-    @media only screen and (max-width: $bp-6) {
-        margin-left: 22rem;
-        width: 100%;
-    }
+main {
+    background: #F4F7FC;
+    padding-top: 7rem;
 }
 
-.sidebar.active ~ footer {
-    margin-left: 26rem;
-    transition: all .5s;
-
-    @media only screen and (max-width: $bp-6) {
-        margin-left: 22rem;
-        width: 100%;
-    }
-}
-
-
-.sidebar ~ .main {
-    margin-left: 7.8rem;
-    transition: all .5s;
-
-    @media only screen and (max-width: $bp-6) {
-        margin-left: 7rem;
-    }
-}
-
-.sidebar ~ footer {
-    margin-left: 7.8rem;
-    transition: all .5s;
-
-    @media only screen and (max-width: $bp-6) {
-        margin-left: 7rem;
-    }
-}
-
-.main {
-    flex-direction: column;
-    flex: 1;
+.dark {
+    background: #262626;
 }

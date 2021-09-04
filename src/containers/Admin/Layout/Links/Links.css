@@ -1,0 +1,47 @@
+/* Default Theme (light theme) */
+.sidebar_links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    width: 100%;
+    overflow: hidden;
+}
+
+.sidebar_links.active {
+    background-color: #eee;
+    transition: all .3s ease;
+}
+
+a.sidebar_links  {
+    text-decoration: none;
+}
+
+.link_icon {
+    margin-left: 2rem;
+    padding: 1rem 0;
+    font-size: 3rem;
+    color: #666;
+}
+
+.link_title {
+    opacity: 0;
+    margin-left: 2rem;
+    font-size: 2rem;
+    color: #155ED1;
+    font-weight: 500;
+}
+
+.expand .link_title {
+    opacity: 1;
+}
+
+
+/* Dark Theme start Here */
+.dark .sidebar_links.active {
+    background-color: #333;
+}
+
+.dark .link_icon {
+    color: #eee;
+}
