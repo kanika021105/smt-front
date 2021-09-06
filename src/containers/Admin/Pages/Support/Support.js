@@ -1,22 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+// import { useHistory } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
+import { Link } from 'react-router-dom';
 import Axios from '../../../../axiosIns';
 import Card from '../../../../components/UI/Card/Card';
 import Loading from '../../../../components/UI/Loading/Loading';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Theme from '../../../../store/theme';
+import Toast from '../../../../components/UI/Toast/Toast';
 
 import './support.scss';
 import AuthContext from '../../../../store/AuthContext';
+import 'bootstrap/dist/js/bootstrap.min';
 
 const Support = () => {
-    const history = useHistory();
-
     const [tickets, setTickets] = useState();
     const [clients, setClients] = useState();
     const { websiteName } = useContext(AuthContext);
@@ -42,10 +44,19 @@ const Support = () => {
             });
     }, []);
 
-    const ticketClickHandler = (id) => {
-        const path = `/admin/support/ticket/${id}`;
-        return history.push(path);
-    };
+    async function deleteTicket(e) {
+        const uid = e.target.value;
+        try {
+            const url = `/admin/support/ticket/delete/${uid}`;
+            await Axios.delete(url);
+            Toast.success('Ticket deleted!');
+
+            const newList = tickets.filter((ticket) => ticket.uid !== uid);
+            setTickets([...newList]);
+        } catch (err) {
+            Toast.failed(err.response.data.message);
+        }
+    }
 
     const ticketList = tickets
         && clients
@@ -56,14 +67,57 @@ const Support = () => {
 
             return (
                 ticket && (
-                    <tr
-                        key={ticket.id}
-                        onClick={() => ticketClickHandler(ticket.id)}
-                    >
+                    <tr key={ticket.id}>
                         <td>{ticket.id}</td>
-                        <td>{clientDetail[0] && clientDetail[0].email}</td>
-                        <td>{ticket.subject}</td>
-                        <td>{ticket.status}</td>
+                        <td>
+                            <Link to={`/admin/support/ticket/${ticket.uid}`}>
+                                {clientDetail[0] && clientDetail[0].email}
+                            </Link>
+                        </td>
+                        <td className="subject">{ticket.subject}</td>
+                        <td className="status">{ticket.status}</td>
+                        <td>
+                            <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
+                                <div className="dropdown">
+                                    <span
+                                        id="option"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        <BsThreeDotsVertical />
+                                    </span>
+                                    <ul className="dropdown-menu" aria-labelledby="option">
+                                        <li>
+                                            <button
+                                                type="button"
+                                                className="btn btn-edit"
+                                                style={{
+                                                    width: '100%',
+                                                }}
+                                                value={ticket.id}
+                                                // onClick={editButtonHandler}
+                                            >
+                                                Edit
+                                            </button>
+                                        </li>
+
+                                        <li>
+                                            <button
+                                                type="button"
+                                                className="btn btn-delete"
+                                                style={{
+                                                    width: '100%',
+                                                }}
+                                                value={ticket.uid}
+                                                onClick={deleteTicket}
+                                            >
+                                                Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </IconContext.Provider>
+                        </td>
                     </tr>
                 )
             );
@@ -78,6 +132,7 @@ const Support = () => {
                         <th>Email</th>
                         <th>Subject</th>
                         <th>Status</th>
+                        <th>Option</th>
                     </tr>
                 </THead>
 

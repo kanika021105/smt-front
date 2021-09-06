@@ -16,7 +16,7 @@ function Topbar({ clicked }) {
 
     return (
         <>
-            <nav className={darkTheme && 'dark'}>
+            <nav className={darkTheme ? 'dark' : ''}>
                 <div className="topbar_left">
                     <h3 className="logo">{websiteName}</h3>
                     <RiIcons.RiMenuFill onClick={clicked} className="sidebar_button" />

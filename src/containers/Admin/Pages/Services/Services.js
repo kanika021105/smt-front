@@ -24,6 +24,7 @@ const Select = lazy(() => import('../../../../components/UI/Select/Select'));
 const Textarea = lazy(() => import('../../../../components/UI/Textarea/Textarea'));
 const DataNotFound = lazy(() => import('../../../../components/UI/DataNotFound/DataNotFound'));
 
+// Reducer function for useReducer
 function reducer(state, action) {
     switch (action.type) {
         case 'loading':
@@ -44,12 +45,11 @@ function reducer(state, action) {
                 categories: [...action.payload],
             };
 
-            // case 'setProviders':
-            //     console.log(action.payload);
-            //     return {
-            //         ...state,
-            //         provider: [...action.payload],
-            //     };
+        case 'setProviders':
+            return {
+                ...state,
+                providers: [...action.payload],
+            };
 
         case 'showAddModal':
             return {
@@ -138,10 +138,7 @@ function reducer(state, action) {
         case 'updateServices':
             return {
                 ...state,
-                services: [
-                    ...action.newList,
-                    ...action.payload,
-                ],
+                services: [action.payload, ...action.newList],
             };
 
         case 'updateServiceList':
@@ -194,6 +191,7 @@ const Services = () => {
     const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
+    // Getting all required data on page loading
     async function getData() {
         try {
             const url = '/admin/services';
@@ -201,6 +199,7 @@ const Services = () => {
 
             dispatch({ type: 'setServices', payload: data.services });
             dispatch({ type: 'setCategories', payload: data.categories });
+            dispatch({ type: 'setProviders', payload: data.apiProviders });
         } catch (err) {
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
@@ -212,6 +211,7 @@ const Services = () => {
         dispatch({ type: 'loading' });
     }, []);
 
+    // Count total categories
     function categoriesCount() {
         return state.categories && state.categories.length <= 0;
     }
@@ -221,51 +221,63 @@ const Services = () => {
         dispatch({ type: 'showAddModal' });
     }
 
+    // Add category id in state for adding new services
     function addServiceCategory(e) {
         dispatch({ type: 'newServiceDetail', payload: { categoryId: e.target.value } });
     }
 
+    // Update title of new service in state
     function addTitleChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { title: e.target.value } });
     }
 
+    // Update API id of new service in state
     function addApiProviderChange(e) {
         dispatch({ type: 'newServiceDetail', payload: { apiProviderId: e.target.value } });
     }
 
+    // Update API Service id of new service in state
     function addApiServiceIdChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { apiServiceId: e.target.value } });
     }
 
+    // Handle min quantity change for new service
     function addMinChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { min: e.target.value } });
     }
 
+    // Handle max quantity change for new service
     function addMaxChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { max: e.target.value } });
     }
 
+    // Handle price for new service
     function addPriceChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { rate: e.target.value } });
     }
 
+    // Handle status for new service
     function addStatusChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { status: e.target.value } });
     }
 
+    // Handle drip feed for new service
     function addDripFeedChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { dripFeed: e.target.value } });
     }
 
+    // Handle desc for new service
     function addDescChangeHandler(e) {
         dispatch({ type: 'newServiceDetail', payload: { description: e.target.value } });
     }
 
+    // Clear data and close Add Service modal
     function handleBackdropClick() {
         dispatch({ type: 'showAddModal' });
         dispatch({ type: 'clearNewServiceDetail' });
     }
 
+    // Create new service and handle new service form submission
     async function createService(e) {
         e.preventDefault();
 
@@ -319,10 +331,8 @@ const Services = () => {
                             value={state.newService.apiProviderId}
                             onChange={addApiProviderChange}
                         >
-                            <option key={0} value="">
-                                Manual
-                            </option>
-                            {state.providers && state.providers.map((_provider) => (
+                            <option key={0} value="">Manual</option>
+                            {state.providers.length >= 1 && state.providers.map((_provider) => (
                                 <option key={_provider.id} value={_provider.id}>
                                     {_provider.name}
                                 </option>
@@ -406,7 +416,7 @@ const Services = () => {
         </Modal>
     );
 
-    // Editing Services
+    // Open Modal and set required detail of editing services
     function editButtonHandler(e) {
         const uid = e.target.value;
         const serviceDetails = state.services.filter((service) => service.uid === uid);
@@ -415,49 +425,60 @@ const Services = () => {
         dispatch({ type: 'showEditModal' });
     }
 
+    // Change category id for editing services
     function categoryChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { categoryId: e.target.value } });
     }
 
+    // Change title for editing services
     function titleChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { title: e.target.value } });
     }
 
+    // Change API Provider id for editing services
     function providerChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { apiProviderId: e.target.value } });
     }
 
+    // Change API Service id for editing services
     function apiServiceChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { apiServiceId: e.target.value } });
     }
 
+    // Change min quantity for editing services
     function minChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { min: e.target.value } });
     }
 
+    // Change max quantity for editing services
     function maxChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { max: e.target.value } });
     }
 
+    // Change price for editing services
     function priceChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { rate: e.target.value } });
     }
 
+    // Change status for editing services
     function statusChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { status: e.target.value } });
     }
 
+    // Change drip feed for editing services
     function dripFeedChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { dripFeed: e.target.value } });
     }
 
+    // Change description editing services
     function descChangeHandler(e) {
         dispatch({ type: 'editingServiceDetail', payload: { description: e.target.value } });
     }
 
+    // Handle modal close and clear editing service data
     const handleClose = () => {
         dispatch({ type: 'clearEditingService' });
-        dispatch({ type: 'showEditModal ' });
+        dispatch({ type: 'showEditModal' });
     };
 
     const editingSubmitHandler = async (e) => {
@@ -472,7 +493,7 @@ const Services = () => {
             dispatch({
                 type: 'updateServices',
                 payload: { ...data.updatedService },
-                newList: { ...newList },
+                newList,
             });
             handleClose();
             Toast.success(`Service "${id}" updated!`);
@@ -611,6 +632,7 @@ const Services = () => {
         </Modal>
     );
 
+    // Delete service
     const deleteButtonHandler = async (e) => {
         const uid = e.target.value;
         const newList = await state.services.filter((service) => service.uid !== uid);
@@ -625,6 +647,7 @@ const Services = () => {
         }
     };
 
+    // Get API Provider name
     function getProviderName(apiProviderId, apiServiceId) {
         const providerDetail = state.providers && state.providers
             .filter((apiProvider) => apiProvider.id === apiProviderId);
@@ -638,6 +661,7 @@ const Services = () => {
         );
     }
 
+    // Check status of services
     function checkStatus(status) {
         switch (status) {
             case 'active':
@@ -651,8 +675,8 @@ const Services = () => {
         }
     }
 
+    // Get services by category id
     function getServiceByCategory(id) {
-        console.log(state.services);
         const servicesList = state.services && state.services
             .filter((service) => service.categoryId === id);
 
@@ -731,6 +755,7 @@ const Services = () => {
         ));
     }
 
+    // Get service depth data
     const servicesData = () => {
         if (state.services && state.services.length <= 0) {
             return (

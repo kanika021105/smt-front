@@ -3,3 +3,8 @@
 .Support {
     min-height: calc(100vh - (8rem + 2.4rem));
 }
+
+.subject,
+.status {
+    text-transform: capitalize;
+}

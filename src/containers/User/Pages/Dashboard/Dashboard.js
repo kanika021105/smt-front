@@ -37,7 +37,6 @@ const Dashboard = () => {
             .then((res) => {
                 setData(res.data);
                 setGraphData(res.data.graphData);
-                console.log(res.data.graphData);
                 setIsLoading(false);
             })
             .catch((err) => {
