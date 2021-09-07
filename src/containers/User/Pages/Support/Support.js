@@ -433,7 +433,7 @@ const Support = () => {
                             <VscListSelection />
                         </IconContext.Provider>
                         {' '}
-                        Services
+                        Support
                     </h2>
                     <button
                         type="button"

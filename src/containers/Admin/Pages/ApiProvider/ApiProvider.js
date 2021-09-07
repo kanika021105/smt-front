@@ -183,7 +183,7 @@ const ApiProvider = () => {
     const editButtonClickHandler = async (id) => {
         setShowEditModal(true);
 
-        const apiProvider = await apiProviders.filter((provider) => +provider.id === +id);
+        const apiProvider = await apiProviders.filter((provider) => provider.id === id);
         setEditingApiDetails(() => ({
             id: apiProvider[0].id,
             name: apiProvider[0].name,

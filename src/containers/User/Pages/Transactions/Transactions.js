@@ -53,7 +53,7 @@ function Transaction() {
                         <VscListSelection />
                     </IconContext.Provider>
                     {' '}
-                    Services
+                    Transactions
                 </h2>
 
                 <Card>
