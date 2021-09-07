@@ -11,7 +11,7 @@ import Theme from '../../../store/theme';
 import './Topbar.scss';
 
 function Topbar({ clicked }) {
-    const { websiteName } = useContext(AuthContext);
+    const { websiteName, firstName, lastName } = useContext(AuthContext);
     const { toggleTheme, darkTheme } = useContext(Theme);
 
     return (
@@ -34,7 +34,7 @@ function Topbar({ clicked }) {
 
                     <div className="user-detail">
                         <img src={ProfilePic} alt="Profile Pic" className="profilePic" loading="lazy" />
-                        <p className="user_name">Sofia Leon</p>
+                        <p className="user_name">{`${firstName} ${lastName}`}</p>
                         <HiIcons.HiOutlineChevronDown className="profile_dropdown" />
                     </div>
                 </div>
