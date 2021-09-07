@@ -44,6 +44,7 @@ const Support = () => {
             });
     }, []);
 
+    // Send delete request to api and remove deleted ticket from state
     async function deleteTicket(e) {
         const uid = e.target.value;
         try {
@@ -53,6 +54,22 @@ const Support = () => {
 
             const newList = tickets.filter((ticket) => ticket.uid !== uid);
             setTickets([...newList]);
+        } catch (err) {
+            Toast.failed(err.response.data.message);
+        }
+    }
+
+    // Change status of ticket to "Answered"
+    async function updateStatus(e) {
+        const uid = e.target.value;
+
+        try {
+            const url = `/admin/support/ticket/update/status/${uid}`;
+            await Axios.post(url);
+
+            const newList = tickets.filter((ticket) => ticket.uid !== uid);
+            const updatedTicket = tickets.filter((ticket) => ticket.uid === uid);
+            setTickets([{ ...updatedTicket[0], status: 'answered' }, ...newList]);
         } catch (err) {
             Toast.failed(err.response.data.message);
         }
@@ -94,10 +111,10 @@ const Support = () => {
                                                 style={{
                                                     width: '100%',
                                                 }}
-                                                value={ticket.id}
-                                                // onClick={editButtonHandler}
+                                                value={ticket.uid}
+                                                onClick={updateStatus}
                                             >
-                                                Edit
+                                                Mark As Answered
                                             </button>
                                         </li>
 
