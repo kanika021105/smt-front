@@ -21,10 +21,10 @@ const Message = () => {
     const { websiteName, email } = useContext(AuthContext);
 
     const params = useParams();
-    const { id } = params;
+    const { uid } = params;
 
     useEffect(() => {
-        const url = `/support/ticket/${id}`;
+        const url = `/support/ticket/${uid}`;
         Axios.get(url).then((res) => {
             const { data } = res;
 
@@ -33,13 +33,13 @@ const Message = () => {
                 setMessages(data.messages);
             }
         });
-    }, [id]);
+    }, [uid]);
 
     const submitMessageHandler = async (e) => {
         e.preventDefault();
 
         try {
-            const url = `/support/ticket/update/${id}`;
+            const url = `/support/ticket/update/${uid}`;
             const { data } = await Axios.post(url, {
                 message: inputMessage,
             });

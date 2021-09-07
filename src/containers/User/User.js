@@ -23,7 +23,7 @@ const Admin = () => (
             exact
         />
 
-        <Route path="/support/ticket/:id" exact>
+        <Route path="/support/ticket/:uid" exact>
             <TicketMessage />
         </Route>
 

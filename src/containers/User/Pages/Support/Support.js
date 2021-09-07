@@ -113,14 +113,14 @@ const Support = () => {
             });
     }, []);
 
-    const ticketClickHandler = (id) => {
-        const path = `/support/ticket/${id}`;
+    const ticketClickHandler = (uid) => {
+        const path = `/support/ticket/${uid}`;
         return history.push(path);
     };
 
     const ticketList = state.tickets
         && state.tickets.map((ticket) => (
-            <tr key={ticket.id} onClick={() => ticketClickHandler(ticket.id)}>
+            <tr key={ticket.id} onClick={() => ticketClickHandler(ticket.uid)}>
                 <td>{ticket.id}</td>
                 <td>{email}</td>
                 <td>{ticket.subject}</td>

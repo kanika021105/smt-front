@@ -16,14 +16,14 @@ import classes from './messages.module.scss';
 // TODO Fix context api also change clientId useage into email
 const Message = () => {
     const params = useParams();
-    const { id } = params;
+    const { uid } = params;
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
     const { email, websiteName } = useContext(AuthContext);
 
     useEffect(() => {
-        const url = `/admin/support/ticket/${id}`;
+        const url = `/admin/support/ticket/${uid}`;
         Axios.get(url)
             .then((res) => {
                 const { data } = res;
@@ -32,14 +32,14 @@ const Message = () => {
                 setMessages(data.messages);
             })
             .catch((err) => {
-                throw new Error(err);
+                console.log(err);
             });
-    }, [id]);
+    }, [uid]);
 
     const submitMessageHandler = async (e) => {
         e.preventDefault();
 
-        const url = `/admin/support/ticket/update/${id}`;
+        const url = `/admin/support/ticket/update/${uid}`;
         try {
             await Axios.post(url, {
                 message: inputMessage,
