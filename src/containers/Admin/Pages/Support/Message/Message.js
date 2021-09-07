@@ -6,9 +6,10 @@ import { IconContext } from 'react-icons';
 import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
-import supportSVG from '../../../../../assets/icons/ts.svg';
-import customerSVG from '../../../../../assets/icons/cus.svg';
 import AuthContext from '../../../../../store/AuthContext';
+import supportSVG from '../../../../../assets/icons/ts.svg';
+import Toast from '../../../../../components/UI/Toast/Toast';
+import customerSVG from '../../../../../assets/icons/cus.svg';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classes from './messages.module.scss';
@@ -32,7 +33,7 @@ const Message = () => {
                 setMessages(data.messages);
             })
             .catch((err) => {
-                console.log(err);
+                Toast.failed(err.response.data.message);
             });
     }, [uid]);
 
