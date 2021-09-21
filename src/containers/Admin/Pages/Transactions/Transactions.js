@@ -1,25 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import AuthContext from '../../../../store/AuthContext';
+import Theme from '../../../../store/theme';
+
 import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import Theme from '../../../../store/theme';
 
 import './Transactions.scss';
 
 const Transactions = () => {
-    const [transactions, setTransactions] = useState();
-    const { websiteName } = useContext(AuthContext);
-    const { darkTheme } = useContext(Theme);
     const [isLoading, setIsLoading] = useState(false);
+    const [transactions, setTransactions] = useState();
+
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -99,33 +98,14 @@ const Transactions = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Transactions -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="Transactions" />
             <Loading show={isLoading} />
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="Transactions">
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Transactions
-                    </h2>
+                    <PageHeader header="Transactions" />
 
-                    <div>{showData}</div>
+                    {showData}
                 </div>
             </div>
         </>

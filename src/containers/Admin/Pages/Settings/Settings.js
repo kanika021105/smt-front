@@ -1,12 +1,13 @@
 import React, { lazy } from 'react';
 import { Route, Link } from 'react-router-dom';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
-import { Helmet } from 'react-helmet';
+
+import Theme from '../../../../store/theme';
 
 import Card from '../../../../components/UI/Card/Card';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+
 import classes from './Settings.module.scss';
-import Theme from '../../../../store/theme';
 
 const General = lazy(() => import('./General/General'));
 const Paytm = lazy(() => import('./Payment/Paytm'));
@@ -18,30 +19,11 @@ const Settings = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Settings -
-                    {' '}
-                    {process.env.REACT_APP_WEBSITE_NAME}
-                </title>
-            </Helmet>
+            <PageTitle title="Settings" />
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.setting}>
-
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Settings
-                    </h2>
+                    <PageHeader header="Settings" />
 
                     <Card>
                         <div className={classes.setting__container}>

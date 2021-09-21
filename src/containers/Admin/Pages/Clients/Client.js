@@ -1,24 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-
-import Modal from 'react-bootstrap/Modal';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
 import Axios from '../../../../axiosIns';
-import AuthContext from '../../../../store/AuthContext';
+import Theme from '../../../../store/theme';
+
 import Card from '../../../../components/UI/Card/Card';
+import Modal from '../../../../components/UI/Modal/Modal';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import Select from '../../../../components/UI/Select/Select';
+import PageTitle from '../../../../components/Extra/PageTitle';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Dropdown from '../../../../components/UI/Dropdown/Dropdown';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import Theme from '../../../../store/theme';
 
-import 'bootstrap/js/dist/dropdown';
 import './clients.scss';
 
 const Clients = () => {
@@ -36,7 +33,6 @@ const Clients = () => {
         status: '',
     });
 
-    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
@@ -125,91 +121,71 @@ const Clients = () => {
     };
 
     const editModal = (
-        <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Edit User</Modal.Title>
-            </Modal.Header>
-
+        <Modal show={showEditModal} onClose={handleClose} title="Edit User">
             <form onSubmit={eSubmitHandler}>
-                <Modal.Body>
-                    <InputGroup>
-                        <Input
-                            label="First Name"
-                            placeholder="Jhon"
-                            type="text"
-                            value={editingUserDetails.fName}
-                            onChange={eFNChangeHandler}
-                        />
-
-                        <Input
-                            label="Last Name"
-                            placeholder="Doe"
-                            type="text"
-                            value={editingUserDetails.lName}
-                            onChange={eLNChangeHandler}
-                        />
-                    </InputGroup>
-
+                <InputGroup>
                     <Input
-                        label="Email"
-                        placeholder="example@example.com"
-                        type="email"
-                        value={editingUserDetails.email}
-                        onChange={eEmailChangeHandler}
+                        label="First Name"
+                        placeholder="Jhon"
+                        type="text"
+                        value={editingUserDetails.fName}
+                        onChange={eFNChangeHandler}
                     />
 
-                    <InputGroup>
-                        <Input
-                            label="Balance"
-                            placeholder="Balance"
-                            type="number"
-                            value={editingUserDetails.balance}
-                            onChange={eBalanceChangeHandler}
-                        />
+                    <Input
+                        label="Last Name"
+                        placeholder="Doe"
+                        type="text"
+                        value={editingUserDetails.lName}
+                        onChange={eLNChangeHandler}
+                    />
+                </InputGroup>
 
-                        <Input
-                            label="Contact"
-                            placeholder="Contact"
-                            type="number"
-                            value={editingUserDetails.contact}
-                            onChange={eContactChangeHandler}
-                        />
-                    </InputGroup>
+                <Input
+                    label="Email"
+                    placeholder="example@example.com"
+                    type="email"
+                    value={editingUserDetails.email}
+                    onChange={eEmailChangeHandler}
+                />
 
-                    <InputGroup>
-                        <Select
-                            label="Role"
-                            value={editingUserDetails.role}
-                            onChange={eRoleChangeHandler}
-                        >
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </Select>
+                <InputGroup>
+                    <Input
+                        label="Balance"
+                        placeholder="Balance"
+                        type="number"
+                        value={editingUserDetails.balance}
+                        onChange={eBalanceChangeHandler}
+                    />
 
-                        <Select
-                            label="Status"
-                            value={editingUserDetails.status}
-                            onChange={eStatusChangeHandler}
-                        >
-                            <option value="active">Active</option>
-                            <option value="disable">Disable</option>
-                        </Select>
-                    </InputGroup>
+                    <Input
+                        label="Contact"
+                        placeholder="Contact"
+                        type="number"
+                        value={editingUserDetails.contact}
+                        onChange={eContactChangeHandler}
+                    />
+                </InputGroup>
 
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button.ModalSecondary
-                        type="button"
-                        onClick={handleClose}
+                <InputGroup>
+                    <Select
+                        label="Role"
+                        value={editingUserDetails.role}
+                        onChange={eRoleChangeHandler}
                     >
-                        Close
-                    </Button.ModalSecondary>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </Select>
 
-                    <Button.ModalPrimary type="submit">
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                    <Select
+                        label="Status"
+                        value={editingUserDetails.status}
+                        onChange={eStatusChangeHandler}
+                    >
+                        <option value="active">Active</option>
+                        <option value="disable">Disable</option>
+                    </Select>
+                </InputGroup>
             </form>
         </Modal>
     );
@@ -267,32 +243,23 @@ const Clients = () => {
                             <td>{client.balance}</td>
                             <td>{checkStatus(client.status)}</td>
                             <td>
-                                <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                                    <div className="dropdown ">
-                                        <span
-                                            id="option"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <BsThreeDotsVertical />
-                                        </span>
-                                        <ul className="dropdown-menu" aria-labelledby="options">
-                                            <li>
-                                                <Button.Edit
-                                                    value={client.id}
-                                                    onClick={editButtonHandler}
-                                                />
-                                            </li>
+                                <Dropdown>
+                                    <ul>
+                                        <li>
+                                            <Button.Edit
+                                                value={client.id}
+                                                onClick={editButtonHandler}
+                                            />
+                                        </li>
 
-                                            <li>
-                                                <Button.Delete
-                                                    value={client.id}
-                                                    onClick={deleteButtonHandler}
-                                                />
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </IconContext.Provider>
+                                        <li>
+                                            <Button.Delete
+                                                value={client.id}
+                                                onClick={deleteButtonHandler}
+                                            />
+                                        </li>
+                                    </ul>
+                                </Dropdown>
                             </td>
                         </tr>
                     ))}
@@ -306,25 +273,14 @@ const Clients = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Clients -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
-            {editModal}
+            <PageTitle title="Clients" />
             <Loading show={isLoading} />
 
+            {editModal}
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="Clients">
-                    <h2 className="pageTitle">
-                        <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        Clients
-                    </h2>
+                    <PageHeader header="Clients" />
+
                     {toShow}
                 </div>
             </div>

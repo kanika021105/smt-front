@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router';
-import { Helmet } from 'react-helmet';
+// TODO remove bootstrap usage from this page
 import { InputGroup, Card } from 'react-bootstrap';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
 import AuthContext from '../../../../../store/AuthContext';
@@ -11,17 +9,20 @@ import supportSVG from '../../../../../assets/icons/ts.svg';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
+import PageTitle from '../../../../../components/Extra/PageTitle';
+import PageHeader from '../../../../../components/UI/PageHeader/PageHeader';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classes from './messages.module.scss';
 
-// TODO Fix context api also change clientId useage into email
+// TODO Fix context api also change clientId usage to email
 const Message = () => {
     const params = useParams();
     const { uid } = params;
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
-    const { email, websiteName } = useContext(AuthContext);
+    const { email } = useContext(AuthContext);
 
     useEffect(() => {
         const url = `/admin/support/ticket/${uid}`;
@@ -108,29 +109,11 @@ const Message = () => {
     // TODO
     return (
         <>
-            <Helmet>
-                <title>
-                    Ticket -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
+            <PageTitle title="Ticket" />
 
             <div className="container">
                 <div className={classes.support}>
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Ticket
-                    </h2>
+                    <PageHeader header="Ticket" />
 
                     <Card>
                         <Card.Header>

@@ -1,28 +1,23 @@
-import React, {
-    useContext, useEffect, lazy, useReducer,
-} from 'react';
-import { Helmet } from 'react-helmet';
-import Modal from 'react-bootstrap/Modal';
-import { IconContext } from 'react-icons';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { VscListSelection } from 'react-icons/vsc';
+import React, { useContext, useEffect, useReducer } from 'react';
 
 import Axios from '../../../../axiosIns';
 import Theme from '../../../../store/theme';
-import AuthContext from '../../../../store/AuthContext';
+
+import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
+import Select from '../../../../components/UI/Select/Select';
 import Button from '../../../../components/UI/Button/Button';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import CustomModal from '../../../../components/UI/Modal/Modal';
 import Loading from '../../../../components/UI/Loading/Loading';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
+import DropDown from '../../../../components/UI/Dropdown/Dropdown';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Table, { TBody, THead } from '../../../../components/UI/Table/Table';
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
-import 'bootstrap/js/dist/dropdown';
 import classes from './services.module.scss';
-
-const Card = lazy(() => import('../../../../components/UI/Card/Card'));
-const Select = lazy(() => import('../../../../components/UI/Select/Select'));
-const Textarea = lazy(() => import('../../../../components/UI/Textarea/Textarea'));
-const DataNotFound = lazy(() => import('../../../../components/UI/DataNotFound/DataNotFound'));
 
 // Reducer function for useReducer
 function reducer(state, action) {
@@ -188,7 +183,6 @@ const Services = () => {
         },
     });
 
-    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     // Getting all required data on page loading
@@ -294,126 +288,115 @@ const Services = () => {
     }
 
     const addModal = (
-        <Modal show={state.showAddModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Add Service</Modal.Title>
-            </Modal.Header>
-
+        <CustomModal
+            show={state.showAddModal}
+            onClose={handleBackdropClick}
+            onSubmit={createService}
+            title="Add Service"
+        >
             <form onSubmit={createService}>
-                <Modal.Body>
-                    <Select
-                        label="Category"
-                        value={state.newService.categoryId}
-                        onChange={addServiceCategory}
-                        disabled={categoriesCount()}
-                    >
-                        <option key={0} value="">
-                            {categoriesCount() ? 'No category to choose!' : 'Choose a Category'}
+                <Select
+                    label="Category"
+                    value={state.newService.categoryId}
+                    onChange={addServiceCategory}
+                    disabled={categoriesCount()}
+                >
+                    <option key={0} value="">
+                        {categoriesCount() ? 'No category to choose!' : 'Choose a Category'}
+                    </option>
+                    {state.categories.length >= 1 && state.categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.title}
                         </option>
-                        {state.categories.length >= 1 && state.categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.title}
+                    ))}
+                </Select>
+
+                <Input
+                    label="Title"
+                    placeholder="Title"
+                    type="text"
+                    value={state.newService.title}
+                    onChange={addTitleChangeHandler}
+                />
+
+                <InputGroup>
+                    <Select
+                        label="Api Provider"
+                        value={state.newService.apiProviderId}
+                        onChange={addApiProviderChange}
+                    >
+                        <option key={0} value="">Manual</option>
+                        {state.providers.length >= 1 && state.providers.map((_provider) => (
+                            <option key={_provider.id} value={_provider.id}>
+                                {_provider.name}
                             </option>
                         ))}
                     </Select>
 
                     <Input
-                        label="Title"
-                        placeholder="Title"
-                        type="text"
-                        value={state.newService.title}
-                        onChange={addTitleChangeHandler}
+                        label="Api Service Id"
+                        placeholder="Api Service Id"
+                        type="number"
+                        value={state.newService.apiServiceId}
+                        onChange={addApiServiceIdChangeHandler}
+                    />
+                </InputGroup>
+
+                <InputGroup>
+                    <Input
+                        label="Min"
+                        placeholder="Min"
+                        type="number"
+                        value={state.newService.min}
+                        onChange={addMinChangeHandler}
                     />
 
-                    <InputGroup>
-                        <Select
-                            label="Api Provider"
-                            value={state.newService.apiProviderId}
-                            onChange={addApiProviderChange}
-                        >
-                            <option key={0} value="">Manual</option>
-                            {state.providers.length >= 1 && state.providers.map((_provider) => (
-                                <option key={_provider.id} value={_provider.id}>
-                                    {_provider.name}
-                                </option>
-                            ))}
-                        </Select>
-
-                        <Input
-                            label="Api Service Id"
-                            placeholder="Api Service Id"
-                            type="number"
-                            value={state.newService.apiServiceId}
-                            onChange={addApiServiceIdChangeHandler}
-                        />
-                    </InputGroup>
-
-                    <InputGroup>
-                        <Input
-                            label="Min"
-                            placeholder="Min"
-                            type="number"
-                            value={state.newService.min}
-                            onChange={addMinChangeHandler}
-                        />
-
-                        <Input
-                            label="Max"
-                            placeholder="Max"
-                            type="number"
-                            value={state.newService.max}
-                            onChange={addMaxChangeHandler}
-                        />
-                    </InputGroup>
-
-                    <InputGroup>
-                        <Input
-                            label="Price"
-                            placeholder="Price"
-                            type="number"
-                            value={state.newService.rate}
-                            onChange={addPriceChangeHandler}
-                        />
-
-                        <Select
-                            label="Status"
-                            value={state.newService.status}
-                            onChange={addStatusChangeHandler}
-                        >
-                            <option value="active">Active</option>
-                            <option value="disable">Disable</option>
-                        </Select>
-
-                        <Select
-                            label="Drip Feed"
-                            value={state.newService.dripFeed}
-                            onChange={addDripFeedChangeHandler}
-                        >
-                            <option value="active">Active</option>
-                            <option value="disable">Disable</option>
-                        </Select>
-                    </InputGroup>
-
-                    <Textarea
-                        label="Description"
-                        placeholder="Description..."
-                        value={state.newService.description}
-                        rows={4}
-                        onChange={addDescChangeHandler}
+                    <Input
+                        label="Max"
+                        placeholder="Max"
+                        type="number"
+                        value={state.newService.max}
+                        onChange={addMaxChangeHandler}
                     />
-                </Modal.Body>
+                </InputGroup>
 
-                <Modal.Footer>
-                    <Button.ModalSecondary type="button" onClick={handleBackdropClick}>
-                        Close
-                    </Button.ModalSecondary>
+                <InputGroup>
+                    <Input
+                        label="Price"
+                        placeholder="Price"
+                        type="number"
+                        value={state.newService.rate}
+                        onChange={addPriceChangeHandler}
+                    />
 
-                    <Button.ModalPrimary type="submit">
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                    <Select
+                        label="Status"
+                        value={state.newService.status}
+                        onChange={addStatusChangeHandler}
+                    >
+                        <option value="active">Active</option>
+                        <option value="disable">Disable</option>
+                    </Select>
+
+                    <Select
+                        label="Drip Feed"
+                        value={state.newService.dripFeed}
+                        onChange={addDripFeedChangeHandler}
+                    >
+                        <option value="active">Active</option>
+                        <option value="disable">Disable</option>
+                    </Select>
+                </InputGroup>
+
+                <Textarea
+                    label="Description"
+                    placeholder="Description..."
+                    value={state.newService.description}
+                    rows={4}
+                    onChange={addDescChangeHandler}
+                />
             </form>
-        </Modal>
+        </CustomModal>
     );
 
     // Open Modal and set required detail of editing services
@@ -504,132 +487,112 @@ const Services = () => {
 
     // Edit
     const editModal = (
-        <Modal show={state.showEditModal} onHide={handleClose}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Edit Service</Modal.Title>
-            </Modal.Header>
-
+        <CustomModal
+            show={state.showEditModal}
+            onClose={handleClose}
+            onSubmit={editingSubmitHandler}
+            title="Edit Service"
+        >
             <form onSubmit={editingSubmitHandler}>
-                <Modal.Body>
-                    {state.categories >= 1 && (
-                        <Select
-                            label="Category"
-                            value={state.editingService.categoryId}
-                            onChange={categoryChangeHandler}
-                        >
-                            {state.categories && state.categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.title}
-                                </option>
-                            ))}
-                        </Select>
-                    )}
+                {state.categories >= 1 && (
+                    <Select
+                        label="Category"
+                        value={state.editingService.categoryId}
+                        onChange={categoryChangeHandler}
+                    >
+                        {state.categories && state.categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.title}
+                            </option>
+                        ))}
+                    </Select>
+                )}
+
+                <Input
+                    label="Title"
+                    placeholder="Title"
+                    type="text"
+                    value={state.editingService.title}
+                    onChange={titleChangeHandler}
+                />
+
+                <InputGroup>
+                    <Select
+                        label="Api Provider"
+                        value={state.editingService.apiProviderId}
+                        onChange={providerChangeHandler}
+                    >
+                        <option key={0} value="">Manual</option>
+                        {state.providers && state.providers.map((_provider) => (
+                            <option key={_provider.id} value={_provider.id}>
+                                {_provider.name}
+                            </option>
+                        ))}
+                    </Select>
 
                     <Input
-                        label="Title"
-                        placeholder="Title"
-                        type="text"
-                        value={state.editingService.title}
-                        onChange={titleChangeHandler}
+                        label="Api Service Id"
+                        placeholder="Api Service Id"
+                        type="number"
+                        value={state.editingService.apiServiceId}
+                        onChange={apiServiceChangeHandler}
+                    />
+                </InputGroup>
+
+                <InputGroup>
+                    <Input
+                        label="Min"
+                        placeholder="Min"
+                        value={state.editingService.min}
+                        onChange={minChangeHandler}
                     />
 
-                    <InputGroup>
-
-                        <Select
-                            label="Api Provider"
-                            value={state.editingService.apiProviderId}
-                            onChange={providerChangeHandler}
-                        >
-                            <option key={0} value="">
-                                Manual
-                            </option>
-                            {state.providers && state.providers.map((_provider) => (
-                                <option key={_provider.id} value={_provider.id}>
-                                    {_provider.name}
-                                </option>
-                            ))}
-                        </Select>
-
-                        <Input
-                            label="Api Service Id"
-                            placeholder="Api Service Id"
-                            type="number"
-                            value={state.editingService.apiServiceId}
-                            onChange={apiServiceChangeHandler}
-                        />
-                    </InputGroup>
-
-                    <InputGroup>
-                        <Input
-                            label="Min"
-                            placeholder="Min"
-                            value={state.editingService.min}
-                            onChange={minChangeHandler}
-                        />
-
-                        <Input
-                            label="Max"
-                            placeholder="Max"
-                            type="number"
-                            value={state.editingService.max}
-                            onChange={maxChangeHandler}
-                        />
-                    </InputGroup>
-
-                    <InputGroup>
-                        <Input
-                            label="Price"
-                            placeholder="Price"
-                            type="number"
-                            value={state.editingService.rate}
-                            onChange={priceChangeHandler}
-                        />
-
-                        <Select
-                            label="Status"
-                            value={state.editingService.status}
-                            onChange={statusChangeHandler}
-                        >
-                            <option value="active">Active</option>
-                            <option value="disable">Disable</option>
-                        </Select>
-
-                        <Select
-                            label="Drip Feed"
-                            value={state.editingService.dripFeed}
-                            onChange={dripFeedChangeHandler}
-                        >
-                            <option value="active">Active</option>
-                            <option value="deactive">Disable</option>
-                        </Select>
-                    </InputGroup>
-
-                    <Textarea
-                        label="Description"
-                        placeholder="Description..."
-                        value={state.editingService.description}
-                        rows={4}
-                        onChange={descChangeHandler}
+                    <Input
+                        label="Max"
+                        placeholder="Max"
+                        type="number"
+                        value={state.editingService.max}
+                        onChange={maxChangeHandler}
                     />
-                </Modal.Body>
+                </InputGroup>
 
-                <Modal.Footer>
-                    <Button.ModalSecondary
-                        type="button"
-                        onClick={handleClose}
-                    >
-                        Close
-                    </Button.ModalSecondary>
+                <InputGroup>
+                    <Input
+                        label="Price"
+                        placeholder="Price"
+                        type="number"
+                        value={state.editingService.rate}
+                        onChange={priceChangeHandler}
+                    />
 
-                    <Button.ModalPrimary
-                        type="submit"
-                        onClick={editingSubmitHandler}
+                    <Select
+                        label="Status"
+                        value={state.editingService.status}
+                        onChange={statusChangeHandler}
                     >
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                        <option value="active">Active</option>
+                        <option value="disable">Disable</option>
+                    </Select>
+
+                    <Select
+                        label="Drip Feed"
+                        value={state.editingService.dripFeed}
+                        onChange={dripFeedChangeHandler}
+                    >
+                        <option value="active">Active</option>
+                        <option value="deactive">Disable</option>
+                    </Select>
+                </InputGroup>
+
+                <Textarea
+                    label="Description"
+                    placeholder="Description..."
+                    value={state.editingService.description}
+                    rows={4}
+                    onChange={descChangeHandler}
+                />
             </form>
-        </Modal>
+        </CustomModal>
     );
 
     // Delete service
@@ -683,73 +646,40 @@ const Services = () => {
         return servicesList.map((service) => (
             <tr key={service.uid}>
                 <td>{service.id}</td>
-                <td>
-                    {service.title}
-                    {/* To slice service name by 35 letters */}
-                    {/* {service.title.length > 35
-                        ? `${service.title.slice(0, 35)}...`
-                        : service.title} */}
-                </td>
+                <td>{service.title}</td>
                 {getProviderName(service.apiProviderId, service.apiServiceId)}
-                <td>
-                    {service.min}
-                    /
-                    {service.max}
-                </td>
+                <td>{`${service.min} / ${service.max}`}</td>
                 <td>{parseFloat(service.rate).toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
                 <td>{checkStatus(service.status)}</td>
                 <td>
-                    <IconContext.Provider
-                        value={{
-                            style: {
-                                fontSize: '30px',
-                                padding: 'auto',
-                            },
-                        }}
-                    >
-                        <div className={classes.dropdown}>
-                            <span
-                                id="option"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                <BsThreeDotsVertical />
-                            </span>
-                            <ul
-                                className="dropdown-menu"
-                                aria-labelledby="option"
-                            >
-                                <li>
-                                    <button
-                                        type="button"
-                                        className="btn btn-edit"
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                        value={service.uid}
-                                        onClick={editButtonHandler}
-                                    >
-                                        Edit
-                                    </button>
-                                </li>
+                    <DropDown>
+                        <ul>
+                            <li>
+                                <button
+                                    type="button"
+                                    className="btn btn-edit"
+                                    style={{ width: '100%' }}
+                                    value={service.uid}
+                                    onClick={editButtonHandler}
+                                >
+                                    Edit
+                                </button>
+                            </li>
 
-                                <li>
-                                    <button
-                                        type="button"
-                                        className="btn btn-delete"
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                        value={service.uid}
-                                        onClick={deleteButtonHandler}
-                                    >
-                                        Delete
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </IconContext.Provider>
+                            <li>
+                                <button
+                                    type="button"
+                                    className="btn btn-delete"
+                                    style={{ width: '100%' }}
+                                    value={service.uid}
+                                    onClick={deleteButtonHandler}
+                                >
+                                    Delete
+                                </button>
+                            </li>
+                        </ul>
+                    </DropDown>
                 </td>
             </tr>
         ));
@@ -821,37 +751,23 @@ const Services = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Services -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
+            <PageTitle title="Services" />
+            <Loading show={state.isLoading} />
 
             {addModal}
             {editModal}
-            <Loading show={state.isLoading} />
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.Services}>
-                    <div>
-                        <h2 className="pageTitle">
-                            <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                                <VscListSelection />
-                            </IconContext.Provider>
-                            {' '}
-                            Services
-                        </h2>
+                    <PageHeader header="Services" />
 
-                        <button
-                            type="button"
-                            className="add-button"
-                            onClick={handleAddButtonClick}
-                        >
-                            +
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className="add-button"
+                        onClick={handleAddButtonClick}
+                    >
+                        +
+                    </button>
 
                     {servicesData()}
                 </div>

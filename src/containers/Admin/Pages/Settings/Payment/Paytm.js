@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { useState, useEffect } from 'react';
 
 import Axios from '../../../../../axiosIns';
-import Input from '../../../../../components/UI/Input/Input';
-import Loading from '../../../../../components/UI/Loading/Loading';
+
 import Toast from '../../../../../components/UI/Toast/Toast';
+import Input from '../../../../../components/UI/Input/Input';
+import PageTitle from '../../../../../components/Extra/PageTitle';
+import Loading from '../../../../../components/UI/Loading/Loading';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
-import AuthContext from '../../../../../store/AuthContext';
 
 const Razorpay = () => {
     const [merchantId, setMerchantId] = useState('');
     const [merchantKey, setMerchantKey] = useState('');
     const [enable, setEnable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(AuthContext);
 
     useEffect(() => {
         setIsLoading(true);
@@ -70,14 +69,7 @@ const Razorpay = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Payment -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="Settings" />
             <Loading show={isLoading} />
 
             <div className="border p-4">

@@ -1,24 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import Modal from 'react-bootstrap/Modal';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
-import AuthContext from '../../../../store/AuthContext';
-import Card from '../../../../components/UI/Card/Card';
-import Button from '../../../../components/UI/Button/Button';
-import Toast from '../../../../components/UI/Toast/Toast';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Select from '../../../../components/UI/Select/Select';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-import Input, { InputGroup } from '../../../../components/UI/Input/Input';
-import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import Theme from '../../../../store/theme';
 
+import Card from '../../../../components/UI/Card/Card';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Button from '../../../../components/UI/Button/Button';
+import Select from '../../../../components/UI/Select/Select';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import CustomModal from '../../../../components/UI/Modal/Modal';
+import Loading from '../../../../components/UI/Loading/Loading';
+import DropDown from '../../../../components/UI/Dropdown/Dropdown';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+
 import classes from './orders.module.scss';
-import 'bootstrap/js/dist/dropdown';
 
 const Orders = () => {
     const [clients, setClients] = useState();
@@ -42,7 +40,6 @@ const Orders = () => {
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     async function getData(url) {
@@ -140,7 +137,6 @@ const Orders = () => {
         }));
     }
 
-    // TODO Update it
     function handleClose() {
         setShowEditModal(false);
     }
@@ -169,116 +165,103 @@ const Orders = () => {
     }
 
     const editModal = (
-        <Modal show={showEditModal} onHide={handleClose}>
-            <Modal.Header>
-                <Modal.Title>Edit Order</Modal.Title>
-            </Modal.Header>
-
+        <CustomModal
+            show={showEditModal}
+            onClose={handleClose}
+            title="Edit order"
+        >
             <form onSubmit={editingSubmitHandler}>
-                <Modal.Body>
-                    {editingOrder && (
-                        <>
-                            <InputGroup>
-                                <Input
-                                    label="Order Id"
-                                    value={editingOrder.id}
-                                    disabled
-                                />
-
-                                <Input
-                                    label="API Order Id"
-                                    value={editingOrder.apiOrderId || 'Manual'}
-                                    disabled
-                                />
-                            </InputGroup>
-
+                {editingOrder && (
+                    <>
+                        <InputGroup>
                             <Input
-                                label="Service"
-                                value={getServiceTitle(editingOrder.serviceId) || ''}
+                                label="Order Id"
+                                value={editingOrder.id}
                                 disabled
                             />
 
-                            <InputGroup>
-                                <Input
-                                    label="Order Type"
-                                    value={editingOrder.type || 'Manual'}
-                                    disabled
-                                />
+                            <Input
+                                label="API Order Id"
+                                value={editingOrder.apiOrderId || 'Manual'}
+                                disabled
+                            />
+                        </InputGroup>
 
-                                <Input
-                                    label="User"
-                                    value={getUserEmail(editingOrder.clientId) || ''}
-                                    disabled
-                                />
-                            </InputGroup>
+                        <Input
+                            label="Service"
+                            value={getServiceTitle(editingOrder.serviceId) || ''}
+                            disabled
+                        />
 
-                            <InputGroup>
-                                <Input
-                                    label="Amount"
-                                    value={editingOrder.charge || 0}
-                                    disabled
-                                />
+                        <InputGroup>
+                            <Input
+                                label="Order Type"
+                                value={editingOrder.type || 'Manual'}
+                                disabled
+                            />
 
-                                <Input
-                                    label="Quantity"
-                                    value={editingOrder.quantity || 0}
-                                    disabled
-                                />
-                            </InputGroup>
+                            <Input
+                                label="User"
+                                value={getUserEmail(editingOrder.clientId) || ''}
+                                disabled
+                            />
+                        </InputGroup>
 
-                            <InputGroup>
-                                <Input
-                                    label="Start Counter"
-                                    type="number"
-                                    value={editingOrder.startCounter || 0}
-                                    onChange={startCounterChangeHandler}
-                                />
+                        <InputGroup>
+                            <Input
+                                label="Amount"
+                                value={editingOrder.charge || 0}
+                                disabled
+                            />
 
-                                <Input
-                                    label="Remains"
-                                    type="number"
-                                    value={editingOrder.remains || 0}
-                                    onChange={remainChangeHandler}
-                                />
+                            <Input
+                                label="Quantity"
+                                value={editingOrder.quantity || 0}
+                                disabled
+                            />
+                        </InputGroup>
 
-                            </InputGroup>
+                        <InputGroup>
+                            <Input
+                                label="Start Counter"
+                                type="number"
+                                value={editingOrder.startCounter || 0}
+                                onChange={startCounterChangeHandler}
+                            />
 
-                            <InputGroup>
-                                <Input
-                                    label="Link"
-                                    type="url"
-                                    value={editingOrder.link || ''}
-                                    onChange={linkChangeHandler}
-                                />
+                            <Input
+                                label="Remains"
+                                type="number"
+                                value={editingOrder.remains || 0}
+                                onChange={remainChangeHandler}
+                            />
+                        </InputGroup>
 
-                                <Select
-                                    label="Status"
-                                    value={editingOrder.status}
-                                    onChange={statusChangeHandler}
-                                >
-                                    <option value="pending">Pending</option>
-                                    <option value="processing">Processing</option>
-                                    <option value="inprogress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="partial">Partial</option>
-                                    <option value="canceled">Canceled</option>
-                                </Select>
-                            </InputGroup>
-                        </>
-                    )}
-                </Modal.Body>
+                        <InputGroup>
+                            <Input
+                                label="Link"
+                                type="url"
+                                value={editingOrder.link || ''}
+                                onChange={linkChangeHandler}
+                            />
 
-                <Modal.Footer>
-                    <Button.ModalSecondary type="button" onClick={handleClose}>
-                        Close
-                    </Button.ModalSecondary>
-
-                    <Button.ModalPrimary type="submit" onClick={editingSubmitHandler}>
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                            <Select
+                                label="Status"
+                                value={editingOrder.status}
+                                onChange={statusChangeHandler}
+                            >
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="inprogress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="partial">Partial</option>
+                                <option value="canceled">Canceled</option>
+                            </Select>
+                        </InputGroup>
+                    </>
+                )}
             </form>
-        </Modal>
+        </CustomModal>
     );
 
     function getStatus(status) {
@@ -345,7 +328,25 @@ const Orders = () => {
                             <td>{order.startCounter}</td>
                             <td>{getStatus(order.status)}</td>
                             <td>
-                                <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
+                                <DropDown>
+                                    <ul>
+                                        <li>
+                                            <Button.Edit
+                                                value={order.uid}
+                                                onClick={editButtonHandler}
+                                            />
+                                        </li>
+
+                                        <li>
+                                            <Button.Delete
+                                                value={order.uid}
+                                                onClick={deleteButtonHandler}
+                                            />
+                                        </li>
+                                    </ul>
+                                </DropDown>
+                                {/* <IconContext.Provider value={{ style: {
+                                     fontSize: '30px', padding: 'auto' } }}>
                                     <div className="dropdown">
                                         <span
                                             id="option"
@@ -371,7 +372,7 @@ const Orders = () => {
                                             </li>
                                         </ul>
                                     </div>
-                                </IconContext.Provider>
+                                </IconContext.Provider> */}
                             </td>
                         </tr>
                     ))}
@@ -382,26 +383,14 @@ const Orders = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Orders -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
-            {editModal}
+            <PageTitle title="Orders" />
             <Loading show={isLoading} />
+            {editModal}
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.Orders}>
-                    <h2 className="pageTitle">
-                        <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Orders
-                    </h2>
+                    <PageHeader header="Orders" />
+
                     {ordersTable}
                 </div>
             </div>

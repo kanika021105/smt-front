@@ -7,20 +7,10 @@ import * as RiIcons from 'react-icons/ri';
 import ProfilePic from '../../../../assets/img/profile.png';
 
 import './Topbar.css';
-// import ThemeContext from '../../../../context/theme.context';
 import Theme from '../../../../store/theme';
 
 function Topbar({ clicked }) {
     const { darkTheme } = useContext(Theme);
-
-    // Updating theme details in local storage
-    // function setThemeColor() {
-    // // Checking if current theme is dark in that case updating theme to light else to dark
-    //     if (theme === 'dark') {
-    //         return updateTheme('light');
-    //     }
-    //     return updateTheme('dark');
-    // }
 
     return (
         <nav className={darkTheme && 'dark'}>

@@ -1,29 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import Modal from 'react-bootstrap/Modal';
-import { VscListSelection } from 'react-icons/vsc';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import Axios from '../../../../axiosIns';
-import AuthContext from '../../../../store/AuthContext';
-import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Input, { InputGroup } from '../../../../components/UI/Input/Input';
-import Select from '../../../../components/UI/Select/Select';
-import Textarea from '../../../../components/UI/Textarea/Textarea';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-import Toast from '../../../../components/UI/Toast/Toast';
-import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 import Theme from '../../../../store/theme';
 
+import Card from '../../../../components/UI/Card/Card';
+import Modal from '../../../../components/UI/Modal/Modal';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Select from '../../../../components/UI/Select/Select';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import Dropdown from '../../../../components/UI/Dropdown/Dropdown';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+
 import './apiServices.scss';
-import 'bootstrap/js/dist/dropdown';
 
 const ApiServices = () => {
     const { id } = useParams();
-    const { websiteName } = useContext(AuthContext);
 
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
@@ -144,100 +141,80 @@ const ApiServices = () => {
 
     const counter = percentageCount();
     const addUpdateModal = (
-        <Modal show={showAddModal} onHide={handleClose}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Add Service</Modal.Title>
-            </Modal.Header>
-
+        <Modal show={showAddModal} onClose={handleClose} title="Add Service">
             <form onSubmit={formSubmitHandler}>
-                <Modal.Body>
+                <Input
+                    label="Title"
+                    type="text"
+                    placeholder="Title"
+                    value={selectedService.title || ''}
+                    onChange={titleChangeHandler}
+                />
+
+                <Select
+                    label="Category"
+                    value={selectedService.categoryId}
+                    onChange={categoryChangeHandler}
+                >
+                    <option>Choose a category</option>
+                    {categories && categories.map((category) => (
+                        <option
+                            key={category.id}
+                            value={category.id}
+                        >
+                            {category.title}
+                        </option>
+                    ))}
+
+                </Select>
+
+                <InputGroup>
                     <Input
-                        label="Title"
-                        type="text"
-                        placeholder="Title"
-                        value={selectedService.title || ''}
-                        onChange={titleChangeHandler}
+                        label="Minimum Quantity"
+                        type="number"
+                        placeholder="Minimum"
+                        value={selectedService.min || 0}
+                        onChange={minChangeHandler}
+                    />
+
+                    <Input
+                        label="Maximum Quantity"
+                        type="number"
+                        placeholder="Maximum"
+                        value={selectedService.max || 0}
+                        onChange={maxChangeHandler}
+                    />
+                </InputGroup>
+
+                <InputGroup>
+                    <Input
+                        label="Price"
+                        type="number"
+                        placeholder="Price"
+                        value={selectedService.rate || 0}
+                        disabled
                     />
 
                     <Select
-                        label="Category"
-                        value={selectedService.categoryId}
-                        onChange={categoryChangeHandler}
+                        label="Maximum Quantity"
+                        value={profitMargin}
+                        onChange={profitMarginChangeHandler}
                     >
-                        <option>Choose a category</option>
-                        {categories && categories.map((category) => (
-                            <option
-                                key={category.id}
-                                value={category.id}
-                            >
-                                {category.title}
+                        {counter && counter.map((count) => (
+                            <option key={count} value={count}>
+                                {`${count}%`}
                             </option>
                         ))}
-
                     </Select>
+                </InputGroup>
 
-                    <InputGroup>
-                        <Input
-                            label="Minimum Quantity"
-                            type="number"
-                            placeholder="Minimum"
-                            value={selectedService.min || 0}
-                            onChange={minChangeHandler}
-                        />
-
-                        <Input
-                            label="Maximum Quantity"
-                            type="number"
-                            placeholder="Maximum"
-                            value={selectedService.max || 0}
-                            onChange={maxChangeHandler}
-                        />
-                    </InputGroup>
-
-                    <InputGroup>
-                        <Input
-                            label="Price"
-                            type="number"
-                            placeholder="Price"
-                            value={selectedService.rate || 0}
-                            disabled
-                        />
-
-                        <Select
-                            label="Maximum Quantity"
-                            value={profitMargin}
-                            onChange={profitMarginChangeHandler}
-                        >
-                            {counter && counter.map((count) => (
-                                <option key={count} value={count}>
-                                    {`${count}%`}
-                                </option>
-                            ))}
-                        </Select>
-                    </InputGroup>
-
-                    <Textarea
-                        label="Description"
-                        rows="4"
-                        placeholder="Description..."
-                        value={selectedService.description || ''}
-                        onChange={descChangeHandler}
-                    />
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={handleClose}
-                    >
-                        Close
-                    </button>
-
-                    <button className="btn btn-primary" type="submit">
-                        Submit
-                    </button>
-                </Modal.Footer>
+                <Textarea
+                    label="Description"
+                    rows="4"
+                    placeholder="Description..."
+                    value={selectedService.description || ''}
+                    onChange={descChangeHandler}
+                />
             </form>
         </Modal>
     );
@@ -266,33 +243,21 @@ const ApiServices = () => {
                                 <td>{`${service.min} / ${service.max}`}</td>
                                 <td>{service.rate}</td>
                                 <td>
-                                    <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                                        <div className="dropdown ">
-                                            <span
-                                                id="option"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false"
-                                            >
-                                                <BsThreeDotsVertical />
-                                            </span>
-                                            <ul
-                                                className="dropdown-menu"
-                                                aria-labelledby="option"
-                                            >
-                                                <li>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-info"
-                                                        style={{ width: '100%' }}
-                                                        value={service.service}
-                                                        onClick={addButtonHandler}
-                                                    >
-                                                        Add/Update
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </IconContext.Provider>
+                                    <Dropdown>
+                                        <ul>
+                                            <li>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-info"
+                                                    style={{ width: '100%' }}
+                                                    value={service.service}
+                                                    onClick={addButtonHandler}
+                                                >
+                                                    Add/Update
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </Dropdown>
                                 </td>
                             </tr>
                         ))}
@@ -310,32 +275,14 @@ const ApiServices = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Api Services -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
+            <PageTitle title="Api Services" />
 
             {addUpdateModal}
             <Loading show={isLoading} />
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="apiServices">
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Services From Api
-                    </h2>
+                    <PageHeader header="API Services" />
 
                     {toShow}
                 </div>

@@ -1,0 +1,2 @@
+Make a component for page title and use that everywhere
+Make a component for page name instead of defining icon and page name again and again on every page

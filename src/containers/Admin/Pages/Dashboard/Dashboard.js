@@ -1,33 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 import {
-    AreaChart,
-    Area,
-    XAxis,
-    Tooltip,
-    ResponsiveContainer,
+    AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
 import Axios from '../../../../axiosIns';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-import Loading from '../../../../components/UI/Loading/Loading';
+import Theme from '../../../../store/theme';
+
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
-import AuthContext from '../../../../store/AuthContext';
-import Theme from '../../../../store/theme';
 
 import classes from './dashboard.module.scss';
 
 const Dashboard = () => {
     const [data, setData] = useState({});
     const [graphData, setGraphData] = useState();
-    const { websiteName } = useContext(AuthContext);
-    const { darkTheme } = useContext(Theme);
-
     const [isLoading, setIsLoading] = useState(false);
+
+    const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -109,27 +103,12 @@ const Dashboard = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Dashboard -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="Dashboard" />
             <Loading show={isLoading} />
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.dashboard}>
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{ style: { fontSize: '30px' } }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Dashboard
-                    </h2>
+                    <PageHeader header="Dashboard" />
 
                     <section className={classes.section__one}>
                         <div className={classes.section__one__container}>

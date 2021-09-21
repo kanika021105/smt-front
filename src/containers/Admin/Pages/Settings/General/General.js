@@ -1,12 +1,13 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
-import Loading from '../../../../../components/UI/Loading/Loading';
-import Input from '../../../../../components/UI/Input/Input';
-import Toast from '../../../../../components/UI/Toast/Toast';
-import Textarea from '../../../../../components/UI/Textarea/Textarea';
 import AuthContext from '../../../../../store/AuthContext';
+
+import Toast from '../../../../../components/UI/Toast/Toast';
+import Input from '../../../../../components/UI/Input/Input';
+import PageTitle from '../../../../../components/Extra/PageTitle';
+import Loading from '../../../../../components/UI/Loading/Loading';
+import Textarea from '../../../../../components/UI/Textarea/Textarea';
 
 const General = () => {
     const [name, setName] = useState('');
@@ -14,7 +15,7 @@ const General = () => {
     const [keywords, setKeywords] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { websiteName, updateWebsiteName } = useContext(AuthContext);
+    const { updateWebsiteName } = useContext(AuthContext);
 
     useEffect(() => {
         const url = '/admin/settings/general';
@@ -51,14 +52,7 @@ const General = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    General -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="General" />
             <Loading show={isLoading} />
 
             <Input

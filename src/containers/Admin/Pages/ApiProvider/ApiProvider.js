@@ -1,28 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 import { IconContext } from 'react-icons';
 import { FiEdit } from 'react-icons/fi';
 import { IoMdSync } from 'react-icons/io';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { VscListSelection } from 'react-icons/vsc';
 import { MdAttachMoney } from 'react-icons/md';
 import { AiOutlineUnorderedList } from 'react-icons/ai';
-import { Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+// TODO remove bootstrap usage from this file
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-// import Context from '../../../../store/context';
-import AuthContext from '../../../../store/AuthContext';
+import Theme from '../../../../store/theme';
+
 import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import Modal from '../../../../components/UI/Modal/Modal';
+import Toast from '../../../../components/UI/Toast/Toast';
 import Input from '../../../../components/UI/Input/Input';
 import Button from '../../../../components/UI/Button/Button';
 import Select from '../../../../components/UI/Select/Select';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-import Toast from '../../../../components/UI/Toast/Toast';
-import Theme from '../../../../store/theme';
+
 import './apiProvider.scss';
 
 const ApiProvider = () => {
@@ -56,7 +58,6 @@ const ApiProvider = () => {
     const [showSyncModal, setShowSyncModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { darkTheme } = useContext(Theme);
-    const { websiteName } = useContext(AuthContext);
 
     useEffect(() => {
         setIsLoading(true);
@@ -120,62 +121,40 @@ const ApiProvider = () => {
     };
 
     const addModal = (
-        <Modal show={showAddModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Add Api Providers</Modal.Title>
-            </Modal.Header>
-
+        <Modal show={showAddModal} onClose={handleBackdropClick} title="Add API Provider">
             <form onSubmit={addFormSubmitHandler}>
-                <Modal.Body>
-                    <Input
-                        label="Name"
-                        placeholder="Name"
-                        type="text"
-                        value={addApiDetails.name}
-                        onChange={nameChangeHandler}
-                    />
+                <Input
+                    label="Name"
+                    placeholder="Name"
+                    type="text"
+                    value={addApiDetails.name}
+                    onChange={nameChangeHandler}
+                />
 
-                    <Input
-                        label="URL"
-                        placeholder="API URL"
-                        type="url"
-                        value={addApiDetails.url}
-                        onChange={urlChangeHandler}
-                    />
+                <Input
+                    label="URL"
+                    placeholder="API URL"
+                    type="url"
+                    value={addApiDetails.url}
+                    onChange={urlChangeHandler}
+                />
 
-                    <Input
-                        label="API Key"
-                        placeholder="API KEY"
-                        type="text"
-                        value={addApiDetails.key}
-                        onChange={apiKeyChangeHandler}
-                    />
+                <Input
+                    label="API Key"
+                    placeholder="API KEY"
+                    type="text"
+                    value={addApiDetails.key}
+                    onChange={apiKeyChangeHandler}
+                />
 
-                    <Select
-                        label="Status"
-                        value={addApiDetails.status}
-                        onChange={statusChangeHandler}
-                    >
-                        <option key="active" value="active"> Active</option>
-                        <option key="disabled" value="disabled">Disable</option>
-                    </Select>
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button.ModalSecondary
-                        type="button"
-                        onClick={handleBackdropClick}
-                    >
-                        Close
-                    </Button.ModalSecondary>
-
-                    <Button.ModalPrimary
-                        type="button"
-                        onClick={addFormSubmitHandler}
-                    >
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                <Select
+                    label="Status"
+                    value={addApiDetails.status}
+                    onChange={statusChangeHandler}
+                >
+                    <option key="active" value="active"> Active</option>
+                    <option key="disabled" value="disabled">Disable</option>
+                </Select>
             </form>
         </Modal>
     );
@@ -228,60 +207,40 @@ const ApiProvider = () => {
     };
 
     const editModal = (
-        <Modal show={showEditModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Edit Api Details</Modal.Title>
-            </Modal.Header>
+        <Modal show={showEditModal} onClose={handleBackdropClick} title="Edit API Details">
             <form onSubmit={editFormSubmitHandler}>
-                <Modal.Body>
-                    <Input
-                        label="Name"
-                        placeholder="Name"
-                        type="text"
-                        value={editingApiDetails.name}
-                        onChange={editingNameChangeHandler}
-                    />
+                <Input
+                    label="Name"
+                    placeholder="Name"
+                    type="text"
+                    value={editingApiDetails.name}
+                    onChange={editingNameChangeHandler}
+                />
 
-                    <Input
-                        label="URL"
-                        placeholder="API URL"
-                        type="url"
-                        value={editingApiDetails.url}
-                        onChange={editingUrlChangeHandler}
-                    />
+                <Input
+                    label="URL"
+                    placeholder="API URL"
+                    type="url"
+                    value={editingApiDetails.url}
+                    onChange={editingUrlChangeHandler}
+                />
 
-                    <Input
-                        label="API Key"
-                        placeholder="API KEY"
-                        type="text"
-                        value={editingApiDetails.key}
-                        onChange={editingKeyChangeHandler}
-                    />
+                <Input
+                    label="API Key"
+                    placeholder="API KEY"
+                    type="text"
+                    value={editingApiDetails.key}
+                    onChange={editingKeyChangeHandler}
+                />
 
-                    <Select
-                        label="Status"
-                        value={editingApiDetails.status}
-                        onChange={editingStatusChangeHandler}
-                    >
-                        <option key="active" value="active">Active</option>
-                        <option key="disabled" value="disabled">Disable</option>
-                    </Select>
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button.ModalSecondary
-                        type="button"
-                        onClick={handleBackdropClick}
-                    >
-                        Close
-                    </Button.ModalSecondary>
-                    <Button.ModalPrimary
-                        type="button"
-                        onClick={addFormSubmitHandler}
-                    >
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                <Select
+                    label="Status"
+                    value={editingApiDetails.status}
+                    onChange={editingStatusChangeHandler}
+                >
+                    <option key="active" value="active">Active</option>
+                    <option key="disabled" value="disabled">Disable</option>
+                </Select>
             </form>
         </Modal>
     );
@@ -464,7 +423,7 @@ const ApiProvider = () => {
                             <td>{apiProvider.balance}</td>
                             <td>{checkStatus(apiProvider.status)}</td>
                             <td>
-                                <div>
+                                <>
                                     <OverlayTrigger
                                         key="balance"
                                         placement="top"
@@ -570,7 +529,7 @@ const ApiProvider = () => {
                                             </IconContext.Provider>
                                         </button>
                                     </OverlayTrigger>
-                                </div>
+                                </>
                             </td>
                         </tr>
                     ))}
@@ -587,38 +546,23 @@ const ApiProvider = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Api Provider -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
+            <PageTitle title="Api Provider" />
+            <Loading show={isLoading} />
 
             {addModal}
             {editModal}
             {syncModal}
 
-            <Loading show={isLoading} />
-
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className="apiProvider">
-                    <div>
-                        <h2 className="pageTitle">
-                            <IconContext.Provider value={{ style: { fontSize: '2.5rem' } }}>
-                                <VscListSelection />
-                            </IconContext.Provider>
-                            {' '}
-                            Api Providers
-                        </h2>
-                        <button
-                            type="button"
-                            className="add-button"
-                            onClick={handleAddButtonClick}
-                        >
-                            +
-                        </button>
-                    </div>
+                    <PageHeader header="Api Providers" />
+                    <button
+                        type="button"
+                        className="add-button"
+                        onClick={handleAddButtonClick}
+                    >
+                        +
+                    </button>
 
                     {toShow}
                 </div>
