@@ -2,12 +2,12 @@ import React, { useContext, useReducer } from 'react';
 import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
-import classes from './Login.module.scss';
-
 import AuthContext from '../../../store/AuthContext';
-import LoginImage from '../../../assets/img/login.svg';
-// import Toast from '../../../components/UI/Toast/Toast';
+
+import Toast from '../../../components/UI/Toast/Toast';
 import PageTitle from '../../../components/Extra/PageTitle';
+
+import classes from './Login.module.scss';
 
 // Defining reducer function for useReducer
 function reducer(state, action) {
@@ -89,10 +89,7 @@ const Login = () => {
                 return;
             }
         } catch (err) {
-            console.log(err);
-            alert(err.message);
-            // Toast.failed(err.response);
-            // Toast.failed(err.response.data.message || 'Something went wrong!');
+            Toast.failed(err.message || 'Something went wrong!');
         }
     }
 
@@ -100,74 +97,37 @@ const Login = () => {
         <>
             <PageTitle title="Login" />
 
-            <div className={classes.container}>
-                <div className={classes.login}>
-                    <div className={classes.login__image}>
-                        <img src={LoginImage} alt="Login" />
-                        <h3 className={classes.login__image__heading}>
-                            Its good to see you back!
-                        </h3>
-                        <p className={classes.login__image__paragraph}>
-                            Welcome back!, Please log-in to your account to use
-                            our website... Welcome back!, Please log-in to your
-                            account to use our website...
-                        </p>
+            <div className={classes.login}>
+                <div className={classes.form_container}>
+                    <h2 className={classes.login_header}>
+                        Login
+                    </h2>
+
+                    <form className={classes.login_form} onSubmit={submitHandler}>
+                        <input
+                            className={classes.login_input}
+                            value={state.email}
+                            type="email"
+                            placeholder="Email"
+                            onChange={emailChangeHandler}
+                        />
+                        <input
+                            className={classes.login_input}
+                            value={state.password}
+                            type="password"
+                            placeholder="Password"
+                            onChange={passwordChangeHandler}
+                        />
+
+                        <button className={classes.submit_button} type="submit">Login</button>
+                    </form>
+
+                    <div className={classes.login_form_footer}>
+                        <Link to="/signup"> Create account </Link>
+                        or
+                        <Link to="/forget-password"> Forget Password? </Link>
                     </div>
 
-                    <div className={classes.login__form}>
-                        <div className={classes.homeLink}>
-                            <Link to="/">Home</Link>
-                        </div>
-                        <div className={classes.login__form__line}> </div>
-
-                        <h2 className={`${classes.login__form__heading} u-mb-7`}>Sing-In</h2>
-
-                        <form onSubmit={submitHandler}>
-                            <div className={classes.inputSection}>
-                                <label htmlFor="email" className={classes.label}>
-                                    Email
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        placeholder="example@gmail.com"
-                                        value={state.email}
-                                        onChange={emailChangeHandler}
-                                    />
-                                </label>
-                            </div>
-
-                            <div className={classes.inputSection}>
-                                <label
-                                    htmlFor="password"
-                                    className={classes.label}
-                                >
-                                    Password
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Your Password"
-                                        value={state.password}
-                                        minLength="6"
-                                        onChange={passwordChangeHandler}
-                                    />
-                                </label>
-                            </div>
-
-                            <div className={classes.login__form__resetPassword}>
-                                <Link to="/forget-password">
-                                    Forget Password?
-                                </Link>
-                            </div>
-
-                            <div className={classes.login__form__submitButton}>
-                                <button type="submit">Sign-In</button>
-                            </div>
-                        </form>
-                        <span className={classes.login__form__or}>or</span>
-                        <div className={classes.login__form__signupLink}>
-                            <Link to="/signup">Create account</Link>
-                        </div>
-                    </div>
                 </div>
             </div>
         </>

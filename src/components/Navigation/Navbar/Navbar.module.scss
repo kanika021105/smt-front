@@ -1,0 +1,28 @@
+@import '../../../sass/index';
+
+.navbar {
+    height: 6rem;
+    padding: 0 6rem;
+    background-color: $color-white;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    z-index: 100;
+
+    & ul {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    & li {
+        list-style: none;
+
+        & a {
+            text-decoration: none;
+        }
+    }
+}

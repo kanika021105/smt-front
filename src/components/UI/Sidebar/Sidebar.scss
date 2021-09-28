@@ -1,0 +1,126 @@
+@import '../../../sass/index';
+
+
+
+/************************ Sidebar ************************/
+
+.sidebar {
+    width: 7rem;
+    height: 100%;
+    position: fixed;
+    margin-top: 7rem;
+    padding: 5rem 0 10rem 0;
+    background-color: #fff;
+    transition: all .3s ease;
+    overflow: scroll;
+    
+    // Breakpoints
+    @media only screen and (max-width: $bp-10) {
+        width: 6rem;    
+    }
+
+    // Hide scrollbar in sidebar
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    // Set margin for main content depending on side is active or not
+    & + main {
+        margin-left: 7rem;
+        transition: all .3s ease;
+
+        // Breakpoints
+        @media only screen and (max-width: $bp-10) {
+            margin-left: 6rem;
+        }
+    }
+
+    // Style for expanded/Active sidebar
+    &.expand {
+        width: 27rem;
+
+        // Breakpoints
+        @media only screen and (max-width: $bp-10) {
+            width: 24rem;
+        }
+
+        & + main {
+            margin-left: 27rem;
+
+            @media only screen and (max-width: $bp-10) {
+                margin-left: 24rem;
+            }
+        }
+    }
+
+    // Reset margin and padding for ul
+    & ul {
+        padding: 0;
+        margin: 0;        
+    }
+
+    // Hide list styling
+    & li {
+        list-style: none;
+    }
+}
+
+
+
+/************************ Links Style ************************/
+
+.sidebar_link {
+    width: 100%; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+
+    &.active {
+        background-color: #eee;
+        transition: all .3s ease;
+    }
+}
+
+.link_icon {
+    margin-left: 2rem;
+    padding: 1rem 0;
+    font-size: 3rem;
+    color: #666;
+}
+
+.link_title {
+    opacity: 0;
+    margin-left: 2rem;
+    font-size: 2rem;
+    color: #155ED1;
+    font-weight: 500;
+
+    transition: all .3s ease;
+}
+
+.expand .link_title {
+    opacity: 1;
+    transition: all .3s ease;
+}
+
+a.sidebar_link  {
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+
+
+/************************ Dark Theme start Here ************************/
+
+.sidebar.dark {
+    background: #242424;
+}
+
+.dark .sidebar_links.active {
+    background-color: #333;
+}
+
+.dark .link_icon {
+    color: #eee;
+}
