@@ -1,21 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 import { BiMessageSquareDetail } from 'react-icons/bi';
 
 import Axios from '../../../../axiosIns';
-import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Input, { InputGroup } from '../../../../components/UI/Input/Input';
-import Textarea from '../../../../components/UI/Textarea/Textarea';
-import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
-import Select from '../../../../components/UI/Select/Select';
 import Theme from '../../../../store/theme';
-import Toast from '../../../../components/UI/Toast/Toast';
-
-// import Context from '../../../../store/context';
 import AuthContext from '../../../../store/AuthContext';
+
+import Card from '../../../../components/UI/Card/Card';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Select from '../../../../components/UI/Select/Select';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+
 import classes from './NewOrder.module.scss';
 
 const NewOrder = () => {
@@ -44,7 +43,7 @@ const NewOrder = () => {
         message: '',
     });
 
-    const { balance, updateBalance, websiteName } = useContext(AuthContext);
+    const { balance, updateBalance } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
@@ -63,8 +62,7 @@ const NewOrder = () => {
             })
             .catch((err) => {
                 setIsLoading(false);
-
-                throw new Error(err.response.msg);
+                Toast.failed(err.response.data.message);
             });
     }, []);
 
@@ -205,30 +203,11 @@ const NewOrder = () => {
     // TODO Change title to dynamic
     return (
         <>
-            <Helmet>
-                <title>
-                    New Order -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="New Order" />
             <Loading show={isLoading} />
 
             <div className={darkTheme ? `dark container ${classes.newOrder}` : `container ${classes.newOrder}`}>
-                <h2 className="pageTitle">
-                    <IconContext.Provider
-                        value={{
-                            style: {
-                                fontSize: '30px',
-                            },
-                        }}
-                    >
-                        <VscListSelection />
-                    </IconContext.Provider>
-                    {' '}
-                    New Order
-                </h2>
+                <PageHeader header="New Order" />
 
                 <div className={classes.newOrder__container}>
                     <div className={classes.newOrder__item}>

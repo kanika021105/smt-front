@@ -8,7 +8,7 @@ import * as RiIcons from 'react-icons/ri';
 import { FiLogOut } from 'react-icons/fi';
 
 import AuthContext from '../../../../store/AuthContext';
-import './Links.css';
+import './Links.scss';
 
 function Links() {
     const { logout } = useContext(AuthContext);

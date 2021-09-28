@@ -1,24 +1,22 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
-import Toast from '../../../../components/UI/Toast/Toast';
-import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Button from '../../../../components/UI/Button/Button';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Theme from '../../../../store/theme';
 
-import AuthContext from '../../../../store/AuthContext';
+import Card from '../../../../components/UI/Card/Card';
+import Toast from '../../../../components/UI/Toast/Toast';
+import Button from '../../../../components/UI/Button/Button';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+
 import '../../../../sass/pages/user/orders.scss';
 
 const Orders = () => {
     const [orders, setOrders] = useState();
     const [services, setServices] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
@@ -73,24 +71,11 @@ const Orders = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Orders -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="Orders" />
             <Loading show={isLoading} />
 
             <div className={darkTheme ? 'dark container Orders' : 'container Orders'}>
-                <h2 className="pageTitle">
-                    <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                        <VscListSelection />
-                    </IconContext.Provider>
-                    {' '}
-                    Orders
-                </h2>
+                <PageHeader header="Orders" />
 
                 <Card>
                     <Table>

@@ -2,10 +2,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
-import Loading from '../../../../../components/UI/Loading/Loading';
-import Toast from '../../../../../components/UI/Toast/Toast';
-
 import AuthContext from '../../../../../store/AuthContext';
+
+import Toast from '../../../../../components/UI/Toast/Toast';
+import PageTitle from '../../../../../components/Extra/PageTitle';
+import Loading from '../../../../../components/UI/Loading/Loading';
+
 import '../../../../../sass/pages/user/Razorpay.scss';
 
 // TODO Change clientId useage to email
@@ -13,7 +15,7 @@ const Razorpay = () => {
     const [amount, setAmount] = useState(0);
     const { email, fName } = useContext(AuthContext);
     const [keyId, setKeyId] = useState('');
-    const { websiteName, updateBalance, balance } = useContext(Context);
+    const { updateBalance, balance } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
 
     async function getKey() {
@@ -95,12 +97,9 @@ const Razorpay = () => {
 
     return (
         <>
+            <PageTitle title="Razorpay" />
+
             <Helmet>
-                <title>
-                    RazorPay -
-                    {' '}
-                    {websiteName}
-                </title>
                 <script src="https://checkout.razorpay.com/v1/checkout.js" />
             </Helmet>
 

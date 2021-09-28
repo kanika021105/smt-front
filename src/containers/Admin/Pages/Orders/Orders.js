@@ -328,7 +328,7 @@ const Orders = () => {
                             <td>{order.startCounter}</td>
                             <td>{getStatus(order.status)}</td>
                             <td>
-                                <DropDown>
+                                <DropDown id={order.uid}>
                                     <ul>
                                         <li>
                                             <Button.Edit
@@ -345,34 +345,6 @@ const Orders = () => {
                                         </li>
                                     </ul>
                                 </DropDown>
-                                {/* <IconContext.Provider value={{ style: {
-                                     fontSize: '30px', padding: 'auto' } }}>
-                                    <div className="dropdown">
-                                        <span
-                                            id="option"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <BsThreeDotsVertical />
-                                        </span>
-
-                                        <ul className="dropdown-menu" aria-labelledby="option">
-                                            <li>
-                                                <Button.Edit
-                                                    value={order.uid}
-                                                    onClick={editButtonHandler}
-                                                />
-                                            </li>
-
-                                            <li>
-                                                <Button.Delete
-                                                    value={order.uid}
-                                                    onClick={deleteButtonHandler}
-                                                />
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </IconContext.Provider> */}
                             </td>
                         </tr>
                     ))}

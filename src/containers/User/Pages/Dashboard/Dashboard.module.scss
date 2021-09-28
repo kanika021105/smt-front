@@ -61,21 +61,11 @@
     margin-bottom: 2rem;
 
     display: flex;
-    flex-direction: row;
-    gap: 2rem;
     flex-wrap: wrap;
 
 
     &__graph {
-        width: 78%; 
-
-        @media only screen and (max-width: $bp-12) {
-            width: 75%;
-        }
-
-        @media only screen and (max-width: $bp-10) {
-            width: 100%;
-        }
+        flex: 1;
         
         &_container {
             height: 31rem;

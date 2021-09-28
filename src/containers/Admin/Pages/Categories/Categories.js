@@ -198,6 +198,7 @@ function Categories() {
             title="Add Category"
             show={state.showAddModal}
             onClose={handleBackdropClick}
+            onSubmit={formSubmitHandler}
         >
             <form onSubmit={formSubmitHandler}>
                 <Input
@@ -402,7 +403,7 @@ function Categories() {
                             <td>{category.short}</td>
                             <td>{category.status && checkStatus(category.status)}</td>
                             <td>
-                                <Dropdown>
+                                <Dropdown id={category.id}>
                                     <ul>
                                         <li>
                                             <Button.Edit

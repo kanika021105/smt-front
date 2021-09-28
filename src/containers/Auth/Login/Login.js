@@ -1,13 +1,13 @@
 import React, { useContext, useReducer } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 import Axios from '../../../axiosIns';
 import classes from './Login.module.scss';
 
 import AuthContext from '../../../store/AuthContext';
 import LoginImage from '../../../assets/img/login.svg';
-import Toast from '../../../components/UI/Toast/Toast';
+// import Toast from '../../../components/UI/Toast/Toast';
+import PageTitle from '../../../components/Extra/PageTitle';
 
 // Defining reducer function for useReducer
 function reducer(state, action) {
@@ -30,7 +30,7 @@ function reducer(state, action) {
 }
 
 const Login = () => {
-    const { login, websiteName } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
     const [state, dispatch] = useReducer(reducer, {
         email: '',
         password: '',
@@ -89,19 +89,16 @@ const Login = () => {
                 return;
             }
         } catch (err) {
-            Toast.failed(err.response.data.message || 'Something went wrong!');
+            console.log(err);
+            alert(err.message);
+            // Toast.failed(err.response);
+            // Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     }
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Login -
-                    {' '}
-                    {websiteName || ' '}
-                </title>
-            </Helmet>
+            <PageTitle title="Login" />
 
             <div className={classes.container}>
                 <div className={classes.login}>

@@ -91,7 +91,7 @@ function Links() {
                 </div>
             </NavLink>
 
-            <NavLink to="/api" className="sidebar_links">
+            <NavLink to="/api-docs" className="sidebar_links">
                 <div className="link_icon">
                     <BiIcons.BiShareAlt />
                 </div>

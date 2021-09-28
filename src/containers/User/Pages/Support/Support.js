@@ -1,23 +1,21 @@
-import React, {
-    useEffect, useContext, useReducer,
-} from 'react';
+import React, { useEffect, useContext, useReducer } from 'react';
 import { useHistory } from 'react-router';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
-import Modal from 'react-bootstrap/Modal';
 
 import Axios from '../../../../axiosIns';
+import Theme from '../../../../store/theme';
+import AuthContext from '../../../../store/AuthContext';
+
 import Card from '../../../../components/UI/Card/Card';
-import Loading from '../../../../components/UI/Loading/Loading';
-import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Input from '../../../../components/UI/Input/Input';
-import Textarea from '../../../../components/UI/Textarea/Textarea';
 import Select from '../../../../components/UI/Select/Select';
-import Theme from '../../../../store/theme';
+import Modal from '../../../../components/UI/Modal/Modal';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
+import Textarea from '../../../../components/UI/Textarea/Textarea';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 
-import AuthContext from '../../../../store/AuthContext';
 import '../../../../sass/pages/user/support.scss';
 
 // Reducer function for useReducer hook
@@ -96,7 +94,7 @@ const Support = () => {
         },
     });
 
-    const { email, websiteName } = useContext(AuthContext);
+    const { email } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
@@ -170,6 +168,14 @@ const Support = () => {
         dispatch({ type: 'newTicket', payload: { transactionId: e.target.value } });
     };
 
+    function handleBackdropClick() {
+        // resetState();
+        dispatch({ type: 'clearNewTicket' });
+        // setErrorMsg('');
+        // setShowAddModal(false);
+        dispatch({ type: 'showAddModal' });
+    }
+
     const addFormSubmitHandler = async (e) => {
         e.preventDefault();
 
@@ -221,18 +227,11 @@ const Support = () => {
             dispatch({ type: 'showAddModal' });
 
             Toast.success('Ticket created!');
+            handleBackdropClick();
             return dispatch({ type: 'clearNewTicket' });
         } catch (err) {
             return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
-
-    const handleBackdropClick = () => {
-        // resetState();
-        dispatch({ type: 'clearNewTicket' });
-        // setErrorMsg('');
-        // setShowAddModal(false);
-        dispatch({ type: 'showAddModal' });
     };
 
     const selectedSubjectSection = () => {
@@ -341,7 +340,7 @@ const Support = () => {
             case 'other':
                 return (
                     <Textarea
-                        label="Messsage"
+                        label="Message"
                         value={state.newTicket.message}
                         onChange={messageChangeHandler}
                         rows={7}
@@ -355,86 +354,51 @@ const Support = () => {
     };
 
     const addModal = (
-        <Modal show={state.showAddModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Create Ticket</Modal.Title>
-            </Modal.Header>
-
+        <Modal
+            show={state.showAddModal}
+            onClose={handleBackdropClick}
+            title="Create Ticket"
+            onSubmit={addFormSubmitHandler}
+        >
             <form onSubmit={addFormSubmitHandler}>
-                <Modal.Body>
-                    <Select
-                        label="Subject"
-                        value={state.newTicket.subject}
-                        onChange={subjectChangeHandler}
-                    >
-                        <option key={0} value="">
-                            Choose a subject!
-                        </option>
-                        <option key="order" value="order">
-                            Order
-                        </option>
-                        <option key="payment" value="payment">
-                            Payment
-                        </option>
-                        <option key="service" value="service">
-                            Service
-                        </option>
-                        <option key="other" value="other">
-                            Other
-                        </option>
-                    </Select>
+                <Select
+                    label="Subject"
+                    value={state.newTicket.subject}
+                    onChange={subjectChangeHandler}
+                >
+                    <option key={0} value="">
+                        Choose a subject!
+                    </option>
+                    <option key="order" value="order">
+                        Order
+                    </option>
+                    <option key="payment" value="payment">
+                        Payment
+                    </option>
+                    <option key="service" value="service">
+                        Service
+                    </option>
+                    <option key="other" value="other">
+                        Other
+                    </option>
+                </Select>
 
-                    {selectedSubjectSection()}
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={handleBackdropClick}
-                    >
-                        Close
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={addFormSubmitHandler}
-                    >
-                        Submit
-                    </button>
-                </Modal.Footer>
+                {selectedSubjectSection()}
             </form>
         </Modal>
     );
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Support -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-            {addModal}
-
+            <PageTitle title="Support" />
             <Loading show={state.isLoading} />
+
+            {addModal}
 
             <div className={darkTheme ? 'dark container Support' : 'container Support'}>
                 <div>
-                    <h2 className="pageTitle">
-                        <IconContext.Provider
-                            value={{
-                                style: {
-                                    fontSize: '30px',
-                                },
-                            }}
-                        >
-                            <VscListSelection />
-                        </IconContext.Provider>
-                        {' '}
-                        Support
-                    </h2>
+                    <PageHeader header="Support" />
+
                     <button
                         type="button"
                         className="btn-add"

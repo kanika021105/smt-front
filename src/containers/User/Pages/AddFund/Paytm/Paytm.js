@@ -1,19 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Helmet } from 'react-helmet';
 import { CheckoutProvider, Checkout } from 'paytm-blink-checkout-react';
 
 import Axios from '../../../../../axiosIns';
+import AuthContext from '../../../../../store/AuthContext';
+
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Input from '../../../../../components/UI/Input/Input';
+import PageTitle from '../../../../../components/Extra/PageTitle';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
-import AuthContext from '../../../../../store/AuthContext';
 
 const Paytm = () => {
     const [config, setConfig] = useState('');
     const [showCheckout, setShowCheckout] = useState(false);
     const [amount, setAmount] = useState('');
     const [merchantId, setMerchantId] = useState('');
-    const { websiteName, balance, updateBalance } = useContext(AuthContext);
+    const { balance, updateBalance } = useContext(AuthContext);
 
     async function verifyPayment(paymentStatus) {
         try {
@@ -151,13 +152,7 @@ const Paytm = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Paytm -
-                    {' '}
-                    {websiteName}
-                </title>
-            </Helmet>
+            <PageTitle title="Paytm" />
 
             <div className="Paytm">
                 <form onSubmit={toggleCheckout}>

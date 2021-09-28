@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import Axios from '../../../../axiosIns';
-import classes from './api.module.scss';
+
 import Toast from '../../../../components/UI/Toast/Toast';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+
+import classes from './ApiDocs.module.scss';
 
 async function getApiKey() {
     const url = '/api-key';
@@ -24,6 +29,10 @@ function api() {
 
     return (
         <>
+
+            <PageTitle title="API Docs" />
+            <PageHeader header="API Docs" />
+
             <main className={classes.api}>
                 <ApiCard heading="API Details">
                     <div className={classes.row}>

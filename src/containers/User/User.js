@@ -11,7 +11,7 @@ const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
 const AddFund = lazy(() => import('./Pages/AddFund/AddFund'));
 const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
 const Profile = lazy(() => import('./Pages/Profile/Profile'));
-const Api = lazy(() => import('./Pages/API/api'));
+const ApiDocs = lazy(() => import('./Pages/ApiDocs/ApiDocs'));
 
 const PrivacyPolicy = lazy(() => import('../ExtraPages/Terms&Policy/PrivacyPolicy'));
 
@@ -59,8 +59,8 @@ const Admin = () => (
             <Profile />
         </Route>
 
-        <Route path="/api">
-            <Api />
+        <Route path="/api-docs">
+            <ApiDocs />
         </Route>
 
         <Route path="/privacy">

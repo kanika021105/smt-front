@@ -1,3 +1,5 @@
+@import '../../../../sass/index';
+
 /* Default Theme (light theme) */
 .sidebar_links {
     display: flex;
@@ -6,11 +8,11 @@
 
     width: 100%;
     overflow: hidden;
-}
 
-.sidebar_links.active {
-    background-color: #eee;
-    transition: all .3s ease;
+    &.active {
+        background-color: #eee;
+        transition: all .3s ease;
+    }
 }
 
 a.sidebar_links  {
@@ -22,6 +24,10 @@ a.sidebar_links  {
     padding: 1rem 0;
     font-size: 3rem;
     color: #666;
+
+    @media only screen and (max-width: $bp-10) {
+        margin-left: 1.5rem;
+    }
 }
 
 .link_title {

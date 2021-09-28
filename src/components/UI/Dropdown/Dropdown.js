@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import './Dropdown.scss';
 
-function Dropdown({ children }) {
+function Dropdown({ children, id }) {
     // Dropdown function
-    function dropdown() {
-        document.querySelector('#dropdownContent').classList.toggle('show');
+    function dropdown(e) {
+        const targetId = e.target.id;
+        document.getElementById(`${targetId}dropdown`).classList.toggle('show');
     }
 
     // Close dropdown if user click outside of it
@@ -25,8 +26,8 @@ function Dropdown({ children }) {
 
     return (
         <div className="dropdown">
-            <BsThreeDotsVertical onClick={dropdown} className="dropbtn" />
-            <div id="dropdownContent" className="dropdownContent">
+            <BsThreeDotsVertical id={id} onClick={dropdown} className="dropbtn" />
+            <div id={`${id}dropdown`} className="dropdownContent">
                 {children}
             </div>
         </div>
@@ -35,6 +36,7 @@ function Dropdown({ children }) {
 
 Dropdown.propTypes = {
     children: PropTypes.node.isRequired,
+    id: PropTypes.string.isRequired,
 };
 
 export default Dropdown;

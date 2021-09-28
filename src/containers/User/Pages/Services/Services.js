@@ -1,17 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../axiosIns';
+import Theme from '../../../../store/theme';
+
 import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
+import PageTitle from '../../../../components/Extra/PageTitle';
 import Loading from '../../../../components/UI/Loading/Loading';
+import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
-import Theme from '../../../../store/theme';
 
-import AuthContext from '../../../../store/AuthContext';
 import '../../../../sass/pages/user/services.scss';
 
 function Services() {
@@ -19,7 +18,6 @@ function Services() {
     const [categories, setCategories] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { websiteName } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
@@ -58,24 +56,11 @@ function Services() {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Services -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="Services" />
             <Loading show={isLoading} />
 
             <div className={darkTheme ? 'dark container Services' : 'container Services'}>
-                <h2 className="pageTitle">
-                    <IconContext.Provider value={{ style: { fontSize: '30px' } }}>
-                        <VscListSelection />
-                    </IconContext.Provider>
-                    {' '}
-                    Services
-                </h2>
+                <PageHeader header="Services" />
 
                 {categories && categories.map((category) => (
                     <div className="serviceListCard" key={category.id}>

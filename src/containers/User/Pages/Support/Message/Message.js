@@ -1,24 +1,24 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { InputGroup, Card } from 'react-bootstrap';
-import { IconContext } from 'react-icons';
-import { VscListSelection } from 'react-icons/vsc';
 
 import Axios from '../../../../../axiosIns';
-import classes from './messages.module.scss';
-import Toast from '../../../../../components/UI/Toast/Toast';
+import AuthContext from '../../../../../store/AuthContext';
 import supportSVG from '../../../../../assets/icons/ts.svg';
 import customerSVG from '../../../../../assets/icons/cus.svg';
 
-import AuthContext from '../../../../../store/AuthContext';
+import Toast from '../../../../../components/UI/Toast/Toast';
+import PageTitle from '../../../../../components/Extra/PageTitle';
+import PageHeader from '../../../../../components/UI/PageHeader/PageHeader';
+
+import classes from './messages.module.scss';
 
 const Message = () => {
     const [ticket, setTicket] = useState();
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
 
-    const { websiteName, email } = useContext(AuthContext);
+    const { email } = useContext(AuthContext);
 
     const params = useParams();
     const { uid } = params;
@@ -105,18 +105,11 @@ const Message = () => {
     // TODO Change title to dynamic
     return (
         <>
-            <Helmet>
-                <title>
-                    Ticket -
-                    {' '}
-                    {websiteName || ''}
-                    {' '}
-                </title>
-            </Helmet>
+            <PageTitle title="Ticket" />
 
             <div className="container">
                 <div className={classes.support}>
-                    <h2 className="pageTitle">
+                    {/* <h2 className="pageTitle">
                         <IconContext.Provider
                             value={{
                                 style: {
@@ -128,7 +121,8 @@ const Message = () => {
                         </IconContext.Provider>
                         {' '}
                         Ticket
-                    </h2>
+                    </h2> */}
+                    <PageHeader header="Ticket" />
 
                     <Card>
                         <Card.Header>

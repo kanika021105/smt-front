@@ -653,7 +653,7 @@ const Services = () => {
                 <td>{service.dripFeed}</td>
                 <td>{checkStatus(service.status)}</td>
                 <td>
-                    <DropDown>
+                    <DropDown id={service.uid}>
                         <ul>
                             <li>
                                 <button

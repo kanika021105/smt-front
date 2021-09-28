@@ -1,13 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
-import AuthContext from '../../../store/AuthContext';
-
 import SignUpImage from '../../../assets/img/signup.svg';
+
+import PageTitle from '../../../components/Extra/PageTitle';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({
@@ -23,7 +22,6 @@ const Signup = () => {
     const [showError, setShowError] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-    const { websiteName } = useContext(AuthContext);
 
     const firstNameChangeHandler = (e) => {
         setUserDetails((preState) => ({
@@ -145,13 +143,7 @@ const Signup = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    SignUp -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
+            <PageTitle title="SignUp" />
 
             {successModal}
 

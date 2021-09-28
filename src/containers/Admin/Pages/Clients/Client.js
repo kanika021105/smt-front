@@ -121,7 +121,12 @@ const Clients = () => {
     };
 
     const editModal = (
-        <Modal show={showEditModal} onClose={handleClose} title="Edit User">
+        <Modal
+            show={showEditModal}
+            onClose={handleClose}
+            title="Edit User"
+            onSubmit={eSubmitHandler}
+        >
             <form onSubmit={eSubmitHandler}>
                 <InputGroup>
                     <Input
@@ -243,7 +248,7 @@ const Clients = () => {
                             <td>{client.balance}</td>
                             <td>{checkStatus(client.status)}</td>
                             <td>
-                                <Dropdown>
+                                <Dropdown id={client.id}>
                                     <ul>
                                         <li>
                                             <Button.Edit

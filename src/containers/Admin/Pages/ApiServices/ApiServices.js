@@ -243,7 +243,7 @@ const ApiServices = () => {
                                 <td>{`${service.min} / ${service.max}`}</td>
                                 <td>{service.rate}</td>
                                 <td>
-                                    <Dropdown>
+                                    <Dropdown id={service.service}>
                                         <ul>
                                             <li>
                                                 <button

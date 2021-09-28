@@ -2,8 +2,10 @@ import React from 'react';
 
 import Axios from '../../../../axiosIns';
 import AuthContext from '../../../../store/AuthContext';
+
 import Input from '../../../../components/UI/Input/Input';
 import Toast from '../../../../components/UI/Toast/Toast';
+import PageTitle from '../../../../components/Extra/PageTitle';
 
 function profile() {
     const Ctx = React.useContext(AuthContext);
@@ -40,6 +42,8 @@ function profile() {
 
     return (
         <>
+            <PageTitle title="Profile" />
+
             <div className="container">
                 <Input value={clientInfo.firstName} onChange={() => ''} label="First Name" />
                 <Input value={clientInfo.lastName} onChange={() => ''} label="Last Name" />

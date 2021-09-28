@@ -93,7 +93,7 @@ const Support = () => {
     const ticketList = state.tickets
         && state.clients
         && state.tickets.map((ticket) => {
-            const clientDetail = state.clients.find((client) => client.id === ticket.clientId);
+            const clientDetail = state.clients.find((client) => client.id === ticket.userId);
 
             return (
                 ticket && (
@@ -107,7 +107,7 @@ const Support = () => {
                         <td className="subject">{ticket.subject}</td>
                         <td className="status">{ticket.status}</td>
                         <td>
-                            <Dropdown>
+                            <Dropdown id={ticket.uid}>
                                 <ul>
                                     <li>
                                         <button
