@@ -127,7 +127,6 @@ const Login = () => {
                         or
                         <Link to="/forget-password"> Forget Password? </Link>
                     </div>
-
                 </div>
             </div>
         </>

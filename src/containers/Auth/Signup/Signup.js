@@ -1,12 +1,12 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
-import SignUpImage from '../../../assets/img/signup.svg';
-
+import Modal from '../../../components/UI/Modal/Modal';
 import PageTitle from '../../../components/Extra/PageTitle';
+// import SignUpImage from '../../../assets/img/signup.svg';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({
@@ -97,230 +97,78 @@ const Signup = () => {
     };
 
     const successModal = (
-        <Modal show={showModal} onHide={handleClose} centered>
-            <Modal.Body>
-                <div className={classes.successModal}>
-                    <div className="centered">
-                        <img
-                            className={classes.successModal__img}
-                            src="/images/success.svg"
-                            alt="successImage"
-                        />
-                    </div>
-                    <h3 className={classes.successModal__heading}>
-                        Congratulations!
-                    </h3>
-
-                    <p className={classes.successModal__paragraph}>
-                        You have successfully created your account! Please
-                        {' '}
-                        <Link
-                            className={classes.successModal__link}
-                            to="/login"
-                        >
-                            Login
-                        </Link>
-                        {' '}
-                        to your your account to use our website.
-                    </p>
-
-                    <div className="centered">
-                        <button
-                            type="button"
-                            className={[
-                                'btn btn-primary',
-                                classes.successModal__btn,
-                            ].join(' ')}
-                            onClick={handleClose}
-                        >
-                            Okay!
-                        </button>
-                    </div>
+        <Modal show={showModal} onClose={handleClose} hideButton centered>
+            <div className={classes.successModal}>
+                <div className="centered">
+                    <img
+                        className={classes.successModal__img}
+                        src="/images/success.svg"
+                        alt="successImage"
+                    />
                 </div>
-            </Modal.Body>
+                <h3 className={classes.successModal__heading}>
+                    Congratulations!
+                </h3>
+
+                <p className={classes.successModal__paragraph}>
+                    You have successfully created your account! Please
+                    {' '}
+                    <Link
+                        className={classes.successModal__link}
+                        to="/login"
+                    >
+                        Login
+                    </Link>
+                    {' '}
+                    to your your account to use our website.
+                </p>
+
+                <div className="centered">
+                    <button
+                        type="button"
+                        className={[
+                            'btn btn-primary',
+                            classes.successModal__btn,
+                        ].join(' ')}
+                        onClick={handleClose}
+                    >
+                        Okay!
+                    </button>
+                </div>
+            </div>
         </Modal>
     );
 
     return (
         <>
             <PageTitle title="SignUp" />
-
             {successModal}
 
-            <div className={classes.container}>
-                <div className={classes.singup}>
-                    <div className={classes.singup__form}>
-                        <div className={classes.homeLink}>
-                            <Link to="/">Home</Link>
+            <div className={classes.signup}>
+                <div className={classes.form_container}>
+                    <h2 className={classes.signup_header}>
+                        SignUp
+                    </h2>
+
+                    <form className={classes.signup_form} onSubmit={submitHandler}>
+                        <div className={classes.input_group}>
+                            <input className={classes.input_field} type="text" placeholder="First Name" />
+                            <input className={classes.input_field} type="text" placeholder="Last Name" />
                         </div>
-                        <div className={classes.singup__form__line} />
-                        <h2
-                            className={[
-                                classes.singup__form__heading,
-                                showError ? 'u-mb-2' : 'u-mb-2',
-                            ].join(' ')}
-                        >
-                            Sing-Up
-                        </h2>
 
-                        <h4
-                            className={
-                                showError
-                                    ? classes.errorMsg
-                                    : classes.errorHidden
-                            }
-                        >
-                            {errorMsg}
-                        </h4>
+                        <input className={classes.input_field} type="email" placeholder="Email" />
+                        <input className={classes.input_field} type="password" placeholder="Password" />
+                        <input className={classes.input_field} type="password" placeholder="Confirm Password" />
+                        <button className={classes.submit_button} type="submit">Login</button>
+                    </form>
 
-                        <form onSubmit={submitHandler}>
-                            <div className={classes.formControl}>
-                                <div className={classes.inputGroup}>
-                                    <div className={classes.inputSection}>
-                                        <label className={classes.label} htmlFor="fName">
-                                            First Name
-                                            <input
-                                                className={showError && classes.invalid}
-                                                type="text"
-                                                id="fName"
-                                                placeholder="Jhon"
-                                                pattern="[a-z,A-Z]{1,}"
-                                                title="Only alphabet allowed"
-                                                value={userDetails.firstName}
-                                                onChange={firstNameChangeHandler}
-                                                spellCheck={false}
-                                                minLength={1}
-                                            />
-                                        </label>
-                                    </div>
-
-                                    <div className={classes.inputSection}>
-                                        <label className={classes.label} htmlFor="lName">
-                                            Last Name
-                                            <input
-                                                id="lName"
-                                                className={showError && classes.invalid}
-                                                type="text"
-                                                placeholder="Doe"
-                                                pattern="[a-z,A-Z]{1,}"
-                                                title="Only alphabet allowed"
-                                                value={userDetails.lastName}
-                                                onChange={lastNameChangeHandler}
-                                                spellCheck={false}
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div className={classes.inputSection}>
-                                    <label className={classes.label} htmlFor="email">
-                                        Email
-                                        <input
-                                            id="email"
-                                            className={showError && classes.invalid}
-                                            type="email"
-                                            placeholder="example@gmail.com"
-                                            value={userDetails.email}
-                                            onChange={emailChangeHandler}
-                                            spellCheck={false}
-                                        />
-                                    </label>
-                                </div>
-
-                                <div className={classes.inputSection}>
-                                    <label className={classes.label} htmlFor="contact">
-                                        Contact
-                                        <input
-                                            id="contact"
-                                            className={showError && classes.invalid}
-                                            type="tel"
-                                            placeholder="Contact"
-                                            pattern="[0-9]{10,14}"
-                                            title="Enter valid phone number"
-                                            value={userDetails.contact}
-                                            onChange={contactChangeHandler}
-                                            spellCheck={false}
-                                        />
-                                    </label>
-                                </div>
-
-                                <div className={classes.inputGroup}>
-                                    <div className={classes.inputSection}>
-                                        <label className={classes.label} htmlFor="password">
-                                            Password
-                                            <input
-                                                id="password"
-                                                className={showError && classes.invalid}
-                                                type="password"
-                                                placeholder="Password"
-                                                minLength={6}
-                                                value={userDetails.password}
-                                                onChange={passwordChangeHandler}
-                                                spellCheck={false}
-                                            />
-                                        </label>
-                                    </div>
-
-                                    <div className={classes.inputSection}>
-                                        <label className={classes.label} htmlFor="confirmPassword">
-                                            Confirm Password
-                                            <input
-                                                className={showError && classes.invalid}
-                                                type="password"
-                                                placeholder="Confirm Password"
-                                                value={userDetails.confirmPassword}
-                                                onChange={confirmPasswordChangeHandler}
-                                                minLength={6}
-                                                spellCheck={false}
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className={classes.terms}>
-                                <input
-                                    className={showError && classes.invalid}
-                                    type="checkbox"
-                                    placeholder="Confirm Password"
-                                    value={userDetails.confirmPassword}
-                                    onChange={confirmPasswordChangeHandler}
-                                    minLength={6}
-                                    spellCheck={false}
-                                />
-                                I agree to all
-                                {' '}
-                                <Link to="/#">Terms</Link>
-                                {' '}
-                                &
-                                {' '}
-                                <Link to="/#">Policy</Link>
-                                .
-                            </div>
-
-                            <div className={classes.singup__form__submitButton}>
-                                <button type="submit">Sign-Up</button>
-                            </div>
-                            <p className={classes.singup__form__signupLink}>
-                                Already singed up?
-                                {' '}
-                                <Link to="/login">Login</Link>
-                            </p>
-                        </form>
-                    </div>
-
-                    <div className={classes.singup__image}>
-                        <img src={SignUpImage} alt="Login" />
-                        <h3 className={classes.singup__image__heading}>
-                            Wanna grow on social Media?
-                        </h3>
-                        <p className={classes.singup__image__paragraph}>
-                            Create an account and manage all your social media
-                            growth. We provide all services you need to grow
-                            your social media!
-                        </p>
+                    <div className={classes.singup_form_footer}>
+                        Already user?
+                        {' '}
+                        <Link to="/login">Login</Link>
                     </div>
                 </div>
+
             </div>
         </>
     );

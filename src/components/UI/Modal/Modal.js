@@ -6,7 +6,7 @@ import { CSSTransition } from 'react-transition-group';
 import './Modal.scss';
 
 function Modal({
-    children, title, onSubmit, onClose, show,
+    children, title, onSubmit, onClose, show, hideButton, centered,
 }) {
     // Function to be called on Esc key press and close modal
     function closeOnEscKeyPress(e) {
@@ -32,7 +32,11 @@ function Modal({
             timeout={{ enter: 0, exit: 300 }}
         >
             <div className={`custom__modal ${show ? 'show' : ''}`} onClick={onClose} role="none">
-                <div className="custom__modal__content" onClick={(e) => e.stopPropagation()} role="none">
+                <div
+                    className={`custom__modal__content ${centered && 'centered'}`}
+                    onClick={(e) => e.stopPropagation()}
+                    role="none"
+                >
                     <div className="custom__modal__header">
                         <h3>{title}</h3>
                     </div>
@@ -41,10 +45,12 @@ function Modal({
                         {children}
                     </div>
 
-                    <div className="custom__modal__footer">
-                        <button type="button" className="close_button" onClick={onClose}>Close</button>
-                        <button type="submit" className="submit_button" onClick={onSubmit}>Submit</button>
-                    </div>
+                    {!hideButton && (
+                        <div className="custom__modal__footer">
+                            <button type="button" className="close_button" onClick={onClose}>Close</button>
+                            <button type="submit" className="submit_button" onClick={onSubmit}>Submit</button>
+                        </div>
+                    )}
                 </div>
             </div>
         </CSSTransition>,
@@ -58,6 +64,8 @@ Modal.propTypes = {
     onClose: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
+    hideButton: PropTypes.bool,
+    centered: PropTypes.bool,
 };
 
 export default Modal;

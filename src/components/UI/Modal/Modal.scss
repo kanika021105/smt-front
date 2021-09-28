@@ -33,6 +33,10 @@
 
         transform: translateY(-20rem);
         transition: all .3s ease-in-out;
+
+        &.centered {
+            margin: auto;
+        }
     }
 
     &.enter-done &__content {

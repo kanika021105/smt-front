@@ -1,428 +1,79 @@
 @import '../../../sass/index';
 
-.container {
-    height: 100%;
-    min-height: 100vh;
-    width: 100%;
-    min-width: 100vw;
-    background-image: linear-gradient(
-        to right,
-        lighten($color-primary, 2),
-        darken($color-primary, 10)
-    );
-    position: relative;
-}
+.signup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 6rem;
+    background-color: $color-primary;
 
-.singup {
-    height: calc(100vh - (20rem));
-    max-height: 43.75em;
-    width: calc(100vw - (30rem));
-    max-width: 75em;
+    z-index: -1;
+    overflow: auto;
 
-    background-color: $color-white;
-    border-radius: 3rem;
-    padding: 2rem;
-    overflow: hidden;
+    .form_container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    display: flex;
-    flex-direction: row;
-
-    @media only screen and (max-width: $bp-14) {
-        width: calc(100vw - (28rem));
+        max-width: 50rem;
+        border: none;
+        border-radius: .4rem;
+        padding: 3rem 2rem 2rem 3rem;
+        background: $color-white;
     }
 
-    @media only screen and (max-width: $bp-13) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (26rem));
-    }
-
-    @media only screen and (max-width: $bp-12) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (22rem));
-    }
-
-    @media only screen and (max-width: $bp-11) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (12rem));
-    }
-
-    @media only screen and (max-width: $bp-11) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (8rem));
-    }
-
-    @media only screen and (max-width: $bp-9) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (28rem));
-    }
-
-    @media only screen and (max-width: $bp-8) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (22rem));
-    }
-
-    @media only screen and (max-width: $bp-7) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (16rem));
-    }
-
-    @media only screen and (max-width: $bp-6) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (9rem));
-    }
-
-    @media only screen and (max-width: $bp-4) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (4rem));
-    }
-
-    @media only screen and (max-width: $bp-3) {
-        height: calc(100vh - (8rem));
-        width: calc(100vw - (1rem));
-    }
-
-    &__form {
-        flex: 1;
+    .signup_header {
         text-align: center;
-        position: relative;
-
-        overflow: scroll;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        & .homeLink {
-            position: absolute;
-            left: 2%;
-            letter-spacing: 2;
-            border: none;
-            border-bottom: 1px solid lighten($color-primary, 8);
-
-            a {
-                text-decoration: none;
-            }
-        }
-
-        & .errorMsg {
-            color: $color-red;
-            width: fit-content;
-            text-align: center;
-            margin: 0 auto;
-            margin-bottom: 1rem;
-        }
-
-        &__line {
-            border-left: 1px solid $color-grey-light-2;
-            position: absolute;
-            height: 60%;
-            top: 50%;
-            left: calc(100% - (1px));
-            transform: translateY(-50%);
-
-            @media only screen and (max-width: $bp-9) {
-                display: none;
-            }
-        }
-
-        &__heading {
-            display: block;
-            font-size: 2.5rem;
-            margin-top: 2rem;
-
-            color: $color-primary;
-        }
-
-        & .formControl {
-            max-width: 70%;
-            margin: 0 auto;
-
-            @media only screen and (max-width: $bp-14) {
-                max-width: 90%;
-            }
-
-            @media only screen and (max-width: $bp-12) {
-                max-width: 92%;
-            }
-
-            @media only screen and (max-width: $bp-9) {
-                max-width: 85%;
-            }
-
-            @media only screen and (max-width: $bp-8) {
-                max-width: 92%;
-            }
-
-            @media only screen and (max-width: $bp-6) {
-                max-width: 100%;
-            }
-
-            & .inputGroup {
-                display: flex;
-                flex-direction: row;
-                flex: 1;
-                justify-content: space-between;
-
-                @media only screen and (max-width: $bp-5) {
-                    flex-direction: column;
-                }
-            }
-
-            & .inputSection {
-                & .label {
-                    display: flex;
-                    justify-content: flex-start;
-                    padding-left: 0.4rem;
-                    font-size: 1.6rem;
-                }
-
-                & input {
-                    width: 100%;
-                    padding: 0.6rem 1rem;
-                    margin: 0.5rem 0 1rem 0;
-                    font-size: 1.5rem;
-                    border: none;
-                    color: darken($color-grey, 5);
-                    background-color: lighten($color-grey, 48);
-                    border-radius: 0.5rem;
-                    transition: all 0.2s;
-                    display: inline-block;
-
-                    @media only screen and (max-width: $bp-7) {
-                        // font-size: 1.5rem;
-                    }
-
-                    &::placeholder {
-                        color: lighten($color-grey-light-2, 5);
-                    }
-
-                    &:focus {
-                        outline: none;
-                        font-size: 1.6rem;
-                        border: 2px solid $color-primary;
-                    }
-
-                    &:invalid {
-                        outline: none;
-                        border: 1px solid $color-red;
-                    }
-                }
-
-                & .invalid {
-                    border-color: $color-red;
-                }
-            }
-        }
-
-        & .terms {
-            display: flex;
-            align-items: center;
-            max-width: 70%;
-            margin: 0.5rem auto 1.8rem auto;
-            white-space: nowrap;
-
-            @media only screen and (max-width: $bp-14) {
-                max-width: 90%;
-            }
-
-            @media only screen and (max-width: $bp-12) {
-                max-width: 92%;
-            }
-
-            @media only screen and (max-width: $bp-9) {
-                max-width: 85%;
-            }
-
-            @media only screen and (max-width: $bp-8) {
-                max-width: 92%;
-            }
-
-            @media only screen and (max-width: $bp-6) {
-                max-width: 100%;
-            }
-
-            & input {
-                margin: 0 0.6rem;
-            }
-
-            a {
-                padding: 0 0.4rem;
-            }
-        }
-
-        &__submitButton {
-            margin: 0 auto 1.5rem auto;
-            max-width: 70%;
-
-            @media only screen and (max-width: $bp-14) {
-                max-width: 90%;
-            }
-
-            @media only screen and (max-width: $bp-12) {
-                max-width: 92%;
-            }
-
-            @media only screen and (max-width: $bp-9) {
-                max-width: 85%;
-            }
-
-            @media only screen and (max-width: $bp-8) {
-                max-width: 92%;
-            }
-
-            @media only screen and (max-width: $bp-6) {
-                max-width: 100%;
-            }
-
-            & button {
-                width: 100%;
-                border: none;
-                padding: 1rem 3rem;
-                font-size: 1.9rem;
-                background-color: lighten($color-primary, 2);
-                color: $color-white;
-                border-radius: 25rem;
-                transition: all 0.3s;
-
-                &:hover {
-                    background-color: darken($color-primary, 4);
-                    transform: scale(1.05);
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                }
-
-                &:active {
-                    transform: scale(1);
-                    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-                }
-
-                &:focus {
-                    outline: none;
-                }
-            }
-        }
-
-        &__or {
-            color: $color-grey;
-        }
-
-        &__signupLink {
-            margin-top: 0.5rem;
-
-            & a {
-                font-size: 1.8rem;
-                letter-spacing: 2;
-                font-weight: 300;
-                text-decoration: none;
-                color: lighten($color-primary, 6);
-            }
-        }
-    }
-
-    &__image {
-        width: 50%;
-        text-align: center;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        @media only screen and (max-width: $bp-12) {
-            width: 48%;
-        }
-
-        @media only screen and (max-width: $bp-11) {
-            width: 45%;
-        }
-
-        @media only screen and (max-width: $bp-10) {
-            width: 43%;
-        }
-
-        @media only screen and (max-width: $bp-9) {
-            display: none;
-        }
-
-        & img {
-            max-width: 80%;
-            max-height: 80%;
-
-            @media only screen and (max-width: $bp-13) {
-                margin-bottom: 2rem;
-
-                max-width: 80%;
-                max-height: 80%;
-            }
-
-            @media only screen and (max-width: $bp-8) {
-                margin-bottom: 2rem;
-
-                max-width: 80%;
-                max-height: 80%;
-            }
-        }
-
-        &__heading {
-            font-size: 2.4rem;
-            color: lighten($color-primary, 8);
-        }
-
-        &__paragraph {
-            margin: 0 auto;
-            max-width: 60%;
-            font-size: 1.4rem;
-            color: lighten($color-grey, 10);
-        }
-    }
-}
-
-.successModal {
-    max-height: 31.25em;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-
-    &__img {
-        max-width: 60%;
-    }
-
-    &__heading {
-        margin: 0 auto;
-        margin-bottom: 1rem;
-        font-size: 2.2rem;
-        color: lighten($color-primary, 8);
-        font-weight: 600;
-    }
-
-    &__paragraph {
-        max-width: 60%;
-        margin: 0 auto;
         margin-bottom: 2rem;
-        color: lighten($color-grey, 6);
+    }
 
-        @media only screen and (max-width: $bp-5) {
-            max-width: 70%;
+    .signup_form {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+
+
+        .input_group {
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            
+            .input_field {
+                max-width: 18rem;
+            }
         }
 
-        @media only screen and (max-width: $bp-4) {
-            max-width: 80%;
+        .input_field {
+            outline: none;
+            border-radius: .4rem;
+            padding: 1rem 1.4rem;
+            border: .1px solid $color-black;
+
+            &:focus {
+                border: .1px solid $color-primary;
+            }
+        }
+
+        .submit_button {
+            padding: 1.5rem 0;
+            font-size: 1.8rem;
+            border: none;
+            color: $color-white;
+            border-radius: .4rem;
+            background-color: $color-primary;
         }
     }
 
-    &__link {
-        text-decoration: none;
-        color: $color-primary;
-    }
+    .singup_form_footer {
+        margin-top: 1rem;
+        text-align: center;
 
-    &__btn {
-        padding: 0.8rem 2rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 1.5rem;
+        a {
+            text-decoration: none;
+            color: lighten($color-primary, 5);
+        }
     }
 }
