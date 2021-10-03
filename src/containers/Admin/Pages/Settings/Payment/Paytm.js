@@ -11,7 +11,7 @@ import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 const Razorpay = () => {
     const [merchantId, setMerchantId] = useState('');
     const [merchantKey, setMerchantKey] = useState('');
-    const [enable, setEnable] = useState(false);
+    const [isEnabled, setIsEnable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -22,13 +22,13 @@ const Razorpay = () => {
             .then((res) => {
                 setIsLoading(false);
                 const { data } = res;
-                const { ids, enable: active } = data;
+                const { ids, enabled } = data;
 
                 if (ids) {
                     const { merchantId: id, merchantKey: key } = JSON.parse(ids);
                     setMerchantId(id);
                     setMerchantKey(key);
-                    setEnable(active);
+                    setIsEnable(enabled);
                 }
             })
             .catch((err) => {
@@ -46,7 +46,7 @@ const Razorpay = () => {
             await Axios.put(url, {
                 merchantId,
                 merchantKey,
-                enable,
+                isEnabled,
             });
 
             Toast.success('Paytm details updated!');
@@ -64,7 +64,7 @@ const Razorpay = () => {
     };
 
     const enableToggle = () => {
-        setEnable((preState) => !preState);
+        setIsEnable((preState) => !preState);
     };
 
     return (
@@ -75,7 +75,7 @@ const Razorpay = () => {
             <div className="border p-4">
                 <form onSubmit={formSubmitHandler}>
                     <div>
-                        <Checkbox checked={enable} text="Enable" onChange={enableToggle} />
+                        <Checkbox checked={isEnabled} text="Enable" onChange={enableToggle} />
 
                         <Input
                             label="Merchant Id"

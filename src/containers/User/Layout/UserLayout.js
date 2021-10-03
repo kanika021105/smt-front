@@ -67,7 +67,7 @@ function Layout({ children }) {
             <TopBar clicked={clickHandler} />
             <div className="main_container">
                 <Sidebar active={active} links={linksDetail} />
-                <main className={darkTheme && 'dark'}>
+                <main className={darkTheme ? 'dark' : ''}>
                     {children}
                     <Footer />
                 </main>

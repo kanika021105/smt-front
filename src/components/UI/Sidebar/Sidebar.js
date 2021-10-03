@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-
-import PropTypes from 'prop-types';
 import { FiLogOut } from 'react-icons/fi';
 
 import Theme from '../../../store/theme';
@@ -23,35 +21,23 @@ function Sidebar({ active: expand, links }) {
         <div className={`sidebar ${expand && 'expand'} ${darkTheme && 'dark'}`}>
             <ul>
                 {links.map((item) => (
-                    <li>
+                    <li key={`${item.title}${Math.random()}} `}>
                         <NavLink to={item.link} className="sidebar_link">
-                            <div className="link_icon">
-                                {item.icon}
-                            </div>
-                            <div className="link_title">
-                                {item.title}
-                            </div>
+                            <div className="link_icon">{item.icon}</div>
+                            <div className="link_title">{item.title}</div>
                         </NavLink>
                     </li>
                 ))}
 
-                <li>
+                <li key="logout">
                     <NavLink to="/login" className="sidebar_link" onClick={logoutHandler}>
-                        <div className="link_icon">
-                            <FiLogOut />
-                        </div>
-                        <div className="link_title">
-                            Logout
-                        </div>
+                        <div className="link_icon"><FiLogOut /></div>
+                        <div className="link_title">Logout</div>
                     </NavLink>
                 </li>
             </ul>
         </div>
     );
 }
-
-Sidebar.propTypes = {
-    active: PropTypes.bool.isRequired,
-};
 
 export default Sidebar;

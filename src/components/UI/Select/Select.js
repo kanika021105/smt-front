@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes, { number, string } from 'prop-types';
+import PropTypes, { bool, number, string } from 'prop-types';
 
 import classes from './Select.module.scss';
 
@@ -32,7 +32,7 @@ Select.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([string, number]).isRequired,
     onChange: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
+    disabled: PropTypes.oneOfType([string, bool]),
     required: PropTypes.bool,
 
 };

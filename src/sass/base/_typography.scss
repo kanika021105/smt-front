@@ -8,22 +8,22 @@ body {
     font-family: 'Varela Round', sans-serif;
 }
 
-h2 {
-    &.pageTitle {
-        margin: 5rem 0 2.5rem 0;
-        display: inline-block;
-        font-size: 2.6rem;
-        font-weight: 500;
-        color: $color-primary;
-        height: 100%;
-    }
-}
+// h2 {
+//     &.pageTitle {
+//         margin: 5rem 0 2.5rem 0;
+//         display: inline-block;
+//         font-size: 2.6rem;
+//         font-weight: 500;
+//         color: $color-primary;
+//         height: 100%;
+//     }
+// }
 
-.dark h2 {
-    &.pageTitle {
-        color: $dark-color-primary
-    }
-}
+// .dark h2 {
+//     &.pageTitle {
+//         color: $dark-color-primary
+//     }
+// }
 
 .tableTitle {
     @extend %titleStyle;

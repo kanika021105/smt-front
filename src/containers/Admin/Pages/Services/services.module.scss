@@ -1,7 +1,7 @@
 @import '../../../../sass/index';
 
 .Services {
-    min-height: calc(100vh - (8rem + 2.4rem));
+    min-height: calc(100vh - (8rem + 3.4rem));
 }
 
 .addError {
@@ -18,8 +18,4 @@
 
 .services__card {
     margin-bottom: 2.4rem;
-}
-
-.dropdown button::after {
-    content: none !important;
 }

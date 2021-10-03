@@ -3,6 +3,18 @@ import PropTypes from 'prop-types';
 
 import classes from './Button.module.scss';
 
+function Add({ className, onClick }) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className={`${classes['button--add']} ${className}`}
+        >
+            +
+        </button>
+    );
+}
+
 function Active({ className }) {
     return (
         <button
@@ -182,6 +194,11 @@ function ModalSecondary({
     );
 }
 
+Add.propTypes = {
+    className: PropTypes.string,
+    onClick: PropTypes.func,
+};
+
 Active.propTypes = {
     className: PropTypes.string,
 };
@@ -253,6 +270,7 @@ ModalSecondary.propTypes = {
 };
 
 const Button = {
+    Add,
     Active,
     Disable,
     Success,

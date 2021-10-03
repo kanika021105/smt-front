@@ -1,19 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VscListSelection } from 'react-icons/vsc';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 
-function PageHeader({ header }) {
+import './PageHeader.scss';
+
+function PageHeader({ header, children }) {
     return (
         <h2 className="pageTitle">
-            <VscListSelection style={{ fontSize: '30px' }} />
-            {' '}
+            <MdKeyboardArrowRight style={{ fontSize: '30px' }} />
             {header}
+            {children}
         </h2>
     );
 }
 
 PageHeader.propTypes = {
     header: PropTypes.string.isRequired,
+    children: PropTypes.node,
 };
 
 export default PageHeader;

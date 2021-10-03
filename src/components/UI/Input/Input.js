@@ -1,5 +1,7 @@
 import React from 'react';
-import PropTypes, { number, string } from 'prop-types';
+import {
+    bool, func, node, number, oneOfType, string,
+} from 'prop-types';
 
 import classes from './Input.module.scss';
 
@@ -36,20 +38,20 @@ const Input = ({
 export const InputGroup = ({ children }) => <div className={classes['input--group']}>{children}</div>;
 
 Input.propTypes = {
-    id: PropTypes.number,
-    type: PropTypes.string,
-    name: PropTypes.string,
-    value: PropTypes.oneOfType([string, number]),
-    placeholder: PropTypes.oneOfType([string, number]),
-    onChange: PropTypes.func,
-    disabled: PropTypes.bool,
-    label: PropTypes.string,
-    pattern: PropTypes.string,
-    required: PropTypes.bool,
+    id: oneOfType([number, string]),
+    type: string,
+    name: string,
+    value: oneOfType([string, number]),
+    placeholder: oneOfType([string, number]),
+    onChange: func,
+    disabled: bool,
+    label: string,
+    pattern: string,
+    required: bool,
 };
 
 InputGroup.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: node.isRequired,
 };
 
 export default Input;

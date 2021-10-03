@@ -1,12 +1,11 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Axios from '../../../axiosIns';
 import classes from './Signup.module.scss';
+import Toast from '../../../components/UI/Toast/Toast';
 import Modal from '../../../components/UI/Modal/Modal';
 import PageTitle from '../../../components/Extra/PageTitle';
-// import SignUpImage from '../../../assets/img/signup.svg';
 
 const Signup = () => {
     const [userDetails, setUserDetails] = useState({
@@ -17,9 +16,6 @@ const Signup = () => {
         password: '',
         confirmPassword: '',
     });
-
-    const [errorMsg, setErrorMsg] = useState('');
-    const [showError, setShowError] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
 
@@ -41,13 +37,6 @@ const Signup = () => {
         setUserDetails((preState) => ({
             ...preState,
             email: e.target.value,
-        }));
-    };
-
-    const contactChangeHandler = (e) => {
-        setUserDetails((preState) => ({
-            ...preState,
-            contact: e.target.value,
         }));
     };
 
@@ -75,8 +64,6 @@ const Signup = () => {
             confirmPassword: '',
         });
 
-        setErrorMsg('');
-        setShowError('');
         setShowModal(false);
     };
 
@@ -91,26 +78,24 @@ const Signup = () => {
 
             setShowModal(true);
         } catch (err) {
-            setErrorMsg(err.response.data.message);
-            setShowError(true);
+            Toast.failed(err.response.data.message || 'Something went wrong!');
         }
     };
 
     const successModal = (
         <Modal show={showModal} onClose={handleClose} hideButton centered>
-            <div className={classes.successModal}>
-                <div className="centered">
-                    <img
-                        className={classes.successModal__img}
-                        src="/images/success.svg"
-                        alt="successImage"
-                    />
-                </div>
-                <h3 className={classes.successModal__heading}>
+            <div className={classes.modal_body}>
+                <img
+                    className={classes.success_img}
+                    src="/images/success.svg"
+                    alt="successImage"
+                />
+
+                <h3 className={classes.success_heading}>
                     Congratulations!
                 </h3>
 
-                <p className={classes.successModal__paragraph}>
+                <p className={classes.success_paragraph}>
                     You have successfully created your account! Please
                     {' '}
                     <Link
@@ -126,10 +111,7 @@ const Signup = () => {
                 <div className="centered">
                     <button
                         type="button"
-                        className={[
-                            'btn btn-primary',
-                            classes.successModal__btn,
-                        ].join(' ')}
+                        className={classes.close_button}
                         onClick={handleClose}
                     >
                         Okay!
@@ -152,14 +134,44 @@ const Signup = () => {
 
                     <form className={classes.signup_form} onSubmit={submitHandler}>
                         <div className={classes.input_group}>
-                            <input className={classes.input_field} type="text" placeholder="First Name" />
-                            <input className={classes.input_field} type="text" placeholder="Last Name" />
+                            <input
+                                className={classes.input_field}
+                                type="text"
+                                value={userDetails.firstName}
+                                placeholder="First Name"
+                                onChange={firstNameChangeHandler}
+                            />
+                            <input
+                                className={classes.input_field}
+                                type="text"
+                                value={userDetails.lastName}
+                                placeholder="Last Name"
+                                onChange={lastNameChangeHandler}
+                            />
                         </div>
 
-                        <input className={classes.input_field} type="email" placeholder="Email" />
-                        <input className={classes.input_field} type="password" placeholder="Password" />
-                        <input className={classes.input_field} type="password" placeholder="Confirm Password" />
-                        <button className={classes.submit_button} type="submit">Login</button>
+                        <input
+                            className={classes.input_field}
+                            type="email"
+                            placeholder="Email"
+                            value={userDetails.email}
+                            onChange={emailChangeHandler}
+                        />
+                        <input
+                            className={classes.input_field}
+                            type="password"
+                            placeholder="Password"
+                            value={userDetails.password}
+                            onChange={passwordChangeHandler}
+                        />
+                        <input
+                            className={classes.input_field}
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={userDetails.confirmPassword}
+                            onChange={confirmPasswordChangeHandler}
+                        />
+                        <button className={classes.submit_button} type="submit">SignUp</button>
                     </form>
 
                     <div className={classes.singup_form_footer}>

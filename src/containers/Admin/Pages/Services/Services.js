@@ -759,15 +759,9 @@ const Services = () => {
 
             <div className={darkTheme ? 'dark container' : 'container'}>
                 <div className={classes.Services}>
-                    <PageHeader header="Services" />
-
-                    <button
-                        type="button"
-                        className="add-button"
-                        onClick={handleAddButtonClick}
-                    >
-                        +
-                    </button>
+                    <PageHeader header="Services">
+                        <Button.Add onClick={handleAddButtonClick} />
+                    </PageHeader>
 
                     {servicesData()}
                 </div>

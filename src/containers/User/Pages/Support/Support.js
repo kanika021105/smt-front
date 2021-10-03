@@ -8,8 +8,9 @@ import AuthContext from '../../../../store/AuthContext';
 import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Input from '../../../../components/UI/Input/Input';
-import Select from '../../../../components/UI/Select/Select';
 import Modal from '../../../../components/UI/Modal/Modal';
+import Select from '../../../../components/UI/Select/Select';
+import Button from '../../../../components/UI/Button/Button';
 import PageTitle from '../../../../components/Extra/PageTitle';
 import Loading from '../../../../components/UI/Loading/Loading';
 import Textarea from '../../../../components/UI/Textarea/Textarea';
@@ -397,15 +398,10 @@ const Support = () => {
 
             <div className={darkTheme ? 'dark container Support' : 'container Support'}>
                 <div>
-                    <PageHeader header="Support" />
+                    <PageHeader header="Support">
+                        <Button.Add onClick={handleAddButtonClick} />
+                    </PageHeader>
 
-                    <button
-                        type="button"
-                        className="btn-add"
-                        onClick={handleAddButtonClick}
-                    >
-                        +
-                    </button>
                 </div>
 
                 <Card>

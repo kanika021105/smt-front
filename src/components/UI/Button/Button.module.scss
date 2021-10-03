@@ -4,28 +4,6 @@
     content: none !important;
 }
 
-// button.add-button {
-//     outline: none;
-//     border: none;
-//     font-size: 2rem;
-//     border-radius: 0.5rem;
-//     color: #fff;
-//     background-color: #3f80ea;
-//     padding: 0rem 1rem;
-//     margin: 0 0 0 1rem;
-// }
-
-// button.btn-add {
-//     outline: none;
-//     border: none;
-//     font-size: 2rem;
-//     border-radius: 0.4rem;
-//     color: #fff;
-//     background-color: $color-primary;
-//     padding: 0rem 1rem;
-//     margin: 0 0 0 1rem;
-// }
-
 button {
     border: none;
     outline: none;
@@ -34,6 +12,17 @@ button {
     padding: .7rem 1.4rem;
     border-radius: 0.5rem;
     text-transform: capitalize;
+
+    &.button--add {
+        border:  none;
+        font-size: 2rem;
+        border-radius: .6rem;
+        background-color: lighten($color-primary, 5);
+        outline: none;
+        color: $color-white;
+        font-weight: 700;
+        margin-left: 1rem;
+    }
 }
 
 .button {

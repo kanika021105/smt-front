@@ -1,71 +1,65 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
-import Axios from '../../../../../axiosIns';
-import Toast from '../../../../../components/UI/Toast/Toast';
 import Input from '../../../../../components/UI/Input/Input';
-import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
+import Toast from '../../../../../components/UI/Toast/Toast';
 import Loading from '../../../../../components/UI/Loading/Loading';
+import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 
+import Axios from '../../../../../axiosIns';
 import AuthContext from '../../../../../store/AuthContext';
 
 const Razorpay = () => {
     const [keyId, setKeyId] = useState('');
     const [keySecret, setKeySecret] = useState('');
-    const [enable, setEnable] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { websiteName } = useContext(AuthContext);
 
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        const url = '/admin/settings/payment/razorpay';
-        Axios.get(url)
-            .then((res) => {
-                setIsLoading(false);
-                const { data } = res;
-                const { ids, enable: active } = data;
+        try {
+            const url = '/admin/settings/payment/razorpay';
+            const { data } = await Axios.get(url);
+            setIsLoading(false);
+            const { ids, enabled } = data;
 
-                if (ids) {
-                    const { keyId: id, keySecret: secret } = JSON.parse(ids);
-                    setKeyId(id);
-                    setKeySecret(secret);
-                    setEnable(active);
-                }
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                Toast.failed(err.response.data.message || 'Something went wrong!');
-            });
+            if (ids) {
+                const { keyId: id, keySecret: secret } = JSON.parse(ids);
+                setKeyId(id);
+                setKeySecret(secret);
+                setIsEnabled(enabled);
+            }
+        } catch (err) {
+            setIsLoading(false);
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
-    const submitHandler = async (e) => {
+    async function submitHandler(e) {
         e.preventDefault();
 
         const url = '/admin/settings/payment/razorpay/update';
         try {
-            await Axios.put(url, {
-                keyId,
-                keySecret,
-                enable,
-            });
+            await Axios.put(url, { keyId, keySecret, isEnabled });
             Toast.success('Razorpay details updated!');
         } catch (err) {
             Toast.failed(err.response.message || 'Failed to update details!');
         }
-    };
+    }
 
-    const keyIdChangeHandler = (e) => {
+    function keyIdChangeHandler(e) {
         setKeyId(e.target.value);
-    };
+    }
 
-    const secretChangeHandler = (e) => {
+    function secretChangeHandler(e) {
         setKeySecret(e.target.value);
-    };
+    }
 
-    const enableToggle = () => {
-        setEnable((preState) => !preState);
-    };
+    function enableToggle() {
+        setIsEnabled((preState) => !preState);
+    }
 
     return (
         <>
@@ -80,7 +74,7 @@ const Razorpay = () => {
             <Loading show={isLoading} />
 
             <div>
-                <Checkbox text="Enable" checked={enable} onChange={enableToggle} />
+                <Checkbox text="Enable" checked={isEnabled} onChange={enableToggle} />
 
                 <Input
                     label="Key Id"

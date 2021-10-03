@@ -1,0 +1,89 @@
+@import '../../../sass/index';
+
+.message {
+    &__container {
+        border: none;
+        border-radius: 1rem;
+        background-color: $color-white;
+        box-shadow: 0 .4rem .6rem rgba($color-grey-light-2, 0.1);
+    }
+
+    &__header {
+        padding: 1rem 2rem;
+        font-size: 2.4rem;
+        border-bottom: 1px solid $color-grey-light-1;
+
+        text-transform: capitalize;
+    }
+
+    &__body {
+        padding: 2rem;
+        max-height: calc(((((100vh - 5rem) - 2.5rem) - 7rem) - 25rem));
+
+        overflow: scroll;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__footer {
+        border-top: 1px solid $color-grey-light-1;
+        padding: 1rem;
+
+        & input {
+            height: 4rem;
+        }
+
+        & button {
+            height: 4rem;
+            width: 8rem;
+        }
+    }
+}
+
+.admin__message,
+.user__message {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem;
+
+    .sent_time {
+        color:  $color-grey-light-2;
+        font-size: 1.4rem;
+        opacity: 60%;
+        padding-top: .2rem;
+    }
+}
+
+.user__message {
+    align-items: flex-end;
+}
+
+.admin__message {
+    align-items: flex-start;
+}
+
+.message__card {
+    display: flex;
+    align-items: center;
+
+    & .message_user, 
+    .message_admin {
+        padding: 1rem 2rem;
+        text-transform: capitalize;
+        border: 1px  solid $color-grey-light-2;
+    }
+
+    & .message_user {
+        border-radius: 3rem 0 3rem 3rem;
+    }
+
+    & .message_admin {
+        border-radius: 0 3rem 3rem 3rem;
+    }
+
+    & img {
+        height: 6rem;
+    }
+}

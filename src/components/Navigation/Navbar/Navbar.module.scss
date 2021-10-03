@@ -1,7 +1,7 @@
 @import '../../../sass/index';
 
 .navbar {
-    height: 6rem;
+    height: 8rem;
     padding: 0 6rem;
     background-color: $color-white;
 
@@ -23,6 +23,12 @@
 
         & a {
             text-decoration: none;
+            color: $color-primary;
+            font-size: 1.9rem;
+
+            &:hover {
+                color: darken($color-primary, 10);
+            }
         }
     }
 }
