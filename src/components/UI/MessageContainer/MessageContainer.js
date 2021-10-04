@@ -29,7 +29,7 @@ function MessageContainer({
                 `}
             </div>
 
-            <div className="message__body">
+            <div id="support_messages" className="message__body">
                 {
                     messages && messages.map((_message) => {
                         if (userId === _message.userId) {
