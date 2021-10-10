@@ -10,7 +10,20 @@
     background-color: $color-primary;
 
     z-index: -1;
-    overflow: auto;
+    overflow: scroll;
+
+    &::-webkit-scrollbar{
+        display: none;
+    }
+
+    @media only screen and (max-width: $bp-11) {
+        margin-top: $navbar__height_11BP;
+    }
+
+    @media only screen and (max-width: $bp-6) {
+        margin-top: $navbar__height__6BP;
+    }
+
 
     .form_container {
         position: absolute;
@@ -23,11 +36,32 @@
         border-radius: .4rem;
         padding: 3rem 2rem 2rem 3rem;
         background: $color-white;
+
+        @media only screen and (max-height: $bp-5) {
+            padding: 2rem 1rem 1.4rem 1rem;
+        }
+
+        @media only screen and (max-width: $bp-5) {
+            padding: 2rem 1.4rem 1.4rem 1.4rem;
+        }
+
+        @media only screen and (max-width: $bp-4) {
+            max-width: 80%;
+            padding: 2rem 1rem 1.4rem 1rem;
+        }
+
+        @media only screen and (max-width: $bp-3) {
+            max-width: 95%;
+        }
     }
 
     .signup_header {
         text-align: center;
         margin-bottom: 2rem;
+
+        @media only screen and (max-height: $bp-5) {
+            font-size: 1.8rem;
+        }
     }
 
     .signup_form {
@@ -40,9 +74,17 @@
             display: flex;
             flex-direction: row;
             gap: 1rem;
+
+            @media only screen and (max-width: $bp-5) {
+                flex-direction: column;
+            }
             
             .input_field {
                 max-width: 18rem;
+
+                @media only screen and (max-width: $bp-5) {
+                    max-width: 100%;
+                }
             }
         }
 
@@ -51,6 +93,10 @@
             border-radius: .4rem;
             padding: 1rem 1.4rem;
             border: .1px solid $color-black;
+
+            @media only screen and (max-height: $bp-5) {
+                padding: .6rem 1rem;
+            }
 
             &:focus {
                 border: .1px solid $color-primary;
@@ -66,6 +112,11 @@
             background-color: $color-primary;
             transition: all .3s ease;
 
+            @media only screen and (max-height: $bp-5) {
+                padding: .8rem 0;
+                font-size: 1.6rem;
+            }
+
             &:hover {
                 background-color: darken($color-primary, 5);
             }
@@ -73,6 +124,7 @@
     }
 
     .singup_form_footer {
+        font-size: 1.4rem;
         margin-top: 1rem;
         text-align: center;
 
