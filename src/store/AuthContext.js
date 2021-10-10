@@ -36,7 +36,6 @@ function reducer(state, action) {
             return { ...state, ...action.payload };
 
         case 'logout':
-            localStorage.removeItem('token');
             return {
                 ...state,
                 token: '',
@@ -55,6 +54,16 @@ function reducer(state, action) {
                 ...action.payload,
             };
     }
+}
+
+let logoutTimer;
+
+// Calculating token expiry time
+function calculateRemainingTime() {
+    const remainingMilliseconds = 24 * 60 * 60 * 1000;
+    const expiryDate = Date.now() + remainingMilliseconds;
+
+    return expiryDate;
 }
 
 export function AuthContextProvider({ children }) {
@@ -76,6 +85,18 @@ export function AuthContextProvider({ children }) {
     // Updating login state depending on token availability in local storage
     const userIsLoggedIn = !!state.token;
 
+    // Dispatching state update for logout
+    function logout() {
+        const keyToRemove = ['token', 'expiryDate'];
+        keyToRemove.forEach((key) => localStorage.removeItem(key));
+        dispatch({ type: 'logout' });
+        window.location = '/login';
+
+        if (logoutTimer) {
+            clearTimeout(logoutTimer);
+        }
+    }
+
     // Dispatching state update request for login
     function login(token, clientId, email, role, firstName, lastName, balance) {
         dispatch({
@@ -84,6 +105,12 @@ export function AuthContextProvider({ children }) {
                 token, clientId, email, role, firstName, lastName, balance,
             },
         });
+
+        const expiryTime = calculateRemainingTime();
+        // Setting token and expiry time
+        localStorage.setItem('expiryDate', expiryTime);
+        localStorage.setItem('token', token);
+        logoutTimer = setTimeout(logout, expiryTime);
     }
 
     // Dispatching state update after login verification
@@ -100,6 +127,8 @@ export function AuthContextProvider({ children }) {
                 websiteName,
             },
         });
+
+        logoutTimer = setTimeout(logout, localStorage.getItem('expiryDate'));
     }
 
     // Dispatching state update to update user Balance
@@ -110,11 +139,6 @@ export function AuthContextProvider({ children }) {
     // Dispatching state update to update Website Name
     function updateWebsiteName(websiteName) {
         dispatch({ type: 'updateWebsiteName', payload: { websiteName } });
-    }
-
-    // Dispatching state update for logout
-    function logout() {
-        dispatch({ type: 'logout' });
     }
 
     // Setting context value

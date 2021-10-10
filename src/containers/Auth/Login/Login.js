@@ -61,14 +61,6 @@ const Login = () => {
             const { client } = data;
             const { role } = client;
 
-            // Calculating token expiry time
-            const remainingMilliseconds = 24 * 60 * 60 * 1000;
-            const expiryDate = Date.now() + remainingMilliseconds;
-
-            // Setting token and expiry time
-            localStorage.setItem('expiryDate', expiryDate);
-            localStorage.setItem('token', data.token);
-
             login(
                 data.token,
                 client.id,

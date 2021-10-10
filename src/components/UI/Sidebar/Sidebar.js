@@ -14,7 +14,6 @@ function Sidebar({ active: expand, links }) {
 
     function logoutHandler() {
         logout();
-        window.location = '/login';
     }
 
     return (

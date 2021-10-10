@@ -27,12 +27,12 @@ const linksDetail = [
     {
         link: '/orders',
         icon: <RiIcons.RiFileList3Line />,
-        title: 'Services',
+        title: 'Orders',
     },
     {
         link: '/services',
         icon: <RiIcons.RiListSettingsLine />,
-        title: 'New Order',
+        title: 'Services',
     },
     {
         link: '/add-fund',

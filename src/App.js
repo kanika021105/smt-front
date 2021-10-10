@@ -4,7 +4,7 @@ import React, {
     useEffect,
     useContext,
 } from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Axios from './axiosIns';
 import AuthContext from './store/AuthContext';
@@ -17,54 +17,53 @@ const Login = lazy(() => import('./containers/Auth/Login/Login'));
 const Signup = lazy(() => import('./containers/Auth/Signup/Signup'));
 const PrivacyPolicy = lazy(() => import('./containers/ExtraPages/Terms&Policy/PrivacyPolicy'));
 
-const App = () => {
+function App() {
     const {
         isLoggedIn, verify, role, token,
     } = useContext(AuthContext);
-    const history = useHistory();
+    // const history = useHistory();
 
-    useEffect(() => {
+    useEffect(async () => {
         if (token) {
+            // TODO Update logout mechanism
             const expireTime = localStorage.getItem('expiryDate');
             if (expireTime <= Date.now()) {
                 localStorage.clear();
                 return;
             }
 
-            const url = '/verify-token';
-            Axios.post(url, { token })
-                .then((res) => {
-                    const { data } = res;
-                    verify(
-                        data.clientId,
-                        data.email,
-                        data.role,
-                        data.firstName,
-                        data.lastName,
-                        data.balance,
-                        data.websiteName,
-                    );
-                })
-                .catch((err) => {
-                    Toast.failed(err.response.data.message);
-                });
+            try {
+                const url = '/verify-token';
+                const { data } = await Axios.post(url, { token });
+                verify(
+                    data.clientId,
+                    data.email,
+                    data.role,
+                    data.firstName,
+                    data.lastName,
+                    data.balance,
+                    data.websiteName,
+                );
+            } catch (err) {
+                Toast.failed(err.response.data.message);
+            }
         }
     }, []);
 
     return (
-        <>
-            <Suspense
-                fallback={(
-                    <div className="loading">
-                        <div className="loading__1">
-                            <div />
-                        </div>
+        <Suspense
+            fallback={(
+                <div className="loading">
+                    <div className="loading__1">
+                        <div />
                     </div>
-                )}
-            >
-                <Switch>
-                    {!isLoggedIn && (
-                        <>
+                </div>
+            )}
+        >
+            <Switch>
+                {!isLoggedIn && (
+                    <>
+                        <Layout>
                             <Route exact path="/signup">
                                 <Signup />
                             </Route>
@@ -73,30 +72,28 @@ const App = () => {
                                 <Login />
                             </Route>
 
-                            <Layout>
-                                <Route
-                                    exact
-                                    path="/"
-                                    render={() => { history.push('/login'); }}
-                                />
+                            <Route
+                                exact
+                                path="/"
+                                render={() => { 'Text'; }}
+                            />
 
-                                <Route path="/privacy">
-                                    <PrivacyPolicy />
-                                </Route>
-                            </Layout>
-                        </>
-                    )}
+                            <Route path="/privacy">
+                                <PrivacyPolicy />
+                            </Route>
+                        </Layout>
+                    </>
+                )}
 
-                    {isLoggedIn && role === 'user' && <User />}
-                    {isLoggedIn && role === 'admin' && <Admin />}
+                {isLoggedIn && role === 'user' && <User />}
+                {isLoggedIn && role === 'admin' && <Admin />}
 
-                    <Route path="/privacy-policy">
-                        <PrivacyPolicy />
-                    </Route>
-                </Switch>
-            </Suspense>
-        </>
+                <Route path="/privacy-policy">
+                    <PrivacyPolicy />
+                </Route>
+            </Switch>
+        </Suspense>
     );
-};
+}
 
 export default App;
