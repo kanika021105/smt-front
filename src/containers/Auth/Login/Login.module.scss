@@ -19,15 +19,26 @@
 
     & .form_container {
         position: absolute;
-        top: 44%;
+        top: 40%;
         left: 50%;
         transform: translate(-50%, -44%);
 
         background-color: $color-white;
         border: none;
         border-radius: .5rem;
-        padding: 3rem 2rem 4rem 2rem;
+        padding: 3rem 2rem 3rem 2rem;
+
+        @media only screen and (max-width: 250px) {
+            padding: 3rem 1rem 3rem 1rem;
+            width: 95%;
+        }
+        
+        @media only screen and (max-height: 480px) {
+            padding: 1rem 1rem 1rem 1rem;
+        }
     }
+
+
 
     .login_header {
         padding: 0;
@@ -47,6 +58,11 @@
         border-radius: .4rem;
         outline: none ;
 
+        @media only screen and (max-width: $bp-4) {
+            padding: .6rem 1.4rem;
+            margin-bottom: 1rem;
+        }
+
         &:focus {
             border: .01px solid $color-primary;
         }
@@ -61,6 +77,11 @@
         background-color: $color-primary;
         transition: all .3s ease;
 
+        @media only screen and (max-width: $bp-4) {
+            padding: .6rem 0;
+            font-size: 1.6rem;            
+        }
+
         &:hover {
             background-color: darken($color-primary, 10);
         }
@@ -68,6 +89,13 @@
 
     .login_form_footer {
         margin-top: 1rem;
+        white-space: nowrap;
+
+         @media only screen and (max-width: $bp-6) {
+            display: flex;;
+            flex-direction: column;
+            align-items: center;
+        }
 
         a {
             font-size: 1.4rem;
