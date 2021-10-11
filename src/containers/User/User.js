@@ -1,71 +1,42 @@
 import React, { lazy } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 const Layout = lazy(() => import('./Layout/UserLayout'));
-const Dashboard = lazy(() => import('./Pages/Dashboard/Dashboard'));
-const NewOrder = lazy(() => import('./Pages/NewOrder/NewOrder'));
 const Orders = lazy(() => import('./Pages/Orders/Orders'));
-const Services = lazy(() => import('./Pages/Services/Services'));
 const Support = lazy(() => import('./Pages/Support/Support'));
-const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
 const AddFund = lazy(() => import('./Pages/AddFund/AddFund'));
-const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
 const Profile = lazy(() => import('./Pages/Profile/Profile'));
 const ApiDocs = lazy(() => import('./Pages/ApiDocs/ApiDocs'));
-
+const NewOrder = lazy(() => import('./Pages/NewOrder/NewOrder'));
+const Services = lazy(() => import('./Pages/Services/Services'));
+const Dashboard = lazy(() => import('./Pages/Dashboard/Dashboard'));
+const TicketMessage = lazy(() => import('./Pages/Support/Message/Message'));
+const Transactions = lazy(() => import('./Pages/Transactions/Transactions'));
+const NotFound = lazy(() => import('../ExtraPages/ErrorPage/NotFound/NotFound'));
 const PrivacyPolicy = lazy(() => import('../ExtraPages/Terms&Policy/PrivacyPolicy'));
 
 const Admin = () => (
     <Layout>
-        <Route
-            path="/"
-            render={() => { window.location.href = '/dashboard'; }}
-            exact
-        />
+        <Switch>
+            <Route
+                path="/"
+                render={() => { window.location.href = '/dashboard'; }}
+                exact
+            />
 
-        <Route path="/support/ticket/:uid" exact>
-            <TicketMessage />
-        </Route>
-
-        <Route path="/transactions" exact>
-            <Transactions />
-        </Route>
-
-        <Route path="/dashboard" exact>
-            <Dashboard />
-        </Route>
-
-        <Route path="/new-order" exact>
-            <NewOrder />
-        </Route>
-
-        <Route path="/add-fund">
-            <AddFund />
-        </Route>
-
-        <Route path="/services" exact>
-            <Services />
-        </Route>
-
-        <Route path="/support" exact>
-            <Support />
-        </Route>
-
-        <Route path="/orders" exact>
-            <Orders />
-        </Route>
-
-        <Route path="/profile/:id" exact>
-            <Profile />
-        </Route>
-
-        <Route path="/api-docs">
-            <ApiDocs />
-        </Route>
-
-        <Route path="/privacy">
-            <PrivacyPolicy />
-        </Route>
+            <Route path="/support/ticket/:uid" component={TicketMessage} exact />
+            <Route path="/transactions" component={Transactions} exact />
+            <Route path="/profile/:id" component={Profile} exact />
+            <Route path="/dashboard" component={Dashboard} exact />
+            <Route path="/new-order" component={NewOrder} exact />
+            <Route path="/add-fund" component={AddFund} />
+            <Route path="/services" component={Services} exact />
+            <Route path="/api-docs" component={ApiDocs} exact />
+            <Route path="/support" component={Support} exact />
+            <Route path="/privacy" component={PrivacyPolicy} exact />
+            <Route path="/orders" component={Orders} exact />
+            <Route path="*" component={NotFound} />
+        </Switch>
     </Layout>
 );
 

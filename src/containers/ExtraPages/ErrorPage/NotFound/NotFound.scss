@@ -1,0 +1,116 @@
+@import '../../../../sass/index';
+
+.notFound {
+    min-height: calc(100vh - (8rem + 7.5rem));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: calc(100% - 14rem);
+    margin: 0 0 4rem 7rem;
+
+    &__header {
+        font-size: 16rem;
+        color: transparent;
+        background-image: url('../../../../assets/img/404-bg.jpg');
+        -webkit-background-clip: text;
+        letter-spacing: 2;
+        font-weight: 900;
+        line-height: 1.4;
+
+        @media only screen and (max-width: $bp-12) {
+            font-size: 14rem;
+        }
+
+        @media only screen and (max-width: $bp-10) {
+            font-size: 13rem;
+        }
+
+        @media only screen and (max-width: $bp-8) {
+            font-size: 12rem;
+        }
+
+        @media only screen and (max-width: $bp-7) {
+            font-size: 10rem;
+        }
+
+        @media only screen and (max-width: $bp-6) {
+            font-size: 8rem;
+        }
+    }
+
+    &__subHeader {
+        color: $color-primary;
+        font-size: 2.6rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+
+        @media only screen and (max-width: $bp-12) {
+            font-size: 2.2rem;
+        }
+
+        @media only screen and (max-width: $bp-10) {
+            font-size: 2rem;
+        }
+
+        @media only screen and (max-width: $bp-8) {
+            font-size: 1.9rem;
+        }
+
+        @media only screen and (max-width: $bp-7) {
+            font-size: 1.8rem;
+        }
+
+        @media only screen and (max-width: $bp-6) {
+            font-size: 1.6rem;
+        }
+    }
+
+    &__paragraph {
+        max-width: 30%;
+        color: $color-grey-light-2;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+
+        @media only screen and (max-width: $bp-12) {
+            max-width: 45%;
+        }
+
+        @media only screen and (max-width: $bp-10) {
+            max-width: 55%;
+        }
+
+        @media only screen and (max-width: $bp-8) {
+            max-width: 65%;
+        }
+
+        @media only screen and (max-width: $bp-7) {
+            max-width: 70%;
+        }
+
+        @media only screen and (max-width: $bp-6) {
+            max-width: 90%;
+        }
+    }
+
+    &__button {
+        border: none;
+        padding: 1.4rem 3rem;
+        border-radius: 4rem;
+        color: $color-white;
+        font-size: 1.6rem;
+        text-transform: capitalize;
+        background-color: lighten($color-primary, 5);
+        transition: all .2s ease-in;
+
+        @media only screen and (max-width: $bp-12) {
+            padding: 1.2rem 2.8rem;
+            font-size: 1.5rem;
+        }
+
+        &:hover {
+            background-color: darken($color-primary, 5);
+        }
+    }
+}

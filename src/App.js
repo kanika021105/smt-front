@@ -15,13 +15,14 @@ const User = lazy(() => import('./containers/User/User'));
 const Admin = lazy(() => import('./containers/Admin/Admin'));
 const Login = lazy(() => import('./containers/Auth/Login/Login'));
 const Signup = lazy(() => import('./containers/Auth/Signup/Signup'));
+const Services = lazy(() => import('./containers/ExtraPages/Services/Services'));
+const NotFound = lazy(() => import('./containers/ExtraPages/ErrorPage/NotFound/NotFound'));
 const PrivacyPolicy = lazy(() => import('./containers/ExtraPages/Terms&Policy/PrivacyPolicy'));
 
 function App() {
     const {
         isLoggedIn, verify, role, token,
     } = useContext(AuthContext);
-    // const history = useHistory();
 
     useEffect(async () => {
         if (token) {
@@ -60,38 +61,21 @@ function App() {
                 </div>
             )}
         >
-            <Switch>
-                {!isLoggedIn && (
-                    <>
-                        <Layout>
-                            <Route exact path="/signup">
-                                <Signup />
-                            </Route>
+            {isLoggedIn && role === 'user' && <User />}
+            {isLoggedIn && role === 'admin' && <Admin />}
 
-                            <Route exact path="/login">
-                                <Login />
-                            </Route>
-
-                            <Route
-                                exact
-                                path="/"
-                                render={() => { 'Text'; }}
-                            />
-
-                            <Route path="/privacy">
-                                <PrivacyPolicy />
-                            </Route>
-                        </Layout>
-                    </>
-                )}
-
-                {isLoggedIn && role === 'user' && <User />}
-                {isLoggedIn && role === 'admin' && <Admin />}
-
-                <Route path="/privacy-policy">
-                    <PrivacyPolicy />
-                </Route>
-            </Switch>
+            {!isLoggedIn && (
+                <Layout>
+                    <Switch>
+                        <Route path="/privacy" component={PrivacyPolicy} exact />
+                        <Route path="/services" component={Services} exact />
+                        <Route path="/signup" component={Signup} exact />
+                        <Route path="/login" component={Login} exact />
+                        <Route path="/" render={() => 'Text'} exact />
+                        <Route path="*" component={NotFound} />
+                    </Switch>
+                </Layout>
+            )}
         </Suspense>
     );
 }
