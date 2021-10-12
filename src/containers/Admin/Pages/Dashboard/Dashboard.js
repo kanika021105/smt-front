@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     AreaChart, Area, XAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
+// import Theme from '../../../../store/theme';
 
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
@@ -12,6 +12,7 @@ import PageTitle from '../../../../components/Extra/PageTitle';
 import Loading from '../../../../components/UI/Loading/Loading';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 import DashboardCard from '../../../../components/UI/DashboardCard/DashboardCard';
 
 import classes from './dashboard.module.scss';
@@ -21,7 +22,7 @@ const Dashboard = () => {
     const [graphData, setGraphData] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { darkTheme } = useContext(Theme);
+    // const { darkTheme } = useContext(Theme);
 
     useEffect(() => {
         setIsLoading(true);
@@ -106,7 +107,8 @@ const Dashboard = () => {
             <PageTitle title="Dashboard" />
             <Loading show={isLoading} />
 
-            <div className={darkTheme ? 'dark container' : 'container'}>
+            <PageContainer>
+                {/* <div className={darkTheme ? 'dark container' : 'container'}> */}
                 <div className={classes.dashboard}>
                     <PageHeader header="Dashboard" />
 
@@ -393,19 +395,23 @@ const Dashboard = () => {
                                         </THead>
 
                                         <TBody>
-                                            {lastServices && lastServices.map((service) => (
-                                                <tr key={service.id}>
-                                                    <td>{service.id}</td>
-                                                    <td>
-                                                        {service.title.length > 30
-                                                            ? `${service.title.substr(0, 31)}...`
-                                                            : service.title}
-                                                    </td>
-                                                    <td>
-                                                        <Button.Active />
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {
+                                                lastServices && lastServices.map((service) => (
+                                                    <tr key={service.id}>
+                                                        <td>{service.id}</td>
+                                                        <td>
+                                                            {
+                                                                service.title.length > 30
+                                                                    ? `${service.title.substr(0, 31)}...`
+                                                                    : service.title
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <Button.Active />
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
                                         </TBody>
                                     </Table>
                                 </DashboardCard>
@@ -466,27 +472,33 @@ const Dashboard = () => {
                                 </THead>
 
                                 <TBody>
-                                    {lastOrders && lastOrders.map((order) => (
-                                        <tr key={order.id}>
-                                            <td>{order.id}</td>
-                                            <td>
-                                                {getServiceTitle(order.serviceId)
-                                                 && getServiceTitle(order.serviceId).length > 35
-                                                    ? `${getServiceTitle(order.serviceId).slice(0, 35)}...`
-                                                    : getServiceTitle(order.serviceId)}
-                                            </td>
-                                            <td>
-                                                {order.link.length > 35
-                                                    ? `${order.link.slice(0, 35)}...`
-                                                    : order.link}
-                                            </td>
-                                            <td>{order.quantity}</td>
-                                            <td>{order.charge}</td>
-                                            <td>
-                                                {getStatus(order.status)}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {
+                                        lastOrders && lastOrders.map((order) => (
+                                            <tr key={order.id}>
+                                                <td>{order.id}</td>
+                                                <td>
+                                                    {
+                                                        getServiceTitle(order.serviceId)
+                                                    && getServiceTitle(order.serviceId).length > 35
+                                                            ? `${getServiceTitle(order.serviceId).slice(0, 35)}...`
+                                                            : getServiceTitle(order.serviceId)
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        order.link.length > 35
+                                                            ? `${order.link.slice(0, 35)}...`
+                                                            : order.link
+                                                    }
+                                                </td>
+                                                <td>{order.quantity}</td>
+                                                <td>{order.charge}</td>
+                                                <td>
+                                                    {getStatus(order.status)}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
                                 </TBody>
                             </Table>
                         </DashboardCard>
@@ -527,7 +539,8 @@ const Dashboard = () => {
                         </DashboardCard>
                     </section>
                 </div>
-            </div>
+                {/* </div> */}
+            </PageContainer>
         </>
     );
 };

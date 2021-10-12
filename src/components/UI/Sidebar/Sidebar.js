@@ -17,21 +17,23 @@ function Sidebar({ active: expand, links }) {
     }
 
     return (
-        <div className={`sidebar ${expand && 'expand'} ${darkTheme && 'dark'}`}>
+        <div className={`sidebar ${expand ? 'expand' : ''} ${darkTheme ? 'dark' : ''}`}>
             <ul>
-                {links.map((item) => (
-                    <li key={`${item.title}${Math.random()}} `}>
-                        <NavLink to={item.link} className="sidebar_link">
-                            <div className="link_icon">{item.icon}</div>
-                            <div className="link_title">{item.title}</div>
-                        </NavLink>
-                    </li>
-                ))}
+                {
+                    React.useMemo(() => links.map((item) => (
+                        <li key={`${item.title}${Math.random()}} `}>
+                            <NavLink to={item.link} className="sidebar__link">
+                                <div className="link__icon">{item.icon}</div>
+                                <div className="link__title">{item.title}</div>
+                            </NavLink>
+                        </li>
+                    )), [])
+                }
 
                 <li key="logout">
-                    <NavLink to="/login" className="sidebar_link" onClick={logoutHandler}>
-                        <div className="link_icon"><FiLogOut /></div>
-                        <div className="link_title">Logout</div>
+                    <NavLink to="/login" className="sidebar__link" onClick={logoutHandler}>
+                        <div className="link__icon"><FiLogOut /></div>
+                        <div className="link__title">Logout</div>
                     </NavLink>
                 </li>
             </ul>

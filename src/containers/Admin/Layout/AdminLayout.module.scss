@@ -1,0 +1,19 @@
+@import '../../../sass/index';
+
+.main_container {
+    display: 'flex';
+    flex-direction: 'row'; 
+}
+
+main {
+    background: #F4F7FC;
+    padding-top: $topbar__height;
+
+    @media only screen and (max-width: $bp-5) {
+        padding-top: $topbar__height__bp-5;
+    }
+}
+
+.dark {
+    background: $dark-background-primary-color;
+}

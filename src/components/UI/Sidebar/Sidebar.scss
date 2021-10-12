@@ -1,54 +1,75 @@
 @import '../../../sass/index';
 
-
-
-/************************ Sidebar ************************/
-
+// ************************ Sidebar ************************ //
 .sidebar {
-    width: 7rem;
-    height: 100%;
+    // Base styles
     position: fixed;
-    margin-top: 7rem;
-    padding: 5rem 0 10rem 0;
-    background-color: #fff;
+    top: 0;
+    bottom: 0;
+    width: $sidebar__width;
+    padding: 5rem 0 4rem 0;
+    margin-top: $topbar__height;
+    background-color: $color-white;
+
     transition: all .3s ease;
-    overflow: scroll;
-    
-    // Breakpoints
-    @media only screen and (max-width: $bp-10) {
-        width: 6rem;    
-    }
+    overflow-y: scroll;
 
     // Hide scrollbar in sidebar
     &::-webkit-scrollbar {
         display: none;
     }
+    
+    // Breakpoints
+    @media only screen and (max-width: $bp-10) {
+        width: $sidebar__width__bp-10;    
+    }
+
+    @media only screen and (max-width: $bp-6) {
+        width: $sidebar__width__bp-6;    
+    }
+
+    @media only screen and (max-width: $bp-5) {
+        margin-top: $topbar__height__bp-5;    
+    }
 
     // Set margin for main content depending on side is active or not
     & + main {
-        margin-left: 7rem;
+        padding-left: $sidebar__width;
+        // padding-left: calc($sidebar__width + 1rem);
         transition: all .3s ease;
 
         // Breakpoints
         @media only screen and (max-width: $bp-10) {
-            margin-left: 6rem;
+            padding-left: $sidebar__width__bp-10;
+        }
+
+        @media only screen and (max-width: $bp-6) {
+            padding-left: $sidebar__width__bp-6;    
         }
     }
 
     // Style for expanded/Active sidebar
     &.expand {
-        width: 27rem;
+        width: $sidebar__expand__width;
 
         // Breakpoints
         @media only screen and (max-width: $bp-10) {
-            width: 24rem;
+            width: $sidebar__expand__width__bp-10;
+        }
+
+        @media only screen and (max-width: $bp-6) {
+            width: $sidebar__expand__width__bp-6;    
         }
 
         & + main {
-            margin-left: 27rem;
+            padding-left: $sidebar__expand__width;
 
             @media only screen and (max-width: $bp-10) {
-                margin-left: 24rem;
+                padding-left: $sidebar__expand__width__bp-10;
+            }
+
+            @media only screen and (max-width: $bp-6) {
+                padding-left: $sidebar__expand__width__bp-6;    
             }
         }
     }
@@ -63,64 +84,76 @@
     & li {
         list-style: none;
     }
-}
 
+    & .sidebar__link {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
 
+        width: 100%; 
+        overflow: hidden;
 
-/************************ Links Style ************************/
+        &.active {
+            background-color: $dark-color-white-3;
+            transition: all .3s ease;
+        }
 
-.sidebar_link {
-    width: 100%; 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    overflow: hidden;
+        & .link__icon {
+            margin-left: 2rem;
+            padding: 1.5rem 0;
+            font-size: 3rem;
+            color: $color-primary;
+            line-height: 0;
 
-    &.active {
-        background-color: #eee;
+            @media only screen and (max-width: $bp-10)  {
+                margin-left: 1.6rem;  
+                font-size: 2.8rem;
+            }
+
+            @media only screen and (max-width: $bp-6)  {
+                margin-left: 1.4rem;  
+                font-size: 2.4rem;
+            }
+        }
+
+        & .link__title {
+            opacity: 0;
+            font-size: 2rem;
+            font-weight: 500;
+            color: $color-primary;
+            margin-left: 2rem;
+
+            transition: all .3s ease;
+        }
+    }
+
+    &.expand .link__title {
+        opacity: 1;
         transition: all .3s ease;
     }
 }
 
-.link_icon {
-    margin-left: 2rem;
-    padding: 1rem 0;
-    font-size: 3rem;
-    color: #666;
-}
-
-.link_title {
-    opacity: 0;
-    margin-left: 2rem;
-    font-size: 2rem;
-    color: #155ED1;
-    font-weight: 500;
-
-    transition: all .3s ease;
-}
-
-.expand .link_title {
+.expand .link__title {
     opacity: 1;
     transition: all .3s ease;
 }
 
-a.sidebar_link  {
+a.sidebar__link  {
     text-decoration: none;
     white-space: nowrap;
 }
 
 
-
 /************************ Dark Theme start Here ************************/
 
 .sidebar.dark {
-    background: #242424;
-}
+    background-color: $dark-background-secondary-color;
 
-.dark .sidebar_links.active {
-    background-color: #333;
-}
+    &  .link__icon {
+       color: $dark-color-primary;
+    }
 
-.dark .link_icon {
-    color: #eee;
+    & .active {
+        background-color: $dark-background-tertiary-color;
+    }
 }

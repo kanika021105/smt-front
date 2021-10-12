@@ -1,0 +1,16 @@
+@import '../../../sass/index';
+
+.container {
+    margin: 3rem auto;
+    padding: 3rem 0;
+    border-radius: 1rem;
+    max-width: calc(100% - 4%);
+
+    background: #fafafa;   
+    transition: background .3s ease;
+}
+
+
+.dark.container {
+    background-color: $dark-background-secondary-color;
+}

@@ -1,4 +1,37 @@
+// TOPBAR
+$topbar__height: 7rem;
+$topbar__height__bp-5: 6rem;
+
+// NAVBAR
 $navbar__height: 7rem;
 $navbar__height_11BP: 6rem;
 $navbar__height__6BP: 5rem;
 
+// Sidebar
+$sidebar__width: 7rem;
+$sidebar__expand__width: 27rem;
+$sidebar__width__bp-10: 6rem;
+$sidebar__width__bp-6: 5rem;
+$sidebar__expand__width__bp-10: 24rem;
+$sidebar__expand__width__bp-6: 21rem;
+
+// ********************* Default THEME COLORS ********************* /
+$background-primary-color: #fff;
+$background-secondary-color: #F2F2FC;
+
+
+
+// ********************* DARK THEME COLORS ********************* /
+// Background Colors
+$dark-background-primary-color: #222;
+$dark-background-secondary-color: #333333;
+$dark-background-tertiary-color: #464646;
+
+// Normal colors
+$dark-color-white: #eee;
+$dark-color-white-secondary: #ddd;
+$dark-color-primary: #3f81ea;
+
+// Text Colors
+$dark-color-primary-text: #ddd;
+$dark-color-primary-text: #ccc;

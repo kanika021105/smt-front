@@ -10,8 +10,8 @@ import Footer from '../../../components/Footer/Footer';
 import Sidebar from '../../../components/UI/Sidebar/Sidebar';
 import TopBar from '../../../components/Navigation/Topbar/Topbar';
 
-import './AdminLayout.scss';
 import Theme from '../../../store/theme';
+import classes from './AdminLayout.module.scss';
 
 const linkDetails = [
     {
@@ -70,9 +70,9 @@ function Layout({ children }) {
     return (
         <>
             <TopBar clicked={clickHandler} />
-            <div className="main_container">
+            <div className={classes.main_container}>
                 <Sidebar active={active} links={linkDetails} />
-                <main className={darkTheme ? 'dark' : ''}>
+                <main className={`${darkTheme ? classes.dark : ''}`}>
                     {children}
                     <Footer />
                 </main>
