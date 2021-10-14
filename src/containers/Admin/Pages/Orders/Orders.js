@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
 
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import Select from '../../../../components/UI/Select/Select';
@@ -15,8 +13,7 @@ import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
-
-import classes from './orders.module.scss';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 const Orders = () => {
     const [clients, setClients] = useState();
@@ -40,46 +37,36 @@ const Orders = () => {
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { darkTheme } = useContext(Theme);
+    // const { darkTheme } = useContext(Theme);
 
-    async function getData(url) {
-        const { data } = await Axios.get(url);
-        return data;
-    }
-
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        const url = '/admin/orders';
-        Promise.resolve(getData(url))
-            .then((data) => {
-                setIsLoading(false);
+        try {
+            const url = '/admin/orders';
+            const { data } = await Axios.get(url);
+            setIsLoading(false);
 
-                setClients(data.clients);
-                setServices(data.services);
-                setOrders(data.orders);
-            }).catch((err) => {
-                setIsLoading(false);
-                return Toast.failed(err.response.message
-                    || 'Something went wrong!');
-            });
+            setClients(data.clients);
+            setServices(data.services);
+            setOrders(data.orders);
+        } catch (err) {
+            setIsLoading(false);
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
     function getServiceTitle(id) {
         if (services) {
-            const details = services.filter((service) => service.id === id);
-            if (details[0]) return details[0].title;
-            return '';
+            const details = services.find((_service) => _service.id === id);
+            return (details && details.title) || '';
         }
         return '';
     }
 
     function getUserEmail(id) {
         if (clients) {
-            clients.map((client) => {
-                if (client.id === id) return client.email;
-                return null;
-            });
+            clients.find((_client) => (_client.id === id ? (_client.email || null) : null));
         }
         return null;
     }
@@ -110,31 +97,19 @@ const Orders = () => {
     }
 
     function startCounterChangeHandler(e) {
-        setEditingOrder((preState) => ({
-            ...preState,
-            startCounter: e.target.value,
-        }));
+        setEditingOrder((preState) => ({ ...preState, startCounter: e.target.value }));
     }
 
     function remainChangeHandler(e) {
-        setEditingOrder((preState) => ({
-            ...preState,
-            remains: e.target.value,
-        }));
+        setEditingOrder((preState) => ({ ...preState, remains: e.target.value }));
     }
 
     function statusChangeHandler(e) {
-        setEditingOrder((preState) => ({
-            ...preState,
-            status: e.target.value,
-        }));
+        setEditingOrder((preState) => ({ ...preState, status: e.target.value }));
     }
 
     function linkChangeHandler(e) {
-        setEditingOrder((preState) => ({
-            ...preState,
-            link: e.target.value,
-        }));
+        setEditingOrder((preState) => ({ ...preState, link: e.target.value }));
     }
 
     function handleClose() {
@@ -174,82 +149,30 @@ const Orders = () => {
                 {editingOrder && (
                     <>
                         <InputGroup>
-                            <Input
-                                label="Order Id"
-                                value={editingOrder.id}
-                                disabled
-                            />
-
-                            <Input
-                                label="API Order Id"
-                                value={editingOrder.apiOrderId || 'Manual'}
-                                disabled
-                            />
+                            <Input label="Order Id" value={editingOrder.id} disabled />
+                            <Input label="API Order Id" value={editingOrder.apiOrderId || 'Manual'} disabled />
                         </InputGroup>
 
-                        <Input
-                            label="Service"
-                            value={getServiceTitle(editingOrder.serviceId) || ''}
-                            disabled
-                        />
+                        <Input label="Service" value={getServiceTitle(editingOrder.serviceId) || ''} disabled />
 
                         <InputGroup>
-                            <Input
-                                label="Order Type"
-                                value={editingOrder.type || 'Manual'}
-                                disabled
-                            />
-
-                            <Input
-                                label="User"
-                                value={getUserEmail(editingOrder.clientId) || ''}
-                                disabled
-                            />
+                            <Input label="Order Type" value={editingOrder.type || 'Manual'} disabled />
+                            <Input label="User" value={getUserEmail(editingOrder.clientId) || ''} disabled />
                         </InputGroup>
 
                         <InputGroup>
-                            <Input
-                                label="Amount"
-                                value={editingOrder.charge || 0}
-                                disabled
-                            />
-
-                            <Input
-                                label="Quantity"
-                                value={editingOrder.quantity || 0}
-                                disabled
-                            />
+                            <Input label="Amount" value={editingOrder.charge || 0} disabled />
+                            <Input label="Quantity" value={editingOrder.quantity || 0} disabled />
                         </InputGroup>
 
                         <InputGroup>
-                            <Input
-                                label="Start Counter"
-                                type="number"
-                                value={editingOrder.startCounter || 0}
-                                onChange={startCounterChangeHandler}
-                            />
-
-                            <Input
-                                label="Remains"
-                                type="number"
-                                value={editingOrder.remains || 0}
-                                onChange={remainChangeHandler}
-                            />
+                            <Input label="Start Counter" type="number" value={editingOrder.startCounter || 0} onChange={startCounterChangeHandler} />
+                            <Input label="Remains" type="number" value={editingOrder.remains || 0} onChange={remainChangeHandler} />
                         </InputGroup>
 
                         <InputGroup>
-                            <Input
-                                label="Link"
-                                type="url"
-                                value={editingOrder.link || ''}
-                                onChange={linkChangeHandler}
-                            />
-
-                            <Select
-                                label="Status"
-                                value={editingOrder.status}
-                                onChange={statusChangeHandler}
-                            >
+                            <Input label="Link" type="url" value={editingOrder.link || ''} onChange={linkChangeHandler} />
+                            <Select label="Status" value={editingOrder.status} onChange={statusChangeHandler}>
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
                                 <option value="inprogress">In Progress</option>
@@ -295,62 +218,60 @@ const Orders = () => {
     const ordersTable = orders && orders.length <= 0 ? (
         <DataNotFound message="Please wait for clients to create some order." />
     ) : (
-        <Card>
-            <Table>
-                <THead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Service</th>
-                        <th>Link</th>
-                        <th>Charge</th>
-                        <th>QTY</th>
-                        <th>Start Counter</th>
-                        <th>Status</th>
-                        <th>Options</th>
-                    </tr>
-                </THead>
+        <Table>
+            <THead>
+                <tr>
+                    <th>ID</th>
+                    <th>Service</th>
+                    <th>Link</th>
+                    <th>Charge</th>
+                    <th>QTY</th>
+                    <th>Start Counter</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                </tr>
+            </THead>
 
-                <TBody>
-                    {orders && orders.map((order) => (
-                        <tr key={order.uid}>
-                            <td>{order.id}</td>
-                            <td>
-                                {getServiceTitle(order.serviceId)
+            <TBody>
+                {orders && orders.map((order) => (
+                    <tr key={order.uid}>
+                        <td>{order.id}</td>
+                        <td>
+                            {
+                                getServiceTitle(order.serviceId)
                                     && getServiceTitle(order.serviceId).length > 30
                                     ? `${order.serviceId} - ${getServiceTitle(order.serviceId).slice(0, 30)}...`
-                                    : `${order.serviceId} - ${getServiceTitle(order.serviceId)}`}
-                            </td>
-                            <td>
-                                {order.link.length > 20 ? `${order.link.slice(0, 20)}...` : order.link}
-                            </td>
-                            <td>{order.charge}</td>
-                            <td>{order.quantity}</td>
-                            <td>{order.startCounter}</td>
-                            <td>{getStatus(order.status)}</td>
-                            <td>
-                                <DropDown id={order.uid}>
-                                    <ul>
-                                        <li>
-                                            <Button.Edit
-                                                value={order.uid}
-                                                onClick={editButtonHandler}
-                                            />
-                                        </li>
+                                    : `${order.serviceId} - ${getServiceTitle(order.serviceId)}`
+                            }
+                        </td>
+                        <td>{order.link.length > 20 ? `${order.link.slice(0, 20)}...` : order.link}</td>
+                        <td>{order.charge}</td>
+                        <td>{order.quantity}</td>
+                        <td>{order.startCounter}</td>
+                        <td>{getStatus(order.status)}</td>
+                        <td>
+                            <DropDown id={order.uid}>
+                                <ul>
+                                    <li>
+                                        <Button.Edit
+                                            value={order.uid}
+                                            onClick={editButtonHandler}
+                                        />
+                                    </li>
 
-                                        <li>
-                                            <Button.Delete
-                                                value={order.uid}
-                                                onClick={deleteButtonHandler}
-                                            />
-                                        </li>
-                                    </ul>
-                                </DropDown>
-                            </td>
-                        </tr>
-                    ))}
-                </TBody>
-            </Table>
-        </Card>
+                                    <li>
+                                        <Button.Delete
+                                            value={order.uid}
+                                            onClick={deleteButtonHandler}
+                                        />
+                                    </li>
+                                </ul>
+                            </DropDown>
+                        </td>
+                    </tr>
+                ))}
+            </TBody>
+        </Table>
     );
 
     return (
@@ -359,13 +280,10 @@ const Orders = () => {
             <Loading show={isLoading} />
             {editModal}
 
-            <div className={darkTheme ? 'dark container' : 'container'}>
-                <div className={classes.Orders}>
-                    <PageHeader header="Orders" />
-
-                    {ordersTable}
-                </div>
-            </div>
+            <PageContainer>
+                <PageHeader header="Orders" />
+                {ordersTable}
+            </PageContainer>
         </>
     );
 };

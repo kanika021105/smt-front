@@ -1,3 +1,6 @@
+// Shadow Color
+$basic-shadow-color: 0 2px 6px rgba(0, 0, 0, 0.026);
+
 // TOPBAR
 $topbar__height: 7rem;
 $topbar__height__bp-5: 6rem;
@@ -16,9 +19,16 @@ $sidebar__expand__width__bp-10: 24rem;
 $sidebar__expand__width__bp-6: 21rem;
 
 // ********************* Default THEME COLORS ********************* /
+// Background Colors
 $background-primary-color: #fff;
 $background-secondary-color: #F2F2FC;
 
+// BorderColor
+$border-color: #e0e0e0;
+
+// Hover color
+$hover-color: #f4f4f4;
+$hover-color-dark: #eee;
 
 
 // ********************* DARK THEME COLORS ********************* /
@@ -27,11 +37,19 @@ $dark-background-primary-color: #222;
 $dark-background-secondary-color: #333333;
 $dark-background-tertiary-color: #464646;
 
+// Border Color
+$dark-border-color: #424242;
+
 // Normal colors
-$dark-color-white: #eee;
-$dark-color-white-secondary: #ddd;
 $dark-color-primary: #3f81ea;
+$dark-color-white-secondary: #ddd;
+$dark-color-white: #eee;
 
 // Text Colors
-$dark-color-primary-text: #ddd;
-$dark-color-primary-text: #ccc;
+$dark-primary-text-color: #ccc;
+$dark-secondary-text-color: #bbb;
+$dark-tertiary-text-color: #aaa;
+
+// Hover colors
+$dark-hover-color: #545454;
+$dark-hover-color-light: #5c5c5c;

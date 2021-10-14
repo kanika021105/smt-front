@@ -61,7 +61,7 @@ let logoutTimer;
 // Calculating token expiry time
 function calculateRemainingTime() {
     const remainingMilliseconds = 24 * 60 * 60 * 1000;
-    const expiryDate = Date.now() + remainingMilliseconds;
+    const expiryDate = (Date.now() + remainingMilliseconds);
 
     return expiryDate;
 }
@@ -99,18 +99,19 @@ export function AuthContextProvider({ children }) {
 
     // Dispatching state update request for login
     function login(token, clientId, email, role, firstName, lastName, balance) {
-        dispatch({
+        const expiryTime = calculateRemainingTime();
+        console.log(expiryTime);
+        // Setting token and expiry time
+        localStorage.setItem('expiryDate', expiryTime);
+        localStorage.setItem('token', token);
+        // logoutTimer = setTimeout(logout, expiryTime);
+
+        return dispatch({
             type: 'login',
             payload: {
                 token, clientId, email, role, firstName, lastName, balance,
             },
         });
-
-        const expiryTime = calculateRemainingTime();
-        // Setting token and expiry time
-        localStorage.setItem('expiryDate', expiryTime);
-        localStorage.setItem('token', token);
-        logoutTimer = setTimeout(logout, expiryTime);
     }
 
     // Dispatching state update after login verification
@@ -128,7 +129,7 @@ export function AuthContextProvider({ children }) {
             },
         });
 
-        logoutTimer = setTimeout(logout, localStorage.getItem('expiryDate'));
+        // logoutTimer = setTimeout(logout, localStorage.getItem('expiryDate'));
     }
 
     // Dispatching state update to update user Balance

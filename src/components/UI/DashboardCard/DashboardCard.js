@@ -1,24 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { number, oneOfType, string } from 'prop-types';
+
 import Theme from '../../../store/theme';
+import classes from './DashboardCard.module.scss';
 
-import classes from './DashboardCard.module.css';
-
-const DashboardCard = ({ children }) => {
+function DashboardCard({ title, value }) {
     const { darkTheme } = React.useContext(Theme);
 
     return (
-        <div className={
-            darkTheme
-                ? [classes.dark, classes.Card].join(' ')
-                : classes.Card
-        }
-        >
-            {children}
+        <div className={`${classes.card} ${darkTheme ? `${classes.dark} ${classes.card}` : ''}`}>
+            <span className={classes.title}>{title}</span>
+            <span className={classes.value}>{value}</span>
         </div>
     );
-};
+}
 
-DashboardCard.propTypes = { children: PropTypes.node.isRequired };
+DashboardCard.propTypes = {
+    title: string.isRequired,
+    value: oneOfType([string, number]).isRequired,
+};
 
 export default DashboardCard;

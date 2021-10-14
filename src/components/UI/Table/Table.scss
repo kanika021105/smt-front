@@ -1,98 +1,117 @@
 @import '../../../sass/index';
 
-table {
-    border-collapse: collapse;
-    border-radius: .5rem;
-    margin: .5rem 0;
-    box-shadow: 0 0 .18rem rgba($color-black, .25);
+
+.table {
+    padding: 1rem 1rem;
+    border: $border-color;
+    border-radius: 1rem;
+    box-shadow: $basic-shadow-color;
+    background-color: $background-primary-color;
     width: 100%;
 
-    & thead {
-        display: table-header-group;
-        border-radius: 0.5rem;
-        vertical-align: middle;
+    overflow: scroll;
 
-        & tr {
-            & th {
-                padding: .5rem;
-                color: darken($color-grey, 5);
-            }
-
-            & th {
-                &:first-child {
-                    border-top-left-radius: 0.5rem;
-                }
-
-                &:last-child {
-                    border-top-left-radius: 0.5rem;
-                }
-            }
-        }
+    &::-webkit-scrollbar {
+        display: none;
     }
 
-    & tbody {
-        display: table-row-group;
-        color: $color-grey;
+    & table {
+        display: flex;
+        flex-direction: column;
 
         & tr {
-            vertical-align: middle;
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+
+            & th {
+                flex: 1;
+                text-align: start;
+                padding: .5rem 1rem 1rem 1rem ;
+                text-transform: capitalize;
+            }
 
             & td {
-                padding: .5rem;
-                white-space: nowrap;
+                flex: 1;
+                padding: .5rem 1rem;
+            }
 
-                &:last-child{
-                    text-align: center;
+            & th,
+            & td {
+                &.id {
+                    min-width: 5rem;
+                    max-width: fit-content;
                 }
-            }
 
-            &:last-child {
-                & td {
-                    border-bottom: none;
-                    &:first-child {
-                        border-bottom-left-radius: 5px;
-                    }
-
-                    &:last-child {
-                        border-bottom-right-radius: 5px;
-                    }
+                &.name {
+                    min-width: 12rem;
+                    max-width: fit-content;
                 }
-            }
 
-            &:nth-child(odd) {
-                background: $color-grey-light-1;
-            }
+                &.quantity {
+                    min-width: 10rem;
+                    max-width: fit-content;
+                }
 
-            &:hover {
-                background-color: darken($color-grey-light-1, 10);
+                &.price {
+                    min-width: 10rem;
+                    max-width: fit-content;
+                }
+
+                &.status {
+                    max-width: 10rem;
+                    text-align: center
+                }
             }
         }
-    }
+
+
+        & tbody {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+
+            tr {
+                &:nth-child(odd) {
+                    background-color: $hover-color;
+                    border-radius: .5rem;
+                }
+
+                & td {
+                    margin: auto;
+                }
+
+                &:hover {
+                    background-color: $hover-color-dark;
+                    border-radius: .5rem
+                }
+            }
+        }
+    };
 }
 
+.dark.table {
+    background-color: $dark-background-tertiary-color;
 
-.dark table {
-    & thead {
-        & tr {
-            & th {
-                padding: .5rem;
-                color: $dark-color-text--primary;
-            }
+    & tr {
+        th {
+            color: $dark-secondary-text-color;
+        }
+
+        td {
+            color: $dark-tertiary-text-color;
         }
     }
 
-    & tbody {
-        display: table-row-group;
-        color: $dark-color-text--primary;
+    & tbody tr {
 
-        & tr {
-            &:nth-child(odd) {
-                background: #626262;
-            }
+        &:nth-child(odd) {
+            background-color: $dark-hover-color;
+        }
 
-            &:hover {
-                background-color: #525252;
-            }
+        &:hover {
+            background-color: $dark-hover-color-light;
+            border-radius: .5rem
         }
     }
 }

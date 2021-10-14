@@ -1,0 +1,17 @@
+@import '../../../../sass/index';
+
+.chart {
+    height: 32rem;
+    padding: 1rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 1rem;
+    background-color: $background-primary-color;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.026);
+
+    transition: all 0.3s ease;
+}
+
+.chart.dark {
+    border: 1px solid $dark-border-color;
+    background-color: $dark-background-tertiary-color;
+}

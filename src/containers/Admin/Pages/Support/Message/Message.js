@@ -7,9 +7,8 @@ import AuthContext from '../../../../../store/AuthContext';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import PageTitle from '../../../../../components/Extra/PageTitle';
 import PageHeader from '../../../../../components/UI/PageHeader/PageHeader';
+import PageContainer from '../../../../../components/UI/PageContainer/PageContainer';
 import MessageContainer from '../../../../../components/UI/MessageContainer/MessageContainer';
-
-import classes from './messages.module.scss';
 
 const Message = () => {
     const params = useParams();
@@ -60,20 +59,19 @@ const Message = () => {
     return (
         <>
             <PageTitle title="Ticket" />
-            <div className="container">
-                <div className={classes.support}>
-                    <PageHeader header="Ticket" />
 
-                    <MessageContainer
-                        ticket={ticket}
-                        onChange={inputChangeHandler}
-                        inputValue={inputMessage}
-                        onSubmit={submitMessageHandler}
-                        messages={messages}
-                        side="admin"
-                    />
-                </div>
-            </div>
+            <PageContainer>
+                <PageHeader header="Ticket" />
+
+                <MessageContainer
+                    ticket={ticket}
+                    onChange={inputChangeHandler}
+                    inputValue={inputMessage}
+                    onSubmit={submitMessageHandler}
+                    messages={messages}
+                    side="admin"
+                />
+            </PageContainer>
         </>
     );
 };

@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
+// import Theme from '../../../../store/theme';
 
 import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
@@ -16,6 +16,7 @@ import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Table, { TBody, THead } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import classes from './services.module.scss';
 
@@ -183,26 +184,22 @@ const Services = () => {
         },
     });
 
-    const { darkTheme } = useContext(Theme);
+    // const { darkTheme } = useContext(Theme);
 
-    // Getting all required data on page loading
-    async function getData() {
+    useEffect(async () => {
         try {
+            dispatch({ type: 'loading' });
             const url = '/admin/services';
             const { data } = await Axios.get(url);
 
             dispatch({ type: 'setServices', payload: data.services });
             dispatch({ type: 'setCategories', payload: data.categories });
             dispatch({ type: 'setProviders', payload: data.apiProviders });
+            dispatch({ type: 'loading' });
         } catch (err) {
+            dispatch({ type: 'loading' });
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    }
-
-    useEffect(() => {
-        dispatch({ type: 'loading' });
-        getData();
-        dispatch({ type: 'loading' });
     }, []);
 
     // Count total categories
@@ -288,113 +285,52 @@ const Services = () => {
     }
 
     const addModal = (
-        <CustomModal
-            show={state.showAddModal}
-            onClose={handleBackdropClick}
-            onSubmit={createService}
-            title="Add Service"
-        >
+        <CustomModal show={state.showAddModal} onClose={handleBackdropClick} onSubmit={createService} title="Add Service">
             <form onSubmit={createService}>
-                <Select
-                    label="Category"
-                    value={state.newService.categoryId}
-                    onChange={addServiceCategory}
-                    disabled={categoriesCount()}
-                >
-                    <option key={0} value="">
-                        {categoriesCount() ? 'No category to choose!' : 'Choose a Category'}
-                    </option>
-                    {state.categories.length >= 1 && state.categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.title}
-                        </option>
-                    ))}
+                <Select label="Category" value={state.newService.categoryId} onChange={addServiceCategory} disabled={categoriesCount()}>
+                    <option key={0} value="">{categoriesCount() ? 'No category to choose!' : 'Choose a Category'}</option>
+                    {
+                        state.categories.length >= 1 && state.categories.map((category) => (
+                            <option key={category.id} value={category.id}>{category.title}</option>
+                        ))
+                    }
                 </Select>
-
-                <Input
-                    label="Title"
-                    placeholder="Title"
-                    type="text"
-                    value={state.newService.title}
-                    onChange={addTitleChangeHandler}
-                />
+                <Input label="Title" placeholder="Title" type="text" value={state.newService.title} onChange={addTitleChangeHandler} />
 
                 <InputGroup>
-                    <Select
-                        label="Api Provider"
-                        value={state.newService.apiProviderId}
-                        onChange={addApiProviderChange}
-                    >
+                    <Select label="Api Provider" value={state.newService.apiProviderId} onChange={addApiProviderChange}>
                         <option key={0} value="">Manual</option>
-                        {state.providers.length >= 1 && state.providers.map((_provider) => (
-                            <option key={_provider.id} value={_provider.id}>
-                                {_provider.name}
-                            </option>
-                        ))}
+                        {
+                            state.providers.length >= 1 && state.providers.map((_provider) => (
+                                <option key={_provider.id} value={_provider.id}>
+                                    {_provider.name}
+                                </option>
+                            ))
+                        }
                     </Select>
 
-                    <Input
-                        label="Api Service Id"
-                        placeholder="Api Service Id"
-                        type="number"
-                        value={state.newService.apiServiceId}
-                        onChange={addApiServiceIdChangeHandler}
-                    />
+                    <Input label="Api Service Id" placeholder="Api Service Id" type="number" value={state.newService.apiServiceId} onChange={addApiServiceIdChangeHandler} />
                 </InputGroup>
 
                 <InputGroup>
-                    <Input
-                        label="Min"
-                        placeholder="Min"
-                        type="number"
-                        value={state.newService.min}
-                        onChange={addMinChangeHandler}
-                    />
-
-                    <Input
-                        label="Max"
-                        placeholder="Max"
-                        type="number"
-                        value={state.newService.max}
-                        onChange={addMaxChangeHandler}
-                    />
+                    <Input label="Min" placeholder="Min" type="number" value={state.newService.min} onChange={addMinChangeHandler} />
+                    <Input label="Max" placeholder="Max" type="number" value={state.newService.max} onChange={addMaxChangeHandler} />
                 </InputGroup>
 
                 <InputGroup>
-                    <Input
-                        label="Price"
-                        placeholder="Price"
-                        type="number"
-                        value={state.newService.rate}
-                        onChange={addPriceChangeHandler}
-                    />
-
-                    <Select
-                        label="Status"
-                        value={state.newService.status}
-                        onChange={addStatusChangeHandler}
-                    >
+                    <Input label="Price" placeholder="Price" type="number" value={state.newService.rate} onChange={addPriceChangeHandler} />
+                    <Select label="Status" value={state.newService.status} onChange={addStatusChangeHandler}>
                         <option value="active">Active</option>
                         <option value="disable">Disable</option>
                     </Select>
 
-                    <Select
-                        label="Drip Feed"
-                        value={state.newService.dripFeed}
-                        onChange={addDripFeedChangeHandler}
-                    >
+                    <Select label="Drip Feed" value={state.newService.dripFeed} onChange={addDripFeedChangeHandler}>
                         <option value="active">Active</option>
                         <option value="disable">Disable</option>
                     </Select>
                 </InputGroup>
 
-                <Textarea
-                    label="Description"
-                    placeholder="Description..."
-                    value={state.newService.description}
-                    rows={4}
-                    onChange={addDescChangeHandler}
-                />
+                <Textarea label="Description" placeholder="Description..." value={state.newService.description} rows={4} onChange={addDescChangeHandler} />
             </form>
         </CustomModal>
     );
@@ -487,110 +423,59 @@ const Services = () => {
 
     // Edit
     const editModal = (
-        <CustomModal
-            show={state.showEditModal}
-            onClose={handleClose}
-            onSubmit={editingSubmitHandler}
-            title="Edit Service"
-        >
+        <CustomModal show={state.showEditModal} onClose={handleClose} onSubmit={editingSubmitHandler} title="Edit Service">
             <form onSubmit={editingSubmitHandler}>
-                {state.categories >= 1 && (
-                    <Select
-                        label="Category"
-                        value={state.editingService.categoryId}
-                        onChange={categoryChangeHandler}
-                    >
-                        {state.categories && state.categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.title}
-                            </option>
-                        ))}
-                    </Select>
-                )}
+                {
+                    state.categories >= 1 && (
+                        <Select label="Category" value={state.editingService.categoryId} onChange={categoryChangeHandler}>
+                            {
+                                state.categories && state.categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.title}
+                                    </option>
+                                ))
+                            }
+                        </Select>
+                    )
+                }
 
-                <Input
-                    label="Title"
-                    placeholder="Title"
-                    type="text"
-                    value={state.editingService.title}
-                    onChange={titleChangeHandler}
-                />
+                <Input label="Title" placeholder="Title" type="text" value={state.editingService.title} onChange={titleChangeHandler} />
 
                 <InputGroup>
-                    <Select
-                        label="Api Provider"
-                        value={state.editingService.apiProviderId}
-                        onChange={providerChangeHandler}
-                    >
+                    <Select label="Api Provider" value={state.editingService.apiProviderId} onChange={providerChangeHandler}>
                         <option key={0} value="">Manual</option>
-                        {state.providers && state.providers.map((_provider) => (
-                            <option key={_provider.id} value={_provider.id}>
-                                {_provider.name}
-                            </option>
-                        ))}
+                        {
+                            state.providers && state.providers.map((_provider) => (
+                                <option key={_provider.id} value={_provider.id}>
+                                    {_provider.name}
+                                </option>
+                            ))
+                        }
                     </Select>
 
-                    <Input
-                        label="Api Service Id"
-                        placeholder="Api Service Id"
-                        type="number"
-                        value={state.editingService.apiServiceId}
-                        onChange={apiServiceChangeHandler}
-                    />
+                    <Input label="Api Service Id" placeholder="Api Service Id" type="number" value={state.editingService.apiServiceId} onChange={apiServiceChangeHandler} />
                 </InputGroup>
 
                 <InputGroup>
-                    <Input
-                        label="Min"
-                        placeholder="Min"
-                        value={state.editingService.min}
-                        onChange={minChangeHandler}
-                    />
-
-                    <Input
-                        label="Max"
-                        placeholder="Max"
-                        type="number"
-                        value={state.editingService.max}
-                        onChange={maxChangeHandler}
-                    />
+                    <Input label="Min" placeholder="Min" value={state.editingService.min} onChange={minChangeHandler} />
+                    <Input label="Max" placeholder="Max" type="number" value={state.editingService.max} onChange={maxChangeHandler} />
                 </InputGroup>
 
                 <InputGroup>
-                    <Input
-                        label="Price"
-                        placeholder="Price"
-                        type="number"
-                        value={state.editingService.rate}
-                        onChange={priceChangeHandler}
-                    />
+                    <Input label="Price" placeholder="Price" type="number" value={state.editingService.rate} onChange={priceChangeHandler} />
 
-                    <Select
-                        label="Status"
-                        value={state.editingService.status}
-                        onChange={statusChangeHandler}
-                    >
+                    <Select label="Status" value={state.editingService.status} onChange={statusChangeHandler}>
                         <option value="active">Active</option>
                         <option value="disable">Disable</option>
                     </Select>
 
-                    <Select
-                        label="Drip Feed"
-                        value={state.editingService.dripFeed}
-                        onChange={dripFeedChangeHandler}
-                    >
+                    <Select label="Drip Feed" value={state.editingService.dripFeed} onChange={dripFeedChangeHandler}>
                         <option value="active">Active</option>
                         <option value="deactive">Disable</option>
                     </Select>
                 </InputGroup>
 
-                <Textarea
-                    label="Description"
-                    placeholder="Description..."
-                    value={state.editingService.description}
-                    rows={4}
-                    onChange={descChangeHandler}
-                />
+                <Textarea label="Description" placeholder="Description..." value={state.editingService.description} rows={4} onChange={descChangeHandler} />
             </form>
         </CustomModal>
     );
@@ -612,14 +497,12 @@ const Services = () => {
 
     // Get API Provider name
     function getProviderName(apiProviderId, apiServiceId) {
-        const providerDetail = state.providers && state.providers
-            .filter((apiProvider) => apiProvider.id === apiProviderId);
+        const providerDetail = state.providers
+        && state.providers.filter((apiProvider) => apiProvider.id === apiProviderId);
 
         return (
             <td>
-                {providerDetail && providerDetail[0]
-                    ? `${providerDetail[0].name} - ${apiServiceId} `
-                    : 'Manual'}
+                {providerDetail && providerDetail[0] ? `${providerDetail[0].name} - ${apiServiceId} ` : 'Manual'}
             </td>
         );
     }
@@ -640,8 +523,8 @@ const Services = () => {
 
     // Get services by category id
     function getServiceByCategory(id) {
-        const servicesList = state.services && state.services
-            .filter((service) => service.categoryId === id);
+        const servicesList = state.services
+        && state.services.filter((service) => service.categoryId === id);
 
         return servicesList.map((service) => (
             <tr key={service.uid}>
@@ -656,25 +539,13 @@ const Services = () => {
                     <DropDown id={service.uid}>
                         <ul>
                             <li>
-                                <button
-                                    type="button"
-                                    className="btn btn-edit"
-                                    style={{ width: '100%' }}
-                                    value={service.uid}
-                                    onClick={editButtonHandler}
-                                >
+                                <button type="button" className="btn btn-edit" style={{ width: '100%' }} value={service.uid} onClick={editButtonHandler}>
                                     Edit
                                 </button>
                             </li>
 
                             <li>
-                                <button
-                                    type="button"
-                                    className="btn btn-delete"
-                                    style={{ width: '100%' }}
-                                    value={service.uid}
-                                    onClick={deleteButtonHandler}
-                                >
+                                <button type="button" className="btn btn-delete" style={{ width: '100%' }} value={service.uid} onClick={deleteButtonHandler}>
                                     Delete
                                 </button>
                             </li>
@@ -689,19 +560,13 @@ const Services = () => {
     const servicesData = () => {
         if (state.services && state.services.length <= 0) {
             return (
-                <DataNotFound
-                    message="Please add some services in any
-                    category to show here."
-                />
+                <DataNotFound message="Please add some services in any category to show here." />
             );
         }
 
         if (state.categories && state.categories.length <= 0) {
             return (
-                <DataNotFound
-                    message="Please add some services in any
-                    category to show here."
-                />
+                <DataNotFound message="Please add some services in any category to show here." />
             );
         }
 
@@ -713,10 +578,7 @@ const Services = () => {
                     if (serviceLength.length <= 0) return '';
                     if (serviceLength.length <= 0 && state.categories.length <= 1) {
                         return (
-                            <DataNotFound
-                                message="Please add some services
-                                in any category to show here."
-                            />
+                            <DataNotFound message="Please add some services in any category to show here." />
                         );
                     }
 
@@ -757,15 +619,13 @@ const Services = () => {
             {addModal}
             {editModal}
 
-            <div className={darkTheme ? 'dark container' : 'container'}>
-                <div className={classes.Services}>
-                    <PageHeader header="Services">
-                        <Button.Add onClick={handleAddButtonClick} />
-                    </PageHeader>
+            <PageContainer>
+                <PageHeader header="Services">
+                    <Button.Add onClick={handleAddButtonClick} />
+                </PageHeader>
 
-                    {servicesData()}
-                </div>
-            </div>
+                {servicesData()}
+            </PageContainer>
         </>
     );
 };

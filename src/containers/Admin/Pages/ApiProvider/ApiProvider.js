@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { IconContext } from 'react-icons';
 import { FiEdit } from 'react-icons/fi';
+import { IconContext } from 'react-icons';
 import { IoMdSync } from 'react-icons/io';
-import { RiDeleteBin6Line } from 'react-icons/ri';
 import { MdAttachMoney } from 'react-icons/md';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import { AiOutlineUnorderedList } from 'react-icons/ai';
 // TODO remove bootstrap usage from this file
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
 
 import Card from '../../../../components/UI/Card/Card';
 import Modal from '../../../../components/UI/Modal/Modal';
@@ -24,10 +23,11 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import './apiProvider.scss';
 
-const ApiProvider = () => {
+function ApiProvider() {
     const history = useHistory();
 
     const [apiProviders, setApiProviders] = useState();
@@ -57,101 +57,69 @@ const ApiProvider = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showSyncModal, setShowSyncModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { darkTheme } = useContext(Theme);
 
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        Axios.get('/admin/api-provider')
-            .then((res) => {
-                const { data } = res;
-                setApiProviders(data.apiProviders);
-
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                return Toast.failed(err.response.message || 'Something went wrong!');
-            });
+        try {
+            const url = '/admin/api-provider';
+            const { data } = await Axios.get(url);
+            setApiProviders(data.apiProviders);
+            return setIsLoading(false);
+        } catch (err) {
+            setIsLoading(false);
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
-    const handleAddButtonClick = () => {
+    function handleAddButtonClick() {
         setShowAddModal(true);
-    };
+    }
 
-    const nameChangeHandler = (e) => {
+    function nameChangeHandler(e) {
         setAddApiDetails((preState) => ({ ...preState, name: e.target.value }));
-    };
+    }
 
-    const urlChangeHandler = (e) => {
+    function urlChangeHandler(e) {
         setAddApiDetails((preState) => ({ ...preState, url: e.target.value }));
-    };
+    }
 
-    const apiKeyChangeHandler = (e) => {
+    function apiKeyChangeHandler(e) {
         setAddApiDetails((preState) => ({ ...preState, key: e.target.value }));
-    };
+    }
 
-    const statusChangeHandler = (e) => {
+    function statusChangeHandler(e) {
         setAddApiDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    }
 
-    const addFormSubmitHandler = async (e) => {
+    async function addFormSubmitHandler(e) {
         e.preventDefault();
 
         try {
             const url = '/admin/api-provider/add';
             const { data } = await Axios.post(url, { ...addApiDetails });
 
-            if (data.status === 'success') {
-                setApiProviders((preState) => [...preState, { ...data.createdApi }]);
-                setShowAddModal(false);
-                return Toast.success('Api added successfully!');
-            }
-
-            return Toast.failed('Failed to add API Provider!');
+            setApiProviders((preState) => [...preState, { ...data.createdApi }]);
+            setShowAddModal(false);
+            return Toast.success('Api added successfully!');
         } catch (err) {
-            return Toast.failed(err.response.message || 'Something went wrong!');
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
+    }
 
-    const handleBackdropClick = () => {
+    function handleBackdropClick() {
         setShowAddModal(false);
         setShowEditModal(false);
         setShowSyncModal(false);
-    };
+    }
 
     const addModal = (
         <Modal show={showAddModal} onClose={handleBackdropClick} title="Add API Provider">
             <form onSubmit={addFormSubmitHandler}>
-                <Input
-                    label="Name"
-                    placeholder="Name"
-                    type="text"
-                    value={addApiDetails.name}
-                    onChange={nameChangeHandler}
-                />
-
-                <Input
-                    label="URL"
-                    placeholder="API URL"
-                    type="url"
-                    value={addApiDetails.url}
-                    onChange={urlChangeHandler}
-                />
-
-                <Input
-                    label="API Key"
-                    placeholder="API KEY"
-                    type="text"
-                    value={addApiDetails.key}
-                    onChange={apiKeyChangeHandler}
-                />
-
-                <Select
-                    label="Status"
-                    value={addApiDetails.status}
-                    onChange={statusChangeHandler}
-                >
+                <Input label="Name" placeholder="Name" type="text" value={addApiDetails.name} onChange={nameChangeHandler} />
+                <Input label="URL" placeholder="API URL" type="url" value={addApiDetails.url} onChange={urlChangeHandler} />
+                <Input label="API Key" placeholder="API KEY" type="text" value={addApiDetails.key} onChange={apiKeyChangeHandler} />
+                <Select label="Status" value={addApiDetails.status} onChange={statusChangeHandler}>
                     <option key="active" value="active"> Active</option>
                     <option key="disabled" value="disabled">Disable</option>
                 </Select>
@@ -159,85 +127,57 @@ const ApiProvider = () => {
         </Modal>
     );
 
-    const editButtonClickHandler = async (id) => {
+    async function editButtonClickHandler(id) {
         setShowEditModal(true);
 
-        const apiProvider = await apiProviders.filter((provider) => provider.id === id);
+        const apiProvider = await apiProviders.find((_provider) => _provider.id === id);
         setEditingApiDetails(() => ({
-            id: apiProvider[0].id,
-            name: apiProvider[0].name,
-            url: apiProvider[0].url,
-            key: apiProvider[0].key,
-            status: apiProvider[0].status,
+            id: apiProvider.id,
+            name: apiProvider.name,
+            url: apiProvider.url,
+            key: apiProvider.key,
+            status: apiProvider.status,
         }));
-    };
+    }
 
-    const editingNameChangeHandler = (e) => {
-        setEditingApiDetails((preState) => ({ ...preState, name: e.target.value }));
-    };
+    function editingNameChangeHandler(e) {
+        setEditingApiDetails((_preState) => ({ ..._preState, name: e.target.value }));
+    }
 
-    const editingUrlChangeHandler = (e) => {
-        setEditingApiDetails((preState) => ({ ...preState, url: e.target.value }));
-    };
+    function editingUrlChangeHandler(e) {
+        setEditingApiDetails((_preState) => ({ ..._preState, url: e.target.value }));
+    }
 
-    const editingKeyChangeHandler = (e) => {
-        setEditingApiDetails((preState) => ({ ...preState, key: e.target.value }));
-    };
+    function editingKeyChangeHandler(e) {
+        setEditingApiDetails((_preState) => ({ ..._preState, key: e.target.value }));
+    }
 
-    const editingStatusChangeHandler = (e) => {
-        setEditingApiDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    function editingStatusChangeHandler(e) {
+        setEditingApiDetails((_preState) => ({ ..._preState, status: e.target.value }));
+    }
 
-    const editFormSubmitHandler = async (e) => {
+    async function editFormSubmitHandler(e) {
         e.preventDefault();
 
         try {
             const url = '/admin/api-provider/update';
             const { data } = await Axios.post(url, { ...addApiDetails });
-            if (data.status === 'success') {
-                setApiProviders((preState) => [...preState, { ...data.createdApi }]);
-                setShowAddModal(false);
+            setApiProviders((_preState) => [..._preState, { ...data.createdApi }]);
+            setShowAddModal(false);
 
-                return Toast.success('Api details updated!');
-            }
-            return Toast.failed('Failed to update api details!');
+            return Toast.success('Api details updated!');
         } catch (err) {
-            return Toast.failed(err.response.message);
+            return Toast.failed(err.response.data.message);
         }
-    };
+    }
 
     const editModal = (
         <Modal show={showEditModal} onClose={handleBackdropClick} title="Edit API Details">
             <form onSubmit={editFormSubmitHandler}>
-                <Input
-                    label="Name"
-                    placeholder="Name"
-                    type="text"
-                    value={editingApiDetails.name}
-                    onChange={editingNameChangeHandler}
-                />
-
-                <Input
-                    label="URL"
-                    placeholder="API URL"
-                    type="url"
-                    value={editingApiDetails.url}
-                    onChange={editingUrlChangeHandler}
-                />
-
-                <Input
-                    label="API Key"
-                    placeholder="API KEY"
-                    type="text"
-                    value={editingApiDetails.key}
-                    onChange={editingKeyChangeHandler}
-                />
-
-                <Select
-                    label="Status"
-                    value={editingApiDetails.status}
-                    onChange={editingStatusChangeHandler}
-                >
+                <Input label="Name" placeholder="Name" type="text" value={editingApiDetails.name} onChange={editingNameChangeHandler} />
+                <Input label="URL" placeholder="API URL" type="url" value={editingApiDetails.url} onChange={editingUrlChangeHandler} />
+                <Input label="API Key" placeholder="API KEY" type="text" value={editingApiDetails.key} onChange={editingKeyChangeHandler} />
+                <Select label="Status" value={editingApiDetails.status} onChange={editingStatusChangeHandler}>
                     <option key="active" value="active">Active</option>
                     <option key="disabled" value="disabled">Disable</option>
                 </Select>
@@ -245,26 +185,26 @@ const ApiProvider = () => {
         </Modal>
     );
 
-    const syncClickHandler = async (id) => {
+    async function syncClickHandler(id) {
         setShowSyncModal(true);
 
-        const apiProvider = await apiProviders.filter((provider) => provider.id === id);
+        const apiProvider = await apiProviders.find((_provider) => _provider.id === id);
         setSyncData((preState) => ({
             ...preState,
             api: {
                 id,
-                name: apiProvider[0].name,
-                url: apiProvider[0].url,
-                key: apiProvider[0].key,
+                name: apiProvider.name,
+                url: apiProvider.url,
+                key: apiProvider.key,
             },
         }));
-    };
+    }
 
-    const profitMarginChangeHandler = (e) => {
+    function profitMarginChangeHandler(e) {
         setSyncData((preState) => ({ ...preState, profitMargin: e.target.value }));
-    };
+    }
 
-    const percentageCount = () => {
+    function percentageCount() {
         const countList = [];
         let count = 0;
 
@@ -274,9 +214,9 @@ const ApiProvider = () => {
         }
 
         return countList;
-    };
+    }
 
-    const syncFormSubmitHandler = async (e) => {
+    async function syncFormSubmitHandler(e) {
         e.preventDefault();
         const { id } = syncData.api;
 
@@ -287,69 +227,23 @@ const ApiProvider = () => {
         } catch (err) {
             Toast.failed(err.response.message || 'Something went wrong!');
         }
-    };
+    }
 
     const counter = percentageCount();
     const syncModal = (
-        <Modal show={showSyncModal} onHide={handleBackdropClick}>
-            <Modal.Header closeButton closeLabel="">
-                <Modal.Title>Sync Services </Modal.Title>
-            </Modal.Header>
-
+        <Modal show={showSyncModal} onClose={handleBackdropClick} title="Sync Services" onSubmit={syncFormSubmitHandler}>
             <form onSubmit={syncFormSubmitHandler}>
-                <Modal.Body>
-                    <Input
-                        label="Name"
-                        value={syncData.api.name}
-                        placeholder="Name"
-                        disabled
-                    />
-
-                    <Input
-                        label="URL"
-                        value={syncData.api.url}
-                        placeholder="URL"
-                        disabled
-                    />
-
-                    <Input
-                        label="API Key"
-                        value={syncData.api.key}
-                        placeholder="API KEY"
-                        disabled
-                    />
-
-                    <Select
-                        label="Percentage Increase (Profit Margin)"
-                        value={syncData.profitMargin}
-                        onChange={profitMarginChangeHandler}
-                    >
-                        {counter && counter.map((count) => (
-                            <option key={count} value={count}>{`${count}%`}</option>
-                        ))}
-                    </Select>
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button.ModalSecondary
-                        type="button"
-                        onClick={handleBackdropClick}
-                    >
-                        Close
-                    </Button.ModalSecondary>
-
-                    <Button.ModalPrimary
-                        type="button"
-                        onClick={syncFormSubmitHandler}
-                    >
-                        Submit
-                    </Button.ModalPrimary>
-                </Modal.Footer>
+                <Input label="Name" value={syncData.api.name} placeholder="Name" disabled />
+                <Input label="URL" value={syncData.api.url} placeholder="URL" disabled />
+                <Input label="API Key" value={syncData.api.key} placeholder="API KEY" disabled />
+                <Select label="Percentage Increase (Profit Margin)" value={syncData.profitMargin} onChange={profitMarginChangeHandler}>
+                    {counter && counter.map((count) => (<option key={count} value={count}>{`${count}%`}</option>))}
+                </Select>
             </form>
         </Modal>
     );
 
-    const updateBalanceHandler = async (id) => {
+    async function updateBalanceHandler(id) {
         try {
             const url = `/admin/api-provider/balance/${id}`;
             const { data } = await Axios.get(url);
@@ -368,14 +262,14 @@ const ApiProvider = () => {
         } catch (err) {
             return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
+    }
 
-    const serviceListHandler = async (id) => {
+    async function serviceListHandler(id) {
         const path = `api-provider/${id}/services`;
         history.push(path);
-    };
+    }
 
-    const deleteHandler = async (id) => {
+    async function deleteHandler(id) {
         const newList = await apiProviders.filter((provider) => provider.id !== id);
 
         try {
@@ -387,9 +281,9 @@ const ApiProvider = () => {
         } catch (err) {
             Toast.failed(err.response.data.message);
         }
-    };
+    }
 
-    const checkStatus = (status) => {
+    function checkStatus(status) {
         switch (status) {
             case 'active':
                 return <Button.Active />;
@@ -400,7 +294,7 @@ const ApiProvider = () => {
             default:
                 return Toast.failed('Invalid status received!');
         }
-    };
+    }
 
     const apiProviderTable = (
         <Card>
@@ -427,75 +321,37 @@ const ApiProvider = () => {
                                     <OverlayTrigger
                                         key="balance"
                                         placement="top"
-                                        overlay={(
-                                            <Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>
-                                                Update Balance
-                                            </Tooltip>
-                                        )}
+                                        overlay={(<Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>Update Balance</Tooltip>)}
                                     >
-                                        <button
-                                            type="button"
-                                            value={apiProvider.id}
-                                            variant="none"
-                                            className="apiActionButton apiActionButtonFirst"
-                                            onClick={() => updateBalanceHandler(apiProvider.id)}
-                                        >
-                                            <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
-                                                <MdAttachMoney />
-                                            </IconContext.Provider>
+                                        <button type="button" value={apiProvider.id} variant="none" className="apiActionButton apiActionButtonFirst" onClick={() => updateBalanceHandler(apiProvider.id)}>
+                                            <MdAttachMoney style={{ fontSize: '30px', padding: 'auto' }} />
                                         </button>
                                     </OverlayTrigger>
 
                                     <OverlayTrigger
                                         key="sync"
                                         placement="top"
-                                        overlay={(
-                                            <Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>
-                                                Sync Services
-                                            </Tooltip>
-                                        )}
+                                        overlay={(<Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>Sync Services</Tooltip>)}
                                     >
-                                        <button
-                                            type="button"
-                                            variant="none"
-                                            className="apiActionButton"
-                                            onClick={() => syncClickHandler(apiProvider.id)}
-                                        >
-                                            <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
-                                                <IoMdSync />
-                                            </IconContext.Provider>
+                                        <button type="button" variant="none" className="apiActionButton" onClick={() => syncClickHandler(apiProvider.id)}>
+                                            <IoMdSync style={{ fontSize: '30px', padding: 'auto' }} />
                                         </button>
                                     </OverlayTrigger>
 
                                     <OverlayTrigger
                                         key="service"
                                         placement="top"
-                                        overlay={(
-                                            <Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>
-                                                Service List via API
-                                            </Tooltip>
-                                        )}
+                                        overlay={(<Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>Service List via API</Tooltip>)}
                                     >
-                                        <button
-                                            type="button"
-                                            variant="none"
-                                            className="apiActionButton"
-                                            onClick={() => serviceListHandler(apiProvider.id)}
-                                        >
-                                            <IconContext.Provider value={{ style: { fontSize: '30px', padding: 'auto' } }}>
-                                                <AiOutlineUnorderedList />
-                                            </IconContext.Provider>
+                                        <button type="button" variant="none" className="apiActionButton" onClick={() => serviceListHandler(apiProvider.id)}>
+                                            <AiOutlineUnorderedList style={{ fontSize: '30px', padding: 'auto' }} />
                                         </button>
                                     </OverlayTrigger>
 
                                     <OverlayTrigger
                                         key="edit"
                                         placement="top"
-                                        overlay={(
-                                            <Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>
-                                                Edit API
-                                            </Tooltip>
-                                        )}
+                                        overlay={(<Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>Edit API</Tooltip>)}
                                     >
                                         <button
                                             type="button"
@@ -512,11 +368,7 @@ const ApiProvider = () => {
                                     <OverlayTrigger
                                         key="delete"
                                         placement="top"
-                                        overlay={(
-                                            <Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>
-                                                Delete API
-                                            </Tooltip>
-                                        )}
+                                        overlay={(<Tooltip id="tooltip-top" style={{ fontSize: '1.6rem' }}>Delete API</Tooltip>)}
                                     >
                                         <button
                                             type="button"
@@ -539,10 +391,7 @@ const ApiProvider = () => {
     );
 
     const isEmptyApiProvider = apiProviders && apiProviders.length <= 0;
-    const toShow = isEmptyApiProvider ? (
-        <DataNotFound message="No Api providers found, add one now." />
-    )
-        : apiProviderTable;
+    const toShow = isEmptyApiProvider ? (<DataNotFound message="No Api providers found, add one now." />) : apiProviderTable;
 
     return (
         <>
@@ -553,22 +402,16 @@ const ApiProvider = () => {
             {editModal}
             {syncModal}
 
-            <div className={darkTheme ? 'dark container' : 'container'}>
-                <div className="apiProvider">
-                    <PageHeader header="Api Providers" />
-                    <button
-                        type="button"
-                        className="add-button"
-                        onClick={handleAddButtonClick}
-                    >
-                        +
-                    </button>
+            <PageContainer>
 
-                    {toShow}
-                </div>
-            </div>
+                <PageHeader header="Api Providers">
+                    <button type="button" className="add-button" onClick={handleAddButtonClick}> + </button>
+                </PageHeader>
+
+                {toShow}
+            </PageContainer>
         </>
     );
-};
+}
 
 export default ApiProvider;

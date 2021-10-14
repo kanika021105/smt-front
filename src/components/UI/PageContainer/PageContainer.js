@@ -9,7 +9,9 @@ function PageContainer({ children }) {
 
     return (
         <div className={darkTheme ? `${classes.dark} ${classes.container}` : `${classes.container}`}>
-            {children}
+            <div className={classes.page__container}>
+                {children}
+            </div>
         </div>
     );
 }

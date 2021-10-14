@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
 
 import Card from '../../../../components/UI/Card/Card';
 import Modal from '../../../../components/UI/Modal/Modal';
@@ -15,6 +14,7 @@ import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import './clients.scss';
 
@@ -33,61 +33,58 @@ const Clients = () => {
         status: '',
     });
 
-    const { darkTheme } = useContext(Theme);
-
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        const url = '/admin/clients';
-        Axios.get(url)
-            .then((res) => {
-                setIsLoading(false);
+        try {
+            const url = '/admin/clients';
+            const { data } = await Axios.get(url);
 
-                setClients(res.data.clients);
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                Toast.failed(err.response.data.message || 'Something went wrong!');
-            });
+            setIsLoading(false);
+            setClients(data.clients);
+        } catch (err) {
+            setIsLoading(false);
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
-    const editButtonHandler = async (e) => {
+    async function editButtonHandler(e) {
         const id = e.target.value;
         const user = await clients.filter((client) => client.id === id);
 
         setEditingUserDetails({ ...user[0] });
         setShowEditModal(true);
-    };
+    }
 
-    const eFNChangeHandler = (e) => {
+    function eFNChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, firstName: e.target.value }));
-    };
+    }
 
-    const eLNChangeHandler = (e) => {
+    function eLNChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, lastName: e.target.value }));
-    };
+    }
 
-    const eEmailChangeHandler = (e) => {
+    function eEmailChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, email: e.target.value }));
-    };
+    }
 
-    const eBalanceChangeHandler = (e) => {
+    function eBalanceChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, balance: e.target.value }));
-    };
+    }
 
-    const eContactChangeHandler = (e) => {
+    function eContactChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, contact: e.target.value }));
-    };
+    }
 
-    const eRoleChangeHandler = (e) => {
+    function eRoleChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, role: e.target.value }));
-    };
+    }
 
-    const eStatusChangeHandler = (e) => {
+    function eStatusChangeHandler(e) {
         setEditingUserDetails((preState) => ({ ...preState, status: e.target.value }));
-    };
+    }
 
-    const handleClose = () => {
+    function handleClose() {
         setEditingUserDetails({
             id: '',
             firstName: '',
@@ -100,9 +97,9 @@ const Clients = () => {
         });
 
         setShowEditModal(false);
-    };
+    }
 
-    const eSubmitHandler = async (e) => {
+    async function eSubmitHandler(e) {
         e.preventDefault();
 
         const { id } = editingUserDetails;
@@ -118,75 +115,29 @@ const Clients = () => {
         } catch (err) {
             Toast.failed(err.response.data.message || 'Failed to update user!');
         }
-    };
+    }
 
     const editModal = (
-        <Modal
-            show={showEditModal}
-            onClose={handleClose}
-            title="Edit User"
-            onSubmit={eSubmitHandler}
-        >
+        <Modal show={showEditModal} onClose={handleClose} title="Edit User" onSubmit={eSubmitHandler}>
             <form onSubmit={eSubmitHandler}>
                 <InputGroup>
-                    <Input
-                        label="First Name"
-                        placeholder="Jhon"
-                        type="text"
-                        value={editingUserDetails.fName}
-                        onChange={eFNChangeHandler}
-                    />
-
-                    <Input
-                        label="Last Name"
-                        placeholder="Doe"
-                        type="text"
-                        value={editingUserDetails.lName}
-                        onChange={eLNChangeHandler}
-                    />
+                    <Input label="First Name" placeholder="Jhon" type="text" value={editingUserDetails.fName} onChange={eFNChangeHandler} />
+                    <Input label="Last Name" placeholder="Doe" type="text" value={editingUserDetails.lName} onChange={eLNChangeHandler} />
                 </InputGroup>
 
-                <Input
-                    label="Email"
-                    placeholder="example@example.com"
-                    type="email"
-                    value={editingUserDetails.email}
-                    onChange={eEmailChangeHandler}
-                />
-
+                <Input label="Email" placeholder="example@example.com" type="email" value={editingUserDetails.email} onChange={eEmailChangeHandler} />
                 <InputGroup>
-                    <Input
-                        label="Balance"
-                        placeholder="Balance"
-                        type="number"
-                        value={editingUserDetails.balance}
-                        onChange={eBalanceChangeHandler}
-                    />
-
-                    <Input
-                        label="Contact"
-                        placeholder="Contact"
-                        type="number"
-                        value={editingUserDetails.contact}
-                        onChange={eContactChangeHandler}
-                    />
+                    <Input label="Balance" placeholder="Balance" type="number" value={editingUserDetails.balance} onChange={eBalanceChangeHandler} />
+                    <Input label="Contact" placeholder="Contact" type="number" value={editingUserDetails.contact} onChange={eContactChangeHandler} />
                 </InputGroup>
 
                 <InputGroup>
-                    <Select
-                        label="Role"
-                        value={editingUserDetails.role}
-                        onChange={eRoleChangeHandler}
-                    >
+                    <Select label="Role" value={editingUserDetails.role} onChange={eRoleChangeHandler}>
                         <option value="admin">Admin</option>
                         <option value="user">User</option>
                     </Select>
 
-                    <Select
-                        label="Status"
-                        value={editingUserDetails.status}
-                        onChange={eStatusChangeHandler}
-                    >
+                    <Select label="Status" value={editingUserDetails.status} onChange={eStatusChangeHandler}>
                         <option value="active">Active</option>
                         <option value="disable">Disable</option>
                     </Select>
@@ -195,7 +146,7 @@ const Clients = () => {
         </Modal>
     );
 
-    const deleteButtonHandler = async (e) => {
+    async function deleteButtonHandler(e) {
         const id = e.target.value;
         const newList = clients.filter((user) => user.id !== +id);
 
@@ -207,9 +158,9 @@ const Clients = () => {
         } catch (err) {
             Toast.failed(err.response.data.message || 'Failed to delete user!');
         }
-    };
+    }
 
-    const checkStatus = (status) => {
+    function checkStatus(status) {
         switch (status) {
             case 'active':
                 return <Button.Active />;
@@ -220,7 +171,7 @@ const Clients = () => {
             default:
                 return Toast.failed('Something went wrong!');
         }
-    };
+    }
 
     const clientDataTable = (
         <Card>
@@ -240,10 +191,7 @@ const Clients = () => {
                     {clients && clients.map((client) => (
                         <tr key={client.id}>
                             <td>{client.email}</td>
-                            <td>
-                                {client.f_name}
-                                {client.l_name}
-                            </td>
+                            <td>{`${client.f_name} ${client.l_name}`}</td>
                             <td>{client.role}</td>
                             <td>{client.balance}</td>
                             <td>{checkStatus(client.status)}</td>
@@ -282,13 +230,10 @@ const Clients = () => {
             <Loading show={isLoading} />
 
             {editModal}
-            <div className={darkTheme ? 'dark container' : 'container'}>
-                <div className="Clients">
-                    <PageHeader header="Clients" />
-
-                    {toShow}
-                </div>
-            </div>
+            <PageContainer>
+                <PageHeader header="Clients" />
+                {toShow}
+            </PageContainer>
         </>
     );
 };

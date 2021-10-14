@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { Link } from 'react-router-dom';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
 
 import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
@@ -12,6 +11,7 @@ import Dropdown from '../../../../components/UI/Dropdown/Dropdown';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import './support.scss';
 
@@ -38,8 +38,6 @@ const Support = () => {
         clients: [],
         isLoading: false,
     });
-
-    const { darkTheme } = useContext(Theme);
 
     // Fetching data when page loads
     useEffect(() => {
@@ -99,36 +97,20 @@ const Support = () => {
                 ticket && (
                     <tr key={ticket.id}>
                         <td>{ticket.id}</td>
-                        <td>
-                            <Link to={`/admin/support/ticket/${ticket.uid}`}>
-                                {clientDetail && clientDetail.email}
-                            </Link>
-                        </td>
+                        <td><Link to={`/admin/support/ticket/${ticket.uid}`}>{clientDetail && clientDetail.email}</Link></td>
                         <td className="subject">{ticket.subject}</td>
                         <td className="status">{ticket.status}</td>
                         <td>
                             <Dropdown id={ticket.uid}>
                                 <ul>
                                     <li>
-                                        <button
-                                            type="button"
-                                            className="btn btn-edit"
-                                            style={{ width: '100%' }}
-                                            value={ticket.uid}
-                                            onClick={updateStatus}
-                                        >
+                                        <button type="button" className="btn btn-edit" style={{ width: '100%' }} value={ticket.uid} onClick={updateStatus}>
                                             Mark As Answered
                                         </button>
                                     </li>
 
                                     <li>
-                                        <button
-                                            type="button"
-                                            className="btn btn-delete"
-                                            style={{ width: '100%' }}
-                                            value={ticket.uid}
-                                            onClick={deleteTicket}
-                                        >
+                                        <button type="button" className="btn btn-delete" style={{ width: '100%' }} value={ticket.uid} onClick={deleteTicket}>
                                             Delete
                                         </button>
                                     </li>
@@ -166,13 +148,10 @@ const Support = () => {
             <PageTitle title="Support" />
             <Loading show={state.isLoading} />
 
-            <div className={darkTheme ? 'dark container' : 'container'}>
-                <div className="Support">
-                    <PageHeader header="Support" />
-
-                    {DataToShow}
-                </div>
-            </div>
+            <PageContainer>
+                <PageHeader header="Support" />
+                {DataToShow}
+            </PageContainer>
         </>
     );
 };

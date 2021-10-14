@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
 
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import PageTitle from '../../../../components/Extra/PageTitle';
@@ -13,26 +11,25 @@ import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
 
 import './Transactions.scss';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 const Transactions = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [transactions, setTransactions] = useState();
 
-    const { darkTheme } = useContext(Theme);
-
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        const url = '/admin/transactions';
-        Axios.get(url)
-            .then((res) => {
-                setIsLoading(false);
-                setTransactions(res.data.transactions);
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                Toast.failed(err.response.message);
-            });
+        try {
+            const url = '/admin/transactions';
+            const { data } = await Axios.get(url);
+
+            setIsLoading(false);
+            setTransactions(data.transactions);
+        } catch (err) {
+            setIsLoading(false);
+            Toast.failed(err.response.message);
+        }
     }, []);
 
     const deleteHandler = async (e) => {
@@ -50,22 +47,21 @@ const Transactions = () => {
     };
 
     const transactionDataTable = (
-        <Card>
-            <Table className="table">
-                <THead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Email</th>
-                        <th>Transaction Id</th>
-                        <th>Amount</th>
-                        <th>Method</th>
-                        <th>Status</th>
-                        <th>Option</th>
-                    </tr>
-                </THead>
+        <Table className="table">
+            <THead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Transaction Id</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Option</th>
+                </tr>
+            </THead>
 
-                <TBody>
-                    {transactions
+            <TBody>
+                {transactions
                         && transactions.map((transaction) => (
                             <tr key={transaction.id}>
                                 <td>{transaction.id}</td>
@@ -73,11 +69,7 @@ const Transactions = () => {
                                 <td>{transaction.transactionId}</td>
                                 <td>{transaction.amount}</td>
                                 <td>{transaction.paymentMethod}</td>
-                                <td>
-                                    {transaction.status === 'success'
-                                        ? <Button.Success />
-                                        : <Button.Failed />}
-                                </td>
+                                <td>{transaction.status === 'success' ? <Button.Success /> : <Button.Failed />}</td>
                                 <td>
                                     <Button.Delete
                                         value={transaction.id}
@@ -86,28 +78,24 @@ const Transactions = () => {
                                 </td>
                             </tr>
                         ))}
-                </TBody>
-            </Table>
-        </Card>
+            </TBody>
+        </Table>
     );
 
     const isEmptyTransactions = transactions && transactions.length <= 0;
-    const showData = isEmptyTransactions
-        ? <DataNotFound message="Please wait for users to make some transaction." />
-        : transactionDataTable;
+    const showData = isEmptyTransactions ? <DataNotFound message="Please wait for users to make some transaction." /> : transactionDataTable;
 
     return (
         <>
             <PageTitle title="Transactions" />
             <Loading show={isLoading} />
 
-            <div className={darkTheme ? 'dark container' : 'container'}>
+            <PageContainer>
                 <div className="Transactions">
                     <PageHeader header="Transactions" />
-
                     {showData}
                 </div>
-            </div>
+            </PageContainer>
         </>
     );
 };

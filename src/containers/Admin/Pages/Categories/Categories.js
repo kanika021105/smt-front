@@ -15,6 +15,7 @@ import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
 import DataNotFound from '../../../../components/UI/DataNotFound/DataNotFound';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import './categories.scss';
 
@@ -130,18 +131,19 @@ function Categories() {
         },
     });
 
-    useEffect(() => {
+    useEffect(async () => {
         dispatch({ type: 'loading' });
-        const url = '/admin/categories';
-        Axios.get(url)
-            .then((res) => {
-                dispatch({ type: 'loading' });
-                dispatch({ type: 'setCategory', payload: res.data.categories });
-            })
-            .catch((err) => {
-                dispatch({ type: 'loading' });
-                Toast.failed(err.response.message);
-            });
+
+        try {
+            const url = '/admin/categories';
+            const { data } = await Axios.get(url);
+
+            dispatch({ type: 'loading' });
+            dispatch({ type: 'setCategory', payload: data.categories });
+        } catch (err) {
+            dispatch({ type: 'loading' });
+            Toast.failed(err.response.data.message);
+        }
     }, []);
 
     // Open Add Category Modal
@@ -194,46 +196,19 @@ function Categories() {
 
     // Add Modal codes
     const addModal = (
-        <Modal
-            title="Add Category"
-            show={state.showAddModal}
-            onClose={handleBackdropClick}
-            onSubmit={formSubmitHandler}
-        >
+        <Modal title="Add Category" show={state.showAddModal} onClose={handleBackdropClick} onSubmit={formSubmitHandler}>
             <form onSubmit={formSubmitHandler}>
-                <Input
-                    label="Title"
-                    placeholder="Enter title"
-                    type="text"
-                    value={state.newCategory.title}
-                    onChange={addTitleChangeHandler}
-                />
+                <Input label="Title" placeholder="Enter title" type="text" value={state.newCategory.title} onChange={addTitleChangeHandler} />
 
                 <InputGroup>
-                    <Input
-                        label="Short"
-                        placeholder="Enter short number"
-                        type="number"
-                        value={state.newCategory.short}
-                        onChange={addShortChangeHandler}
-                    />
-                    <Select
-                        label="Status"
-                        value={state.newCategory.status}
-                        onChange={addStatusChangeHandler}
-                    >
+                    <Input label="Short" placeholder="Enter short number" type="number" value={state.newCategory.short} onChange={addShortChangeHandler} />
+                    <Select label="Status" value={state.newCategory.status} onChange={addStatusChangeHandler}>
                         <option value="active">Active</option>
                         <option value="disable">Disable</option>
                     </Select>
                 </InputGroup>
 
-                <Textarea
-                    label="Description"
-                    placeholder="Enter description..."
-                    value={state.newCategory.description || ''}
-                    rows={4}
-                    onChange={addDescChangeHandler}
-                />
+                <Textarea label="Description" placeholder="Enter description..." value={state.newCategory.description || ''} rows={4} onChange={addDescChangeHandler} />
             </form>
         </Modal>
     );
@@ -306,46 +281,19 @@ function Categories() {
 
     // Edit Modal code
     const editModal = (
-        <Modal
-            title="Edit Category"
-            show={state.showEditModal}
-            onClose={handleClose}
-        >
+        <Modal title="Edit Category" show={state.showEditModal} onClose={handleClose}>
             <form onSubmit={editingSubmitHandler}>
-                <Input
-                    label="Title"
-                    placeholder="Title"
-                    type="text"
-                    value={state.editingCategory.title}
-                    onChange={titleChangeHandler}
-                />
+                <Input label="Title" placeholder="Title" type="text" value={state.editingCategory.title} onChange={titleChangeHandler} />
 
                 <InputGroup>
-                    <Input
-                        label="Short"
-                        placeholder="Short"
-                        type="number"
-                        value={state.editingCategory.short}
-                        onChange={shortChangeHandler}
-                    />
-
-                    <Select
-                        label="Status"
-                        value={state.editingCategory.status}
-                        onChange={statusChangeHandler}
-                    >
+                    <Input label="Short" placeholder="Short" type="number" value={state.editingCategory.short} onChange={shortChangeHandler} />
+                    <Select label="Status" value={state.editingCategory.status} onChange={statusChangeHandler}>
                         <option value="disable">Disable</option>
                         <option value="active">Active</option>
                     </Select>
                 </InputGroup>
 
-                <Textarea
-                    label="Description"
-                    rows={4}
-                    placeholder="Description..."
-                    value={state.editingCategory.description}
-                    onChange={descChangeHandler}
-                />
+                <Textarea label="Description" rows={4} placeholder="Description..." value={state.editingCategory.description} onChange={descChangeHandler} />
             </form>
         </Modal>
     );
@@ -396,33 +344,35 @@ function Categories() {
                 </THead>
 
                 <TBody>
-                    {state.categories.length >= 1 && state.categories.map((category) => (
-                        <tr key={category.id}>
-                            <td>{category.title}</td>
-                            <td>{category.description}</td>
-                            <td>{category.short}</td>
-                            <td>{category.status && checkStatus(category.status)}</td>
-                            <td>
-                                <Dropdown id={category.id}>
-                                    <ul>
-                                        <li>
-                                            <Button.Edit
-                                                value={category.id}
-                                                onClick={editButtonHandler}
-                                            />
-                                        </li>
+                    {
+                        state.categories.length >= 1 && state.categories.map((category) => (
+                            <tr key={category.id}>
+                                <td>{category.title}</td>
+                                <td>{category.description}</td>
+                                <td>{category.short}</td>
+                                <td>{category.status && checkStatus(category.status)}</td>
+                                <td>
+                                    <Dropdown id={category.id}>
+                                        <ul>
+                                            <li>
+                                                <Button.Edit
+                                                    value={category.id}
+                                                    onClick={editButtonHandler}
+                                                />
+                                            </li>
 
-                                        <li>
-                                            <Button.Delete
-                                                value={category.id}
-                                                onClick={deleteButtonHandler}
-                                            />
-                                        </li>
-                                    </ul>
-                                </Dropdown>
-                            </td>
-                        </tr>
-                    ))}
+                                            <li>
+                                                <Button.Delete
+                                                    value={category.id}
+                                                    onClick={deleteButtonHandler}
+                                                />
+                                            </li>
+                                        </ul>
+                                    </Dropdown>
+                                </td>
+                            </tr>
+                        ))
+                    }
                 </TBody>
             </Table>
         </Card>
@@ -436,18 +386,13 @@ function Categories() {
             {editModal}
             {addModal}
 
-            <div className="container categories">
-                <PageHeader header="Categories" />
-                <button
-                    type="button"
-                    className="add-button"
-                    onClick={handleAddButtonClick}
-                >
-                    +
-                </button>
+            <PageContainer>
+                <PageHeader header="Categories">
+                    <button type="button" className="add-button" onClick={handleAddButtonClick}> + </button>
+                </PageHeader>
 
                 {categoriesTable}
-            </div>
+            </PageContainer>
         </>
     );
 }

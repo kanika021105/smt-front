@@ -29,7 +29,8 @@ function App() {
             // TODO Update logout mechanism
             const expireTime = localStorage.getItem('expiryDate');
             if (expireTime <= Date.now()) {
-                localStorage.clear();
+                const keyToRemove = ['token', 'expiryDate'];
+                keyToRemove.forEach((key) => localStorage.removeItem(key));
                 return;
             }
 
