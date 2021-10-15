@@ -4,6 +4,7 @@
     border: none;
     padding: 0;
     margin: 0;
+
     display: flex;
     flex-direction: column;
 
@@ -13,7 +14,8 @@
 
     & label {
         font-size: 1.5rem;
-        margin-bottom: .2rem;
+        margin-bottom: .4rem;
+        color: $color-black;
     }
 
     & input {
@@ -21,11 +23,7 @@
         display: block;
         padding: .4rem .6rem;
         border-radius: 4px;
-        border: 0.5px solid lighten($color-grey, 30);
-
-        &:not(:disabled) {
-            color: darken($color-grey, 10);
-        }
+        border: 1px solid $border-color;
 
         &:disabled {
             opacity: 0.8;
@@ -34,7 +32,8 @@
 
         &:active,
         &:focus {
-            outline-color: lighten($color-primary, 20);
+            border: 1px solid lighten($color-primary, 20);
+            outline: none;
         }
 
         &:invalid{
@@ -43,12 +42,12 @@
     }
 }
 
-.input--group ~ .input input{
+.input__group ~ .input input{
     margin: 0;
 }
 
 
-.input--group{
+.input__group{
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -60,8 +59,30 @@
     }
 
     & div {
-        margin: 0 !important;
+        margin: 0;
         flex: 1;
+    }
+}
+
+
+
+.input.dark {
+    & label {
+        color: $dark-primary-text-color;
+
+        &::placeholder {
+            color: $dark-secondary-text-color;
+        }
+    }
+
+    & input {
+        color: $dark-color-white-3;
+        border: 1px solid $dark-border-color;
+        background-color: $dark-background-forth-color;
+
+        &::placeholder {
+            color: $dark-color-white-3;
+        }
     }
 }
 

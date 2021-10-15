@@ -1,41 +1,40 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     bool, func, node, number, oneOfType, string,
 } from 'prop-types';
 
+import Theme from '../../../store/theme';
 import classes from './Input.module.scss';
 
-const Input = ({
-    id,
-    type,
-    name,
-    value,
-    placeholder,
-    onChange,
-    disabled,
-    label,
-    pattern,
-    required,
-}) => (
-    <div className={classes.input}>
-        <label htmlFor={id || 'input'}>
-            {label}
-            <input
-                id={id || 'input'}
-                type={type}
-                name={name}
-                value={value}
-                placeholder={placeholder}
-                onChange={onChange}
-                disabled={disabled}
-                pattern={pattern}
-                required={required}
-            />
-        </label>
-    </div>
-);
+function Input({
+    id, type, name, value, placeholder, onChange, disabled, label, pattern, required,
+}) {
+    const { darkTheme } = useContext(Theme);
 
-export const InputGroup = ({ children }) => <div className={classes['input--group']}>{children}</div>;
+    return (
+        <div className={`${classes.input} ${darkTheme ? classes.dark : ''}`}>
+            <label htmlFor={id || 'input'}>
+                {label}
+                <input
+                    id={id || 'input'}
+                    type={type}
+                    name={name}
+                    value={value}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                    disabled={disabled}
+                    pattern={pattern}
+                    required={required}
+                />
+            </label>
+        </div>
+    );
+}
+
+export function InputGroup({ children }) {
+    const { darkTheme } = useContext(Theme);
+    return (<div className={`${classes.input__group} ${darkTheme ? classes.dark : ''}`}>{children}</div>);
+}
 
 Input.propTypes = {
     id: oneOfType([number, string]),

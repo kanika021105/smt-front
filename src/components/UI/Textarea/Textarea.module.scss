@@ -42,3 +42,19 @@
         }
     }
 }
+
+.textarea.dark {
+    & label {
+        color: $dark-color-text--primary;
+    }
+
+    & textarea {
+        color: $dark-color-text--secondary;
+        border: 1px solid $dark-border-color;
+        background-color: $dark-background-forth-color;
+
+        &::placeholder {
+            color: $dark-color-text--secondary;
+        }
+    }
+}

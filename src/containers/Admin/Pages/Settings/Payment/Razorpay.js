@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { useState, useEffect } from 'react';
 
 import Input from '../../../../../components/UI/Input/Input';
 import Toast from '../../../../../components/UI/Toast/Toast';
 import Loading from '../../../../../components/UI/Loading/Loading';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 
-import Axios from '../../../../../axiosIns';
-import AuthContext from '../../../../../store/AuthContext';
+import PageTitle from '../../../../../components/Extra/PageTitle';
 
-const Razorpay = () => {
+import Axios from '../../../../../axiosIns';
+
+function Razorpay() {
     const [keyId, setKeyId] = useState('');
     const [keySecret, setKeySecret] = useState('');
     const [isEnabled, setIsEnabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { websiteName } = useContext(AuthContext);
 
     useEffect(async () => {
         setIsLoading(true);
@@ -63,41 +62,18 @@ const Razorpay = () => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    Payment -
-                    {' '}
-                    {websiteName || ''}
-                </title>
-            </Helmet>
-
+            <PageTitle title="RazorPay" />
             <Loading show={isLoading} />
 
             <div>
                 <Checkbox text="Enable" checked={isEnabled} onChange={enableToggle} />
-
-                <Input
-                    label="Key Id"
-                    type="text"
-                    value={keyId}
-                    placeholder="Key Id"
-                    onChange={keyIdChangeHandler}
-                />
-
-                <Input
-                    label="Key Secret"
-                    type="text"
-                    value={keySecret}
-                    placeholder="Key Secret"
-                    onChange={secretChangeHandler}
-                />
+                <Input label="Key Id" type="text" value={keyId} placeholder="Key Id" onChange={keyIdChangeHandler} />
+                <Input label="Key Secret" type="text" value={keySecret} placeholder="Key Secret" onChange={secretChangeHandler} />
             </div>
 
-            <button className="mt-4 btn btn-primary" type="submit" onClick={submitHandler}>
-                Save
-            </button>
+            <button className="mt-4 btn btn-primary" type="submit" onClick={submitHandler}>Save</button>
         </>
     );
-};
+}
 
 export default Razorpay;

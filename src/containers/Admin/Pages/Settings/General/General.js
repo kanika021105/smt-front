@@ -9,7 +9,7 @@ import PageTitle from '../../../../../components/Extra/PageTitle';
 import Loading from '../../../../../components/UI/Loading/Loading';
 import Textarea from '../../../../../components/UI/Textarea/Textarea';
 
-const General = () => {
+function General() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [keywords, setKeywords] = useState('');
@@ -17,52 +17,45 @@ const General = () => {
 
     const { updateWebsiteName } = useContext(AuthContext);
 
-    useEffect(() => {
-        const url = '/admin/settings/general';
-        Axios.get(url)
-            .then((res) => {
-                setName(res.data.websiteName || '');
-                setDescription(res.data.websiteDescription || '');
-                setKeywords(res.data.websiteKeywords || '');
-            })
-            .catch((err) => {
-                Toast.failed(err.response.data.message || 'Something went wrong!');
-            });
+    useEffect(async () => {
+        try {
+            const url = '/admin/settings/general';
+            const { data } = await Axios.get(url);
+
+            setName(data.websiteName || '');
+            setDescription(data.websiteDescription || '');
+            setKeywords(data.websiteKeywords || '');
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
-    const siteNameChangeHandler = (e) => {
+    function siteNameChangeHandler(e) {
         setName(e.target.value);
         setIsLoading(false);
-    };
+    }
 
-    const descriptionHandler = (e) => {
+    function descriptionHandler(e) {
         setDescription(e.target.value);
-    };
+    }
 
-    const keywordsHandler = (e) => {
+    function keywordsHandler(e) {
         setKeywords(e.target.value);
-    };
+    }
 
-    const submitSetting = async () => {
+    async function submitSetting() {
         updateWebsiteName(name);
         const url = '/admin/settings/general/update';
         await Axios.put(url, { name, keywords, description });
         Toast.success('Generals settings updated!');
-    };
+    }
 
     return (
         <>
             <PageTitle title="General" />
             <Loading show={isLoading} />
 
-            <Input
-                label="Website Name"
-                placeholder="SMT Panel"
-                type="text"
-                value={name}
-                onChange={siteNameChangeHandler}
-            />
-
+            <Input label="Website Name" placeholder="SMT Panel" type="text" value={name} onChange={siteNameChangeHandler} />
             <Textarea
                 label="Website Description"
                 placeholder="SMT Panel smm script is the script you need
@@ -73,19 +66,10 @@ const General = () => {
                 onChange={descriptionHandler}
             />
 
-            <Textarea
-                label="Website Keywords"
-                placeholder="'SMT Panel', 'Smm Panel', 'Smm Script'..."
-                rows={6}
-                value={keywords}
-                onChange={keywordsHandler}
-            />
-
-            <button type="button" className="mt-3 btn btn-primary" onClick={submitSetting}>
-                Save
-            </button>
+            <Textarea label="Website Keywords" placeholder="'SMT Panel', 'Smm Panel', 'Smm Script'..." rows={6} value={keywords} onChange={keywordsHandler} />
+            <button type="button" className="btn btn-primary" onClick={submitSetting} style={{ marginTop: '1rem' }}>Save</button>
         </>
     );
-};
+}
 
 export default General;

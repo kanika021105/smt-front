@@ -6,8 +6,8 @@ import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import Select from '../../../../components/UI/Select/Select';
 import PageTitle from '../../../../components/Extra/PageTitle';
-import CustomModal from '../../../../components/UI/Modal/Modal';
 import Loading from '../../../../components/UI/Loading/Loading';
+import CustomModal from '../../../../components/UI/Modal/Modal';
 import DropDown from '../../../../components/UI/Dropdown/Dropdown';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
@@ -37,7 +37,6 @@ const Orders = () => {
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    // const { darkTheme } = useContext(Theme);
 
     useEffect(async () => {
         setIsLoading(true);

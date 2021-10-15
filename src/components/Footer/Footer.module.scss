@@ -6,6 +6,7 @@
     background-color: #fff;
 
     box-shadow: 0 0 2rem 0 rgba(41, 48, 66, 0.1%);
+    transition:  all .3s ease;
 
     &__container {
         max-width: calc(100% - (7.8rem));

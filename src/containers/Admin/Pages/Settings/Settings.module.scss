@@ -9,10 +9,12 @@
 
     &__links {
         width: 20%;
-        border: 1px solid $color-grey-light-1;
+        border: 1px solid $border-color;
         border-radius: .8rem;
         color: $color-primary;
-        padding-left: 3rem;
+        padding: 2rem 3rem;
+        background-color: $background-primary-color;
+        transition: all .3s ease;
         
         h3 {
             padding: .1rem 0;
@@ -33,9 +35,28 @@
     }
 
     &__options {
-        flex: 1;
-        border: 1px solid $color-grey-light-1;
-        border-radius: .8rem;
         padding: 2rem;
+        border: 1px solid $border-color;
+        border-radius: .8rem;
+        background-color: $background-primary-color;
+        transition: all .3s ease;
+
+
+        flex: 1;
+    }
+}
+
+
+.dark {
+    .setting {
+        &__links {
+            border: 1px solid $dark-border-color;
+            background-color: $dark-background-tertiary-color;
+        }
+
+        &__options {
+            border: $dark-border-color;
+            background-color: $dark-background-tertiary-color;
+        }
     }
 }

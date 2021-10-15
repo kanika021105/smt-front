@@ -9,7 +9,7 @@ function PageTitle({ title }) {
     return (
         <Helmet>
             <title>
-                {`${title}  ${websiteName && `- ${websiteName} || ''`}`}
+                {`${title}  ${websiteName && `- ${websiteName || ''}`}`}
             </title>
         </Helmet>
 

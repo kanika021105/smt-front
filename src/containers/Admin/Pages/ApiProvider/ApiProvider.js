@@ -114,7 +114,7 @@ function ApiProvider() {
     }
 
     const addModal = (
-        <Modal show={showAddModal} onClose={handleBackdropClick} title="Add API Provider">
+        <Modal show={showAddModal} onClose={handleBackdropClick} title="Add API Provider" onSubmit={addFormSubmitHandler}>
             <form onSubmit={addFormSubmitHandler}>
                 <Input label="Name" placeholder="Name" type="text" value={addApiDetails.name} onChange={nameChangeHandler} />
                 <Input label="URL" placeholder="API URL" type="url" value={addApiDetails.url} onChange={urlChangeHandler} />
@@ -301,7 +301,6 @@ function ApiProvider() {
             <Table>
                 <THead>
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Balance</th>
                         <th>Status</th>
@@ -312,7 +311,6 @@ function ApiProvider() {
                 <TBody>
                     {apiProviders && apiProviders.map((apiProvider) => (
                         <tr key={apiProvider.id}>
-                            <td>{apiProvider.id}</td>
                             <td>{apiProvider.name}</td>
                             <td>{apiProvider.balance}</td>
                             <td>{checkStatus(apiProvider.status)}</td>
