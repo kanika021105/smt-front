@@ -1,0 +1,59 @@
+@import '../../../../../sass/index';
+
+.paytm {
+    .logo {
+        text-align: center;
+        padding-bottom: 2rem;
+
+        &_color--1 {
+            color: #0f4a8a;
+            transition: all .3s ease;
+        }
+
+        &_color--2 {
+            color: #00baf2;
+            transition: all .3s ease;
+        }
+    }
+
+    .input {
+        outline: none;
+        border: none;
+        width: 100%;
+        padding: .8rem 1rem;
+        border-radius: .5rem;
+        color: $primary-text-color;
+
+        &:invalid {
+            border: 1px solid $color-red;
+        }
+    }
+
+    .pay_now {
+        border: none;
+        outline: none;
+        padding: 1rem 3rem;
+        border-radius: .4rem;
+        color: $color-white;
+        font-size: 1.8rem;
+        background-color: $color-primary;
+    }
+}
+
+.dark {
+    .logo {
+        color: $dark-color-text--primary;
+    }
+
+    .logo_color--1 {
+        color: white;
+    }
+    .input {
+        color: $dark-primary-text-color;
+        background-color: $dark-background-secondary-color;
+
+        &::placeholder {
+            color: $dark-secondary-text-color;
+        }
+    }
+}

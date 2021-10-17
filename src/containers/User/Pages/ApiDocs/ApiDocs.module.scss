@@ -54,18 +54,14 @@
             }
         }
     }
+}
 
-    .code {
-        padding: 3.6rem 0 2rem 3rem;
-        margin-bottom: 3rem;
-        color: $color-grey-light-3;
-        background: url(../../../../assets/img/dots.png) no-repeat 3rem 2.8rem darken($color-grey, 30);
-        border-radius: 1.4rem 1.4rem 1.4rem 1.4rem ;
-
-        .dots {
-
-        }
-    }
+.code {
+    padding: 6rem 0 2rem 3rem;
+    margin-bottom: 3rem;
+    color: $color-grey-light-3;
+    background: url(../../../../assets/img/dots.png) no-repeat 2.8rem 2.2rem darken($color-grey, 30);
+    border-radius: 1.4rem 1.4rem 1.4rem 1.4rem ;
 }
 
 .row {

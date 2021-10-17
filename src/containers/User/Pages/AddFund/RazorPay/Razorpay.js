@@ -2,36 +2,37 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../../axiosIns';
+import Theme from '../../../../../store/theme';
 import AuthContext from '../../../../../store/AuthContext';
 
 import Toast from '../../../../../components/UI/Toast/Toast';
 import PageTitle from '../../../../../components/Extra/PageTitle';
 import Loading from '../../../../../components/UI/Loading/Loading';
+import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 
-import '../../../../../sass/pages/user/Razorpay.scss';
+import classes from './Razorpay.module.scss';
 
-// TODO Change clientId useage to email
-const Razorpay = () => {
-    const [amount, setAmount] = useState(0);
-    const { email, fName } = useContext(AuthContext);
+function Razorpay() {
     const [keyId, setKeyId] = useState('');
-    const { updateBalance, balance } = useContext(AuthContext);
+    const [amount, setAmount] = useState(0);
+    const [confirm, setConfirm] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    async function getKey() {
+    const { darkTheme } = useContext(Theme);
+    const { email, fName } = useContext(AuthContext);
+    const { updateBalance, balance } = useContext(AuthContext);
+
+    useEffect(async () => {
         try {
+            setIsLoading(true);
             const url = '/razorpay';
             const { data } = await Axios.get(url);
             setKeyId(data.keyId);
+            return setIsLoading(false);
         } catch (err) {
-            Toast.failed(err.response.data.message || 'Something went wrong!');
+            setIsLoading(false);
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    }
-
-    useEffect(() => {
-        setIsLoading(true);
-        getKey();
-        setIsLoading(false);
     }, []);
 
     function updateUserBalance(txnAmount) {
@@ -78,17 +79,22 @@ const Razorpay = () => {
 
     async function getOrderId(e) {
         e.preventDefault();
-        Toast.info('Loading please wait...', 1000);
-
-        try {
-            const orderData = { amount, email, fName };
-            const url = '/razorpay/order';
-            const { data } = await Axios.post(url, { ...orderData });
-            const orderId = data.sub.id;
-            createPayment(orderId);
-        } catch (err) {
-            Toast.failed(err.response.data.message || 'Something went wrong!');
+        setIsLoading(true);
+        if (confirm) {
+            try {
+                const orderData = { amount, email, fName };
+                const url = '/razorpay/order';
+                const { data } = await Axios.post(url, { ...orderData });
+                const orderId = data.sub.id;
+                createPayment(orderId);
+                return setIsLoading(false);
+            } catch (err) {
+                setIsLoading(false);
+                return Toast.failed(err.response.data.message || 'Something went wrong!');
+            }
         }
+        setIsLoading(false);
+        return Toast.failed('Please confirm your transaction!');
     }
 
     function amountChangeHandler(e) {
@@ -98,37 +104,27 @@ const Razorpay = () => {
     return (
         <>
             <PageTitle title="Razorpay" />
+            <Loading show={isLoading} />
 
             <Helmet>
                 <script src="https://checkout.razorpay.com/v1/checkout.js" />
             </Helmet>
 
-            <Loading show={isLoading} />
+            <div className={`${classes.razorpay} ${darkTheme ? classes.dark : ''}`}>
+                <h2 className={classes.logo}>
+                    <span className={classes['logo_color--1']}>Razorpay</span>
+                    {' '}
+                    Gateway
+                </h2>
 
-            <div className="Razorpay">
-                <input
-                    className="Razorpay__input input"
-                    placeholder="Amount"
-                    aria-label="amount"
-                    type="number"
-                    onChange={amountChangeHandler}
-                />
-
-                <div className="mt-3 Razorpay__checkbox">
-                    <input type="checkbox" />
-                    <p>I&apos;m paying for services and its non refundable!</p>
-                </div>
-
-                <button
-                    type="button"
-                    className="btn btn-primary Razorpay_button"
-                    onClick={(e) => getOrderId(e)}
-                >
-                    Pay
-                </button>
+                <form onSubmit={getOrderId}>
+                    <input className={classes.input} type="number" min="1" placeholder="Amount" onChange={amountChangeHandler} />
+                    <Checkbox checked={confirm} text="I'm paying for services and its non refundable!" onChange={() => { setConfirm((preState) => !preState); }} />
+                    <button type="submit" className={classes.pay_now}>Pay</button>
+                </form>
             </div>
         </>
     );
-};
+}
 
 export default Razorpay;

@@ -5,7 +5,6 @@ import Axios from '../../../../axiosIns';
 import Theme from '../../../../store/theme';
 import AuthContext from '../../../../store/AuthContext';
 
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Input from '../../../../components/UI/Input/Input';
 import Modal from '../../../../components/UI/Modal/Modal';
@@ -16,8 +15,9 @@ import Loading from '../../../../components/UI/Loading/Loading';
 import Textarea from '../../../../components/UI/Textarea/Textarea';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
-import '../../../../sass/pages/user/support.scss';
+import classes from './Support.module.scss';
 
 // Reducer function for useReducer hook
 function reducer(state, action) {
@@ -77,7 +77,7 @@ function reducer(state, action) {
     }
 }
 
-const Support = () => {
+function Support() {
     const history = useHistory();
 
     const [state, dispatch] = useReducer(reducer, {
@@ -98,89 +98,73 @@ const Support = () => {
     const { email } = useContext(AuthContext);
     const { darkTheme } = useContext(Theme);
 
-    useEffect(() => {
+    useEffect(async () => {
         dispatch({ type: 'loading' });
 
-        const url = '/support';
-        Axios.get(url)
-            .then((res) => {
-                const { data } = res;
-                dispatch({ type: 'loading' });
-                dispatch({ type: 'onLoad', payload: { ...data } });
-            }).catch((err) => {
-                Toast.failed(err.response.data.message);
-            });
+        try {
+            const url = '/support';
+            const { data } = await Axios.get(url);
+            dispatch({ type: 'loading' });
+            return dispatch({ type: 'onLoad', payload: { ...data } });
+        } catch (err) {
+            return Toast.failed(err.response.data.message);
+        }
     }, []);
 
-    const ticketClickHandler = (uid) => {
+    function ticketClickHandler(uid) {
         const path = `/support/ticket/${uid}`;
         return history.push(path);
-    };
+    }
 
-    const ticketList = state.tickets
-        && state.tickets.map((ticket) => (
-            <tr key={ticket.id} onClick={() => ticketClickHandler(ticket.uid)}>
-                <td>{ticket.id}</td>
-                <td>{email}</td>
-                <td>{ticket.subject}</td>
-                <td>{ticket.status}</td>
-            </tr>
-        ));
+    const ticketList = state.tickets && state.tickets.map((ticket) => (
+        <tr key={ticket.id} onClick={() => ticketClickHandler(ticket.uid)}>
+            <td>{ticket.id}</td>
+            <td>{email}</td>
+            <td>{ticket.subject}</td>
+            <td>{ticket.status}</td>
+        </tr>
+    ));
 
-    const handleAddButtonClick = () => {
-        // setShowAddModal(true);
-        dispatch({ type: 'showAddModal' });
-    };
-
-    const subjectChangeHandler = (e) => {
-        dispatch({ type: 'clearNewTicket' });
-
-        dispatch({ type: 'newTicket', payload: { subject: e.target.value } });
-        // setSelectedSubject(e.target.value);
-    };
-
-    const orderIdChangeHandler = (e) => {
-        // setOrderId(e.target.value);
-        dispatch({ type: 'newTicket', payload: { orderId: e.target.value } });
-    };
-
-    const requestChangeHandler = (e) => {
-        // setSelectedRequest(e.target.value);
-        dispatch({ type: 'newTicket', payload: { request: e.target.value } });
-    };
-
-    const messageChangeHandler = (e) => {
-        // setMessage(e.target.value);
-        dispatch({ type: 'newTicket', payload: { message: e.target.value } });
-    };
-
-    const serviceIdChangeHandler = (e) => {
-        // setServiceId(e.target.value);
-        dispatch({ type: 'newTicket', payload: { serviceId: e.target.value } });
-    };
-
-    const paymentMethodChangeHandler = (e) => {
-        // setPaymentMethod(e.target.value);
-        dispatch({ type: 'newTicket', payload: { paymentMethod: e.target.value } });
-    };
-
-    const transactionIdChangeHandler = (e) => {
-        // setTransactionId(e.target.value);
-        dispatch({ type: 'newTicket', payload: { transactionId: e.target.value } });
-    };
-
-    function handleBackdropClick() {
-        // resetState();
-        dispatch({ type: 'clearNewTicket' });
-        // setErrorMsg('');
-        // setShowAddModal(false);
+    function handleAddButtonClick() {
         dispatch({ type: 'showAddModal' });
     }
 
-    const addFormSubmitHandler = async (e) => {
-        e.preventDefault();
+    function subjectChangeHandler(e) {
+        dispatch({ type: 'clearNewTicket' });
+        dispatch({ type: 'newTicket', payload: { subject: e.target.value } });
+    }
 
-        // setErrorMsg('');
+    function orderIdChangeHandler(e) {
+        dispatch({ type: 'newTicket', payload: { orderId: e.target.value } });
+    }
+
+    function requestChangeHandler(e) {
+        dispatch({ type: 'newTicket', payload: { request: e.target.value } });
+    }
+
+    function messageChangeHandler(e) {
+        dispatch({ type: 'newTicket', payload: { message: e.target.value } });
+    }
+
+    function serviceIdChangeHandler(e) {
+        dispatch({ type: 'newTicket', payload: { serviceId: e.target.value } });
+    }
+
+    function paymentMethodChangeHandler(e) {
+        dispatch({ type: 'newTicket', payload: { paymentMethod: e.target.value } });
+    }
+
+    function transactionIdChangeHandler(e) {
+        dispatch({ type: 'newTicket', payload: { transactionId: e.target.value } });
+    }
+
+    function handleBackdropClick() {
+        dispatch({ type: 'clearNewTicket' });
+        dispatch({ type: 'showAddModal' });
+    }
+
+    async function addFormSubmitHandler(e) {
+        e.preventDefault();
 
         let ticketData;
         switch (state.newTicket.subject) {
@@ -233,157 +217,66 @@ const Support = () => {
         } catch (err) {
             return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
+    }
 
-    const selectedSubjectSection = () => {
+    function selectedSubjectSection() {
         switch (state.newTicket.subject) {
             case 'order':
                 return (
                     <>
-                        <Input
-                            label="Order Id"
-                            type="number"
-                            value={state.newTicket.orderId}
-                            placeholder="Order Id"
-                            onChange={orderIdChangeHandler}
-                            required
-                        />
-
-                        <Select
-                            label="Request"
-                            value={state.newTicket.request}
-                            onChange={requestChangeHandler}
-                            required
-                        >
-                            <option key={0} value={null}>
-                                Choose request!
-                            </option>
-                            <option key="cancel" value="cancel">
-                                Cancel
-                            </option>
-                            <option key="refill" value="refill">
-                                Refill
-                            </option>
-                            <option key="speedUp" value="speedUp">
-                                Speed Up
-                            </option>
-                            <option key="other" value="other">
-                                Other
-                            </option>
+                        <Input label="Order Id" type="number" value={state.newTicket.orderId} placeholder="Order Id" onChange={orderIdChangeHandler} required />
+                        <Select label="Request" value={state.newTicket.request} onChange={requestChangeHandler} required>
+                            <option key={0} value={null}>Choose request!</option>
+                            <option key="cancel" value="cancel">Cancel</option>
+                            <option key="refill" value="refill">Refill</option>
+                            <option key="speedUp" value="speedUp">Speed Up</option>
+                            <option key="other" value="other">Other</option>
                         </Select>
-
-                        <Textarea
-                            label="Message"
-                            value={state.newTicket.message}
-                            onChange={messageChangeHandler}
-                            rows={5}
-                        />
+                        <Textarea label="Message" value={state.newTicket.message} onChange={messageChangeHandler} rows={5} />
                     </>
                 );
 
             case 'payment':
                 return (
                     <>
-                        <Select
-                            label="Select Payment Method"
-                            value={state.newTicket.paymentMethod}
-                            onChange={paymentMethodChangeHandler}
-                            required
-                        >
-                            <option key={0} value={null}>
-                                Choose payment method!
-                            </option>
-                            <option key="razorpay" value="razorpay">
-                                Razorpay
-                            </option>
-                            <option key="other" value="other">
-                                Other
-                            </option>
+                        <Select label="Select Payment Method" value={state.newTicket.paymentMethod} onChange={paymentMethodChangeHandler} required>
+                            <option key={0} value={null}>Choose payment method!</option>
+                            <option key="razorpay" value="razorpay">Razorpay</option>
+                            <option key="other" value="other">Other</option>
                         </Select>
-
-                        <Input
-                            label="Transaction Id"
-                            type="text"
-                            value={state.newTicket.transactionId}
-                            placeholder="Transaction Id"
-                            onChange={transactionIdChangeHandler}
-                        />
-
-                        <Textarea
-                            label="Message"
-                            value={state.newTicket.message}
-                            onChange={messageChangeHandler}
-                            rows={7}
-                        />
+                        <Input label="Transaction Id" type="text" value={state.newTicket.transactionId} placeholder="Transaction Id" onChange={transactionIdChangeHandler} />
+                        <Textarea label="Message" value={state.newTicket.message} onChange={messageChangeHandler} rows={7} />
                     </>
                 );
 
             case 'service':
                 return (
                     <>
-                        <Input
-                            label="Service Id"
-                            type="number"
-                            value={state.newTicket.serviceId}
-                            placeholder="Service Id"
-                            onChange={serviceIdChangeHandler}
-                        />
-
-                        <Textarea
-                            label="Message"
-                            value={state.newTicket.message}
-                            onChange={messageChangeHandler}
-                            rows={5}
-                        />
+                        <Input label="Service Id" type="number" value={state.newTicket.serviceId} placeholder="Service Id" onChange={serviceIdChangeHandler} />
+                        <Textarea label="Message" value={state.newTicket.message} onChange={messageChangeHandler} rows={5} />
                     </>
                 );
 
             case 'other':
                 return (
-                    <Textarea
-                        label="Message"
-                        value={state.newTicket.message}
-                        onChange={messageChangeHandler}
-                        rows={7}
-
-                    />
+                    <Textarea label="Message" value={state.newTicket.message} onChange={messageChangeHandler} rows={7} />
                 );
 
             default:
                 return Toast.failed('Something went wrong!');
         }
-    };
+    }
 
     const addModal = (
-        <Modal
-            show={state.showAddModal}
-            onClose={handleBackdropClick}
-            title="Create Ticket"
-            onSubmit={addFormSubmitHandler}
-        >
+        <Modal show={state.showAddModal} onClose={handleBackdropClick} title="Create Ticket" onSubmit={addFormSubmitHandler}>
             <form onSubmit={addFormSubmitHandler}>
-                <Select
-                    label="Subject"
-                    value={state.newTicket.subject}
-                    onChange={subjectChangeHandler}
-                >
-                    <option key={0} value="">
-                        Choose a subject!
-                    </option>
-                    <option key="order" value="order">
-                        Order
-                    </option>
-                    <option key="payment" value="payment">
-                        Payment
-                    </option>
-                    <option key="service" value="service">
-                        Service
-                    </option>
-                    <option key="other" value="other">
-                        Other
-                    </option>
+                <Select label="Subject" value={state.newTicket.subject} onChange={subjectChangeHandler}>
+                    <option key={0} value="">Choose a subject!</option>
+                    <option key="order" value="order">Order</option>
+                    <option key="payment" value="payment">Payment</option>
+                    <option key="service" value="service">Service</option>
+                    <option key="other" value="other">Other</option>
                 </Select>
-
                 {selectedSubjectSection()}
             </form>
         </Modal>
@@ -396,16 +289,11 @@ const Support = () => {
 
             {addModal}
 
-            <div className={darkTheme ? 'dark container Support' : 'container Support'}>
-                <div>
-                    <PageHeader header="Support">
-                        <Button.Add onClick={handleAddButtonClick} />
-                    </PageHeader>
+            <PageContainer>
+                <div className={darkTheme ? classes.dark : ''}>
+                    <PageHeader header="Support"><Button.Add onClick={handleAddButtonClick} /></PageHeader>
 
-                </div>
-
-                <Card>
-                    <Table className="table">
+                    <Table>
                         <THead>
                             <tr>
                                 <th>ID</th>
@@ -417,10 +305,10 @@ const Support = () => {
 
                         <TBody>{ticketList}</TBody>
                     </Table>
-                </Card>
-            </div>
+                </div>
+            </PageContainer>
         </>
     );
-};
+}
 
 export default React.memo(Support);

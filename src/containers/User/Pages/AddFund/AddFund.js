@@ -1,48 +1,44 @@
 import React, { useContext, useState } from 'react';
 import { Route, NavLink } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 import Axios from '../../../../axiosIns';
 import Theme from '../../../../store/theme';
-import AuthContext from '../../../../store/AuthContext';
 
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
+import PageTitle from '../../../../components/Extra/PageTitle';
+import Loading from '../../../../components/UI/Loading/Loading';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
-import '../../../../sass/pages/user/AddFund.scss';
+import classes from './AddFund.module.scss';
 
 const Paytm = React.lazy(() => import('./Paytm/Paytm'));
 const Razorpay = React.lazy(() => import('./RazorPay/Razorpay'));
 
-const NotFound = () => (
-    <p>
-        No payment gateway is enabled at this moment. Please contact admin and
-        request to enable any payment gateway!
-    </p>
-);
+function NotFound() {
+    return (
+        <p>
+            No payment gateway is enabled at this moment. Please contact admin and
+            request to enable any payment gateway!
+        </p>
+    );
+}
 
-const AddFund = () => {
-    const { websiteName } = useContext(AuthContext);
+function AddFund() {
     const { darkTheme } = useContext(Theme);
-    const [activeList, setActiveList] = useState({
-        paytm: false,
-        razorpay: false,
-    });
+    const [isLoading, setIsLoading] = useState(false);
+    const [activeList, setActiveList] = useState({ paytm: false, razorpay: false });
 
     async function updateStatus(list) {
-        list.map((gateway) => {
-            switch (gateway.name) {
+        list.map((_gateway) => {
+            switch (_gateway.name) {
                 case 'paytm':
-                    return setActiveList((preState) => ({
-                        ...preState,
-                        paytm: gateway.enable,
-                    }));
+                    return setActiveList((preState) => ({ ...preState, paytm: _gateway.enabled }));
 
                 case 'razorpay':
                     return setActiveList((preState) => ({
                         ...preState,
-                        razorpay: gateway.enable,
+                        razorpay: _gateway.enabled,
                     }));
 
                 default:
@@ -51,97 +47,49 @@ const AddFund = () => {
         });
     }
 
-    async function getStatus() {
-        const url = '/payment-methods';
-        const { data } = await Axios.get(url);
-        if (data.list) updateStatus(data.list);
-    }
-
-    React.useEffect(() => {
-        getStatus();
+    React.useEffect(async () => {
+        try {
+            setIsLoading(true);
+            const url = '/payment-methods';
+            const { data } = await Axios.get(url);
+            updateStatus(data.list);
+            setIsLoading(false);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
-    // TODO Change title to dynamic
     return (
-        <div className={darkTheme ? 'dark container addfund' : 'container addfund'}>
-            <PageHeader header="Add Fund" />
+        <>
+            <PageTitle title="Add Fund" />
+            <Loading show={isLoading} />
 
-            <Card>
-                <div className="addfund__box">
-                    <div className="addfund__links">
+            <PageContainer>
+                <PageHeader header="Add Fund" />
+
+                <div className={`${classes.addfund__box} ${darkTheme ? classes.dark : ''}`}>
+                    <div className={classes.addfund__links}>
                         <ul>
-                            {
-                                activeList.razorpay
-                                && (
-                                    <li>
-                                        <NavLink
-                                            to="/add-fund/razorpay"
-                                            activeClassName="active"
-                                            exact
-                                        >
-                                            Razorpay
-                                        </NavLink>
-                                    </li>
-                                )
-                            }
-
-                            {activeList.paytm && (
-                                <li>
-                                    <NavLink
-                                        to="/add-fund/paytm"
-                                        activeClassName="active"
-                                        exact
-                                    >
-                                        Paytm
-                                    </NavLink>
-                                </li>
-                            )}
+                            {activeList.razorpay && (<NavLink exact to="/add-fund/razorpay" activeClassName={classes.active}><li>Razorpay</li></NavLink>)}
+                            {activeList.paytm && (<NavLink exact to="/add-fund/paytm" activeClassName={classes.active}><li>Paytm</li></NavLink>)}
                         </ul>
                     </div>
 
-                    <div className="addfund__gateway">
+                    <div className={classes.addfund__gateway}>
                         <Route path="/add-fund/" exact>
-                            {
-                                activeList.razorpay
-                                    && (<Razorpay />)
-                            }
-                            {
-                                !activeList.razorpay
-                                    && activeList.paytm
-                                    && (<Paytm />)
-                            }
-                            {
-                                !activeList.razorpay
-                                    && !activeList.paytm
-                                    && <NotFound />
-                            }
+                            {activeList.razorpay && (<Razorpay />)}
+                            {!activeList.razorpay && activeList.paytm && (<Paytm />)}
+                            {!activeList.razorpay && !activeList.paytm && <NotFound />}
                         </Route>
 
-                        {activeList.razorpay && (
-                            <Route path="/add-fund/razorpay" exact>
-                                <Razorpay />
-                            </Route>
-                        )}
-
-                        {activeList.paytm && (
-                            <Route path="/add-fund/paytm" exact>
-                                <Helmet>
-                                    <title>
-                                        Paytm -
-                                        {' '}
-                                        {websiteName || ''}
-                                        {' '}
-                                    </title>
-                                </Helmet>
-                                <Paytm />
-                            </Route>
-                        )}
+                        {activeList.razorpay && (<Route exact path="/add-fund/razorpay"><Razorpay /></Route>)}
+                        {activeList.paytm && (<Route exact path="/add-fund/paytm"><Paytm /></Route>)}
                     </div>
                     <p>*All payment are 100% safe and secure.</p>
                 </div>
-            </Card>
-        </div>
+            </PageContainer>
+        </>
     );
-};
+}
 
 export default AddFund;

@@ -2,19 +2,26 @@ import React, { useEffect, useState, useContext } from 'react';
 import { CheckoutProvider, Checkout } from 'paytm-blink-checkout-react';
 
 import Axios from '../../../../../axiosIns';
+import Theme from '../../../../../store/theme';
 import AuthContext from '../../../../../store/AuthContext';
 
 import Toast from '../../../../../components/UI/Toast/Toast';
-import Input from '../../../../../components/UI/Input/Input';
 import PageTitle from '../../../../../components/Extra/PageTitle';
+import Loading from '../../../../../components/UI/Loading/Loading';
 import Checkbox from '../../../../../components/UI/Checkbox/Checkbox';
 
-const Paytm = () => {
+import classes from './Paytm.module.scss';
+
+function Paytm() {
     const [config, setConfig] = useState('');
-    const [showCheckout, setShowCheckout] = useState(false);
     const [amount, setAmount] = useState('');
+    const [confirm, setConfirm] = useState(false);
     const [merchantId, setMerchantId] = useState('');
+    const [showCheckout, setShowCheckout] = useState(false);
     const { balance, updateBalance } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { darkTheme } = useContext(Theme);
 
     async function verifyPayment(paymentStatus) {
         try {
@@ -71,7 +78,7 @@ const Paytm = () => {
             },
         },
         merchant: {
-            mid: merchantId || process.env.REACT_APP_PAYTM_MERCHANT_ID,
+            mid: merchantId || process.env.REACT_APP_PAYTM_MERCHANT_ID || '',
             name: 'SMT Panel',
             logo: '',
             redirect: false,
@@ -100,7 +107,7 @@ const Paytm = () => {
         },
     };
 
-    async function getMerchantId() {
+    useEffect(async () => {
         try {
             const url = '/paytm';
             const { data } = await Axios.get(url);
@@ -108,10 +115,6 @@ const Paytm = () => {
         } catch (err) {
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    }
-
-    useEffect(() => {
-        getMerchantId();
     }, []);
 
     function amountChangeHandler(e) {
@@ -123,15 +126,9 @@ const Paytm = () => {
             const url = 'paytm/get-token';
             const { data } = await Axios.post(url, { orderId, amount });
             const { token } = data;
-            CONFIG = {
-                ...CONFIG,
-                data: {
-                    ...CONFIG.data,
-                    orderId,
-                    token,
-                },
-            };
+            CONFIG = { ...CONFIG, data: { ...CONFIG.data, orderId, token } };
             setConfig({ ...CONFIG });
+            setIsLoading(false);
         } catch (err) {
             Toast.failed(err.response.data.message || 'Something went wrong!');
         }
@@ -140,50 +137,45 @@ const Paytm = () => {
     async function toggleCheckout(e) {
         e.preventDefault();
 
-        try {
-            const orderId = `ORDER_ID_${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}${new Date().getHours()}${new Date().getMinutes()}${new Date().getSeconds()}${Math.floor(Math.random() * 999999999999)}`;
-            getToken(orderId);
+        if (confirm) {
+            setIsLoading(true);
             setShowCheckout(true);
-            Toast.info('Loading... Please wait!', 4000);
-        } catch (err) {
-            Toast.failed(err.response.data.message || 'Something went wrong!');
+            try {
+                const orderId = `ORDER_ID_${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}${new Date().getHours()}${new Date().getMinutes()}${new Date().getSeconds()}${Math.floor(Math.random() * 999999999999)}`;
+                getToken(orderId);
+                return '';
+            } catch (err) {
+                return Toast.failed(err.response.data.message || 'Something went wrong!');
+            }
         }
+        return Toast.failed('Please confirm your transaction!');
     }
 
     return (
         <>
             <PageTitle title="Paytm" />
+            <Loading show={isLoading} />
 
-            <div className="Paytm">
+            <div className={`${classes.paytm} ${darkTheme ? classes.dark : ''}`}>
+                <h2 className={classes.logo}>
+                    <span className={classes['logo_color--1']}>Pay</span>
+                    <span className={classes['logo_color--2']}>tm</span>
+                    {' '}
+                    Gateway
+                </h2>
+
                 <form onSubmit={toggleCheckout}>
-
-                    <Input
-                        label=""
-                        type="number"
-                        placeholder="Amount"
-                        onChange={amountChangeHandler}
-                    />
-
-                    <Checkbox text="I'm paying for services and its non refundable!" />
-                    <button
-                        type="submit"
-                        className="btn btn-primary Razorpay_button"
-                    >
-                        Pay
-                    </button>
+                    <input className={classes.input} type="number" min="1" placeholder="Amount" onChange={amountChangeHandler} />
+                    <Checkbox checked={confirm} text="I'm paying for services and its non refundable!" onChange={() => { setConfirm((preState) => !preState); }} />
+                    <button type="submit" className={classes.pay_now}>Pay</button>
                 </form>
 
-                <CheckoutProvider
-                    config={config}
-                    checkoutJsInstance={null}
-                    openInPopup
-                    env="PROD"
-                >
+                <CheckoutProvider config={config} checkoutJsInstance={null} openInPopup env="PROD">
                     {showCheckout && <Checkout />}
                 </CheckoutProvider>
             </div>
         </>
     );
-};
+}
 
 export default Paytm;

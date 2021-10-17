@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { BiMessageSquareDetail } from 'react-icons/bi';
 
 import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
 import AuthContext from '../../../../store/AuthContext';
 
 import Card from '../../../../components/UI/Card/Card';
@@ -14,10 +13,11 @@ import Checkbox from '../../../../components/UI/Checkbox/Checkbox';
 import Textarea from '../../../../components/UI/Textarea/Textarea';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Input, { InputGroup } from '../../../../components/UI/Input/Input';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import classes from './NewOrder.module.scss';
 
-const NewOrder = () => {
+function NewOrder() {
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
     const [serviceDetails, setServiceDetails] = useState({
@@ -44,34 +44,27 @@ const NewOrder = () => {
     });
 
     const { balance, updateBalance } = useContext(AuthContext);
-    const { darkTheme } = useContext(Theme);
 
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        const url = '/new-order';
-        Axios.get(url)
-            .then((res) => {
-                setIsLoading(false);
-                const { data } = res;
-
-                if (data.status !== 'success') return;
-
-                setCategories(data.categories);
-                setServices(data.services);
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                Toast.failed(err.response.data.message);
-            });
+        try {
+            const url = '/new-order';
+            const { data } = await Axios.get(url);
+            setCategories(data.categories);
+            setServices(data.services);
+            setIsLoading(false);
+        } catch (err) {
+            setIsLoading(false);
+            Toast.failed(err.response.data.message);
+        }
     }, []);
 
-    const servicesByCategory = services
-        && services.filter(
-            (service) => service.categoryId === orderDetails.selectedCategory,
-        );
+    const servicesByCategory = services && services.filter(
+        (_service) => _service.categoryId === orderDetails.selectedCategory,
+    );
 
-    const reset = () => {
+    function reset() {
         setOrderDetails({
             link: '',
             charge: '',
@@ -79,6 +72,7 @@ const NewOrder = () => {
             selectedService: '',
             selectedCategory: '',
         });
+
         setServiceDetails({
             id: '',
             title: '',
@@ -89,9 +83,9 @@ const NewOrder = () => {
             avgtime: '',
             description: '',
         });
-    };
+    }
 
-    const selectedCategoryHandler = (e) => {
+    function selectedCategoryHandler(e) {
         setServiceDetails(() => ({
             id: '',
             title: '',
@@ -108,9 +102,9 @@ const NewOrder = () => {
             selectedCategory: e.target.value,
             selectedService: '',
         }));
-    };
+    }
 
-    const selectedServiceHandler = async (e) => {
+    async function selectedServiceHandler(e) {
         setOrderDetails((preState) => ({
             ...preState,
             link: '',
@@ -119,10 +113,7 @@ const NewOrder = () => {
             selectedService: +e.target.value,
         }));
 
-        const details = await services.filter(
-            (service) => +service.id === +e.target.value,
-        );
-
+        const details = await services.filter((service) => +service.id === +e.target.value);
         if (!details[0]) return;
 
         setServiceDetails(() => ({
@@ -135,42 +126,28 @@ const NewOrder = () => {
             avgtime: details[0].avgtime || '',
             desc: details[0].desc || '',
         }));
-    };
+    }
 
-    const linkInputHandler = (e) => {
-        setOrderDetails((preState) => ({
-            ...preState,
-            link: e.target.value,
-        }));
-    };
+    function linkInputHandler(e) {
+        setOrderDetails((preState) => ({ ...preState, link: e.target.value }));
+    }
 
-    const quantityInputHandler = async (e) => {
-        const orderQuantity = +e.target.value;
-        setOrderDetails((preState) => ({
-            ...preState,
-            quantity: orderQuantity,
-        }));
-
-        const totalAmount = (serviceDetails.rate / 1000) * orderQuantity;
-        setOrderDetails((preState) => ({
-            ...preState,
-            charge: totalAmount,
-        }));
-
-        if (balance < totalAmount) {
-            Toast.failed('Insufficient balance in your account!', 3500);
-            // return setError({
-            //     show: true,
-            //     message: 'Insufficient Fund!',
-            // });
+    async function quantityInputHandler(e) {
+        try {
+            const orderQuantity = +e.target.value;
+            setOrderDetails((preState) => ({ ...preState, quantity: orderQuantity }));
+            const totalAmount = (serviceDetails.rate / 1000) * orderQuantity;
+            setOrderDetails((preState) => ({ ...preState, charge: totalAmount }));
+            if (balance < totalAmount) {
+                Toast.failed('Insufficient balance in your account!', 3500);
+                setError({ show: false, message: '' });
+            }
+        } catch (err) {
+            Toast.failed('Something went wrong, Try again!');
         }
-        setError({
-            show: false,
-            message: '',
-        });
-    };
+    }
 
-    const orderSubmitHandler = async (e) => {
+    async function orderSubmitHandler(e) {
         e.preventDefault();
 
         const url = '/new-order';
@@ -183,109 +160,63 @@ const NewOrder = () => {
         };
 
         try {
-            const { data } = await Axios.post(url, orderData);
-
-            if (data.status === 'success') {
-                updateBalance(balance - orderDetails.charge);
-                reset();
-                return Toast.success('Order placed successfully!');
-            }
-
-            return Toast.failed('Something went wrong!');
+            await Axios.post(url, orderData);
+            updateBalance(balance - orderDetails.charge);
+            reset();
+            return Toast.success('Order placed successfully!');
         } catch (err) {
-            return Toast.failed(err.response.data.message);
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
         }
-    };
+    }
 
     const categoriesLength = () => categories && categories.length <= 0;
     const servicesLength = () => services && services.length <= 0;
 
-    // TODO Change title to dynamic
     return (
         <>
             <PageTitle title="New Order" />
             <Loading show={isLoading} />
 
-            <div className={darkTheme ? `dark container ${classes.newOrder}` : `container ${classes.newOrder}`}>
+            <PageContainer>
                 <PageHeader header="New Order" />
 
                 <div className={classes.newOrder__container}>
                     <div className={classes.newOrder__item}>
                         <Card>
                             <form onSubmit={orderSubmitHandler}>
-                                <Select
-                                    label="Category"
-                                    value={orderDetails.selectedCategory}
-                                    onChange={selectedCategoryHandler}
-                                    disabled={categoriesLength()}
-                                >
-                                    <option value="0" defaultValue>
-                                        Choose a Category
-                                    </option>
-                                    {categories
-                                            && categories.map((category) => (
-                                                <option
-                                                    key={category.id}
-                                                    value={category.id}
-                                                >
-                                                    {category.title}
-                                                </option>
-                                            ))}
+                                <Select label="Category" value={orderDetails.selectedCategory} onChange={selectedCategoryHandler} disabled={categoriesLength()}>
+                                    <option value="0" defaultValue>Choose a Category</option>
+                                    {
+                                        categories && categories.map((category) => (
+                                            <option key={category.id} value={category.id}>
+                                                {category.title}
+                                            </option>
+                                        ))
+                                    }
                                 </Select>
 
-                                <Select
-                                    label="Choose a Service"
-                                    value={orderDetails.selectedService}
-                                    onChange={selectedServiceHandler}
-                                    disabled={servicesLength()}
-                                >
-                                    <option value="0" defaultValue>
-                                        Choose a Service
-                                    </option>
-                                    {servicesByCategory
-                                            && servicesByCategory.map(
-                                                (service) => (
-                                                    <option
-                                                        key={service.id}
-                                                        value={service.id}
-                                                    >
-                                                        {service.title}
-                                                        {' '}
-                                                        -
-                                                        {' '}
-                                                        {service.rate}
-                                                    </option>
-                                                ),
-                                            )}
+                                <Select label="Choose a Service" value={orderDetails.selectedService} onChange={selectedServiceHandler} disabled={servicesLength()}>
+                                    <option value="0" defaultValue>Choose a Service</option>
+                                    {
+                                        servicesByCategory && servicesByCategory.map((service) => (
+                                            <option key={service.id} value={service.id}>
+                                                {`${service.title} - ${service.rate}`}
+                                            </option>
+                                        ))
+                                    }
                                 </Select>
 
                                 <Input label="Link" type="url" value={orderDetails.link} placeholder="https://" onChange={linkInputHandler} />
                                 <Input label="Quantity" type="number" value={orderDetails.quantity} placeholder="1000" onChange={quantityInputHandler} />
 
                                 <div className={classes['min-max__count']}>
-                                    Min:
-                                    {' '}
-                                    {serviceDetails.min || 0}
-                                    {' '}
-                                    / Max:
-                                    {serviceDetails.max || 0}
+                                    {`Min: ${serviceDetails.min || 0} / Max: ${serviceDetails.max || 0}`}
                                 </div>
 
                                 {error.show && <p className={classes.error}>{error.message}</p>}
-                                <div className={classes.newOrder__totalAmount}>
-                                    Total =
-                                    {' '}
-                                    {orderDetails.charge || 0}
-                                </div>
-
+                                <div className={classes.newOrder__totalAmount}>{`Total = ${orderDetails.charge || 0}`}</div>
                                 <Checkbox text="Yeah, I have confirmed my order!" />
-
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    Place Order
-                                </button>
+                                <button type="submit" className="btn btn-primary">Place Order</button>
                             </form>
                         </Card>
                     </div>
@@ -314,20 +245,15 @@ const NewOrder = () => {
                                     <Input label="Average Time" value={serviceDetails.avgtime} disabled />
                                 </InputGroup>
 
-                                <Textarea
-                                    label="Description"
-                                    value={serviceDetails.description}
-                                    rows="7"
-                                    style={{ width: '100%' }}
-                                    disabled
-                                />
+                                <Textarea label="Description" value={serviceDetails.description} rows="7" style={{ width: '100%' }} disabled />
                             </div>
                         </Card>
                     </div>
                 </div>
-            </div>
+            </PageContainer>
+
         </>
     );
-};
+}
 
 export default NewOrder;

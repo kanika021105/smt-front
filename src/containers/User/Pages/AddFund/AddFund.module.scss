@@ -1,0 +1,102 @@
+@import '../../../../sass/index';
+
+.addfund {
+    &__box {
+        border: 1px solid $border-color;
+        border-radius: 1rem;
+        padding: 4rem 4rem 2rem 4rem;
+        background-color: $background-secondary-color;
+
+        transition: all .3s ease;
+
+        @media only screen and (max-width: $bp-5) {
+            padding: 4rem 2rem 2rem 2rem;
+        }
+
+        @media only screen and (max-width: $bp-4) {
+            padding: 2rem 1rem 2rem 1rem;
+        }
+    }
+
+    &__links {
+        ul {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            flex-wrap: wrap;
+
+            @media only screen and (max-width: $bp-4) {
+                gap: 1rem;
+            }   
+            
+            & li {
+                list-style: none;
+                padding: .8rem 2rem;
+                border-radius: .5rem;
+                border: 1px solid $border-color;
+                background-color: $background-primary-color;
+
+                transition: all .3s ease;
+            }
+            
+            & a {
+                color: $tertiary-text-color;
+                opacity: .9;
+                text-decoration: none;
+
+                &.active {
+                    color: $color-primary;
+
+                    li {
+                        border: 1px solid $color-primary;
+                    }
+                }
+            }
+        }
+    }
+
+    &__gateway {
+        margin: 4rem auto;
+        width: fit-content;
+        padding: 2rem 4rem 3rem;
+        border: 1px solid $border-color;
+        border-radius: 1rem;
+
+        @media only screen and (max-width: $bp-5) {
+            padding: 2rem 2rem;
+        }
+
+        @media only screen and (max-width: $bp-5) {
+            padding: 1rem 1rem;
+        }
+    }
+}
+
+.dark {
+    &.addfund__box {
+        border: 1px solid $dark-border-color;        
+        background-color: $dark-background-tertiary-color;
+
+        & li {
+            border-color: $dark-border-color;
+            background-color: $dark-background-forth-color;    
+        }
+
+        & a {
+            color: $dark-primary-text-color;
+            opacity: 1;
+
+            &.active { 
+                color: $dark-color-text--primary;
+
+                li {
+                    background-color: $color-primary;
+                }
+            }
+        }
+
+        & .addfund__gateway {
+            border: 1px solid $dark-border-color;
+        }
+    }
+}

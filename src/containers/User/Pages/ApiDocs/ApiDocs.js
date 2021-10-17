@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Axios from '../../../../axiosIns';
@@ -6,34 +6,30 @@ import Axios from '../../../../axiosIns';
 import Toast from '../../../../components/UI/Toast/Toast';
 import PageTitle from '../../../../components/Extra/PageTitle';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
 import classes from './ApiDocs.module.scss';
 
-async function getApiKey() {
-    const url = '/api-key';
-    const { data } = await Axios.get(url);
-    return data.apiKey;
-}
-
-function api() {
+function ApiDocs() {
     const [apiKey, setApiKey] = React.useState('');
 
-    React.useEffect(() => {
-        Promise.resolve(getApiKey())
-            .then((key) => {
-                setApiKey(key);
-            }).catch((err) => {
-                Toast.failed(err.response.data.message || 'Something went wrong!');
-            });
+    useEffect(async () => {
+        try {
+            const url = '/api-key';
+            const { data } = await Axios.get(url);
+            return setApiKey(data.apiKey);
+        } catch (err) {
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     });
 
     return (
         <>
-
             <PageTitle title="API Docs" />
-            <PageHeader header="API Docs" />
 
-            <main className={classes.api}>
+            <PageContainer>
+                <PageHeader header="API Docs" />
+
                 <ApiCard heading="API Details">
                     <div className={classes.row}>
                         <CardItem heading="HTTP Method" content="POST" />
@@ -42,15 +38,9 @@ function api() {
 
                     <CardItem
                         heading="API Url"
-                        content={`https://api.${window.location.hostname
-                            .split('.')
-                            .slice(-2)
-                            .join('.')}/v1`}
+                        content={`https://api.${window.location.hostname.split('.').slice(-2).join('.')}/v1`}
                     />
-                    <CardItem
-                        heading="API Key"
-                        content={apiKey}
-                    />
+                    <CardItem heading="API Key" content={apiKey} />
                 </ApiCard>
 
                 <ApiCard heading="Service List">
@@ -60,30 +50,30 @@ function api() {
                     </div>
                 </ApiCard>
 
-                <Code content={`
-[
-    {
-        service: 1,
-        name: 'Followers',
-        type: 'Default',
-        category: 'First Category',
-        rate: '0.90',
-        min: '50',
-        max: '10000',
-        refill: true,
-    },
-    {
-        service: 2,
-        name: 'Comments',
-        type: 'Custom Comments',
-        category: 'Second Category',
-        rate: '8',
-        min: '10',
-        max: '1500',
-        refill: false,
-    },
-]
-`}
+                <Code
+                    content={
+                        `[{
+    service: 1,
+    name: 'Followers',
+    type: 'Default',
+    category: 'First Category',
+    rate: '0.90',
+    min: '50',
+    max: '10000',
+    refill: true,
+},
+{
+    service: 2,
+    name: 'Comments',
+    type: 'Custom Comments',
+    category: 'Second Category',
+    rate: '8',
+    min: '10',
+    max: '1500',
+    refill: false,
+}]
+`
+                    }
                 />
 
                 <ApiCard heading="Place Order">
@@ -99,12 +89,13 @@ function api() {
                     </div>
                 </ApiCard>
 
-                <Code content={`
-{
-  "status": "success",
-  "order": 46
-}
-`}
+                <Code
+                    content={
+                        `{
+    "status": "success",
+    "order": 46
+}`
+                    }
                 />
 
                 <ApiCard heading="Order status">
@@ -115,15 +106,16 @@ function api() {
                     </div>
                 </ApiCard>
 
-                <Code content={`
-{
+                <Code
+                    content={
+                        `{
     "charge": "0.27819",
     "start_count": "3572",
     "status": "Partial",
     "remains": "157",
     "currency": "USD"
-}
-`}
+}`
+                    }
                 />
 
                 <ApiCard heading="Multiple orders status">
@@ -134,8 +126,9 @@ function api() {
                     </div>
                 </ApiCard>
 
-                <Code content={`
-{
+                <Code
+                    content={
+                        `{
     "1": {
         "charge": "0.27819",
         "start_count": "3572",
@@ -153,8 +146,8 @@ function api() {
         "remains": "10",
         "currency": "USD"
     }
-}
-`}
+}`
+                    }
                 />
 
                 <ApiCard heading="User balance">
@@ -164,15 +157,15 @@ function api() {
                     </div>
                 </ApiCard>
 
-                <Code content={`
-{
+                <Code
+                    content={
+                        `{
     "balance": "100.84292",
     "currency": "USD"
-}
-`}
+}`
+                    }
                 />
-
-            </main>
+            </PageContainer>
         </>
     );
 }
@@ -202,9 +195,7 @@ function CardItem({ heading, content }) {
 function Code({ content }) {
     return (
         <div className={classes.code}>
-            <pre>
-                {content}
-            </pre>
+            <pre>{content}</pre>
         </div>
     );
 }
@@ -223,4 +214,4 @@ Code.propTypes = {
     content: PropTypes.string.isRequired,
 };
 
-export default api;
+export default ApiDocs;

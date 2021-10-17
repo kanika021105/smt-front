@@ -10,16 +10,17 @@ import PageHeader from '../../../../../components/UI/PageHeader/PageHeader';
 import MessageContainer from '../../../../../components/UI/MessageContainer/MessageContainer';
 
 import classes from './messages.module.scss';
+import PageContainer from '../../../../../components/UI/PageContainer/PageContainer';
 
-const Message = () => {
+function Message() {
     const params = useParams();
-    const { clientId: userId } = useContext(AuthContext);
-
     const { uid } = params;
 
     const [ticket, setTicket] = useState('');
     const [messages, setMessages] = useState();
     const [inputMessage, setInputMessage] = useState('');
+
+    const { clientId: userId } = useContext(AuthContext);
 
     useEffect(async () => {
         try {
@@ -62,7 +63,7 @@ const Message = () => {
     return (
         <>
             <PageTitle title="Ticket" />
-            <div className="container">
+            <PageContainer>
                 <div className={classes.support}>
                     <PageHeader header="Ticket" />
 
@@ -75,9 +76,9 @@ const Message = () => {
                         side="user"
                     />
                 </div>
-            </div>
+            </PageContainer>
         </>
     );
-};
+}
 
 export default Message;

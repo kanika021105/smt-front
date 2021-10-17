@@ -1,73 +1,66 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import Axios from '../../../../axiosIns';
-import Theme from '../../../../store/theme';
-
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import PageTitle from '../../../../components/Extra/PageTitle';
 import Loading from '../../../../components/UI/Loading/Loading';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
-import '../../../../sass/pages/user/services.scss';
+import Axios from '../../../../axiosIns';
+import './services.scss';
 
 function Services() {
     const [services, setServices] = useState();
     const [categories, setCategories] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { darkTheme } = useContext(Theme);
+    useEffect(async () => {
+        setIsLoading(true);
 
-    useEffect(() => {
-        setIsLoading(false);
+        try {
+            const url = '/services';
+            const { data } = await Axios.get(url);
 
-        const url = '/services';
-        Axios.get(url)
-            .then((res) => {
-                setIsLoading(false);
-                const { data } = res;
-                setServices(data.services);
-                setCategories(data.categories);
-            })
-            .catch((err) => {
-                Toast.failed(err.response.data.message);
-            });
+            setIsLoading(false);
+            setServices(data.services);
+            setCategories(data.categories);
+        } catch (err) {
+            Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
-    const getServiceByCateId = (cateId) => {
-        const servicesList = services
-            && services.filter((service) => service.categoryId === cateId);
+    function getServiceByCateId(cateId) {
+        const servicesList = services && services.filter(
+            (_service) => _service.categoryId === cateId,
+        );
+        console.log(servicesList);
 
         return servicesList.map((service) => (
             <tr key={service.id}>
                 <td>{service.id}</td>
-                <td>
-                    {service.title.length > 35 ? `${service.title.slice(0, 35)}...` : service.title}
-                </td>
+                <td>{service.title.length > 35 ? `${service.title.slice(0, 35)}...` : service.title}</td>
                 <td>{`${service.min} / ${service.max}`}</td>
                 <td>{service.rate.toFixed(2)}</td>
                 <td>{service.dripFeed}</td>
                 <td><Button.Active /></td>
             </tr>
         ));
-    };
+    }
 
     return (
         <>
             <PageTitle title="Services" />
             <Loading show={isLoading} />
 
-            <div className={darkTheme ? 'dark container Services' : 'container Services'}>
+            <PageContainer>
                 <PageHeader header="Services" />
 
-                {categories && categories.map((category) => (
-                    <div className="serviceListCard" key={category.id}>
-                        <Card>
-                            <h3 className="categoryTitle ">
-                                {category.title}
-                            </h3>
+                {
+                    categories && categories.map((_category) => (
+                        <div className="serviceListCard" key={_category.id}>
+                            <h3 className="categoryTitle ">{_category.title}</h3>
 
                             <Table>
                                 <THead>
@@ -81,14 +74,12 @@ function Services() {
                                     </tr>
                                 </THead>
 
-                                <TBody>
-                                    {getServiceByCateId(category.id)}
-                                </TBody>
+                                <TBody>{getServiceByCateId(_category.id)}</TBody>
                             </Table>
-                        </Card>
-                    </div>
-                ))}
-            </div>
+                        </div>
+                    ))
+                }
+            </PageContainer>
         </>
     );
 }

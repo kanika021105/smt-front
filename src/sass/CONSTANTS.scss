@@ -22,6 +22,7 @@ $sidebar__expand__width__bp-6: 21rem;
 // Background Colors
 $background-primary-color: #fff;
 $background-secondary-color: #F2F2FC;
+$tertiary-background-color: #eee;
 
 // BorderColor
 $border-color: #e0e0e0;
@@ -29,6 +30,12 @@ $border-color: #e0e0e0;
 // Hover color
 $hover-color: #f4f4f4;
 $hover-color-dark: #eee;
+
+// Text Colors
+$primary-text-color:  #222222;
+$secondary-text-color: #222222;
+$tertiary-text-color:#555555;
+
 
 
 // ********************* DARK THEME COLORS ********************* /
@@ -39,7 +46,7 @@ $dark-background-tertiary-color: #464646;
 $dark-background-forth-color: #666666;
 
 // Border Color
-$dark-border-color: #424242;
+$dark-border-color: #555555;
 
 // Normal colors
 $dark-color-primary: #3f81ea;

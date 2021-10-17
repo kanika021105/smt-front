@@ -2,7 +2,7 @@
 
 .message {
     &__container {
-        border: none;
+        border: 1px solid $border-color;
         border-radius: 1rem;
         background-color: $color-white;
         box-shadow: 0 .4rem .6rem rgba($color-grey-light-2, 0.1);
@@ -11,14 +11,15 @@
     &__header {
         padding: 1rem 2rem;
         font-size: 2.4rem;
-        border-bottom: 1px solid $color-grey-light-1;
+        border-bottom: 1px solid $border-color;
+        word-wrap: break-word;
 
         text-transform: capitalize;
     }
 
     &__body {
         padding: 2rem;
-        max-height: calc(((((100vh - 5rem) - 2.5rem) - 7rem) - 25rem));
+        height: calc(((((100vh - 5rem) - 2.5rem) - 7rem) - 28rem));
 
         overflow: scroll;
 
@@ -28,7 +29,7 @@
     }
 
     &__footer {
-        border-top: 1px solid $color-grey-light-1;
+        border-top: 1px solid $border-color;
         padding: 1rem;
 
         & input {
@@ -38,6 +39,12 @@
         & button {
             height: 4rem;
             width: 8rem;
+            border: none;
+            border-radius: .5rem;
+            background-color: $color-primary;
+            color: $color-white;
+            text-transform: capitalize;
+            font-size: 1.7rem;
         }
     }
 }
@@ -85,5 +92,39 @@
 
     & img {
         height: 6rem;
+    }
+}
+
+.dark {
+    &.message__container {
+        border: none;
+        background-color:  $dark-background-forth-color;
+        box-shadow: none;
+        overflow: hidden;
+    }
+
+    & .message {
+        &__header {
+            color: $dark-tertiary-text-color;
+            border-bottom: 1px solid $dark-border-color;
+            background-color: $dark-background-tertiary-color;
+        }
+
+        &__body {
+            .message_user,
+            .message_admin {
+                color: $dark-primary-text-color;
+            }
+
+            .sent_time {
+                color: $dark-tertiary-text-color;
+                opacity: .8;
+            }
+        }
+
+        &__footer {
+            border-top: 1px solid $dark-border-color;
+            background-color: $dark-background-tertiary-color;
+        }
     }
 }

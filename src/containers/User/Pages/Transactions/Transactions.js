@@ -3,34 +3,33 @@ import React, { useContext, useEffect, useState } from 'react';
 import Axios from '../../../../axiosIns';
 import Theme from '../../../../store/theme';
 
-import Card from '../../../../components/UI/Card/Card';
 import Toast from '../../../../components/UI/Toast/Toast';
 import Button from '../../../../components/UI/Button/Button';
 import PageTitle from '../../../../components/Extra/PageTitle';
 import Loading from '../../../../components/UI/Loading/Loading';
 import PageHeader from '../../../../components/UI/PageHeader/PageHeader';
 import Table, { THead, TBody } from '../../../../components/UI/Table/Table';
+import PageContainer from '../../../../components/UI/PageContainer/PageContainer';
 
-import '../../../../sass/pages/user/transactions.scss';
+import classes from './Transactions.module.scss';
 
 function Transaction() {
     const [transactions, setTransactions] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const { darkTheme } = useContext(Theme);
 
-    useEffect(() => {
+    useEffect(async () => {
         setIsLoading(true);
 
-        const url = '/transactions';
-        Axios.get(url)
-            .then((res) => {
-                const { data } = res;
-                setIsLoading(false);
-                setTransactions(data.transactions);
-            })
-            .catch((err) => {
-                Toast.failed(err.response.data.message || 'Something went wrong!');
-            });
+        try {
+            const url = '/transactions';
+            const { data } = await Axios.get(url);
+            setIsLoading(false);
+            return setTransactions(data.transactions);
+        } catch (err) {
+            setIsLoading(false);
+            return Toast.failed(err.response.data.message || 'Something went wrong!');
+        }
     }, []);
 
     return (
@@ -38,10 +37,10 @@ function Transaction() {
             <PageTitle title="Transactions" />
             <Loading show={isLoading} />
 
-            <div className={darkTheme ? 'dark container Transactions' : 'container Transactions'}>
-                <PageHeader header="Transactions" />
+            <PageContainer>
+                <div className={darkTheme ? classes.dark : ''}>
+                    <PageHeader header="Transactions" />
 
-                <Card>
                     <Table>
                         <THead>
                             <tr>
@@ -67,8 +66,8 @@ function Transaction() {
                             ))}
                         </TBody>
                     </Table>
-                </Card>
-            </div>
+                </div>
+            </PageContainer>
         </>
     );
 }
